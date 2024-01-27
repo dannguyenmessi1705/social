@@ -8,7 +8,7 @@ import java.util.Set;
 @Entity(name = "users")
 public class Users {
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_id", unique = true)
     private String userId;
 
     @Column(name = "full_name", nullable = false, length = 255)

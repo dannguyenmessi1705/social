@@ -1,37 +1,67 @@
 package com.didan.social.controller;
 
 import com.didan.social.dto.UserDTO;
-import com.didan.social.payload.Payload;
-import com.didan.social.service.impl.LoginServiceImpl;
+import com.didan.social.payload.ResponseData;
+import com.didan.social.payload.request.SignupRequest;
+import com.didan.social.service.impl.AuthServiceImpl;
+import com.didan.social.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    private final AuthServiceImpl authService;
+    private final JwtUtils jwtUtils;
     @Autowired
-    LoginServiceImpl loginService;
+    public AuthController(AuthServiceImpl authService, JwtUtils jwtUtils){
+        this.authService = authService;
+        this.jwtUtils = jwtUtils;
+    }
     @PostMapping("/signin")
     public ResponseEntity<?> postLogin(@RequestParam String email, @RequestParam String password){
-        Payload payload = new Payload();
-        UserDTO users = loginService.login(email, password);
-        if (users != null) {
-            payload.setData(users);
-        } else {
-            payload.setStatusCode(401);
-            payload.setData("email or password is failed");
+        ResponseData payload = new ResponseData();
+        Map<String, String> accessToken = new HashMap<>();
+        try{
+            UserDTO user = authService.login(email, password);
+            if (user != null) {
+                payload.setDescription("Login Successful");
+                accessToken.put("accessToken", jwtUtils.generateAccessToken(user.getEmail()));
+                payload.setData(accessToken);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setDescription(e.getMessage());
+            payload.setStatusCode(400);
+            payload.setSuccess(false);
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
-        return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> postSignup(){
-        return new ResponseEntity<>("Success", HttpStatus.OK);
+    @PostMapping("/signup")
+    public ResponseEntity<?> postSignup(@RequestBody SignupRequest signupRequest){
+        ResponseData payload = new ResponseData();
+        Map<String, String> tokenAccessRefresh = new HashMap<>();
+        try {
+            UserDTO user = authService.signup(signupRequest);
+            if (user != null){
+                payload.setDescription("SignUp Successful");
+                tokenAccessRefresh.put("accessToken", jwtUtils.generateAccessToken(user.getEmail()));
+                tokenAccessRefresh.put("refreshToken", user.getRefreshToken());
+                payload.setData(tokenAccessRefresh);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setDescription(e.getMessage());
+            payload.setStatusCode(400);
+            payload.setSuccess(false);
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 
     @PostMapping("/verify")

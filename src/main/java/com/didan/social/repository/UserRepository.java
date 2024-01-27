@@ -6,10 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository("UserRepository")
+@Repository
 public interface UserRepository extends JpaRepository<Users, String> {
     // Ngoài các method mặc định có sẵn, ta có thể định nghĩa thêm method mới dựa theo nguyên tắc đặt tên của JPA
-
     // Login
-    Users findFirstByEmailAndPassword(String email, String password);
+    Users findFirstByEmail(String email);
 }

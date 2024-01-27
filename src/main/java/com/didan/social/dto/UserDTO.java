@@ -7,7 +7,6 @@ public class UserDTO {
     private String userId;
     private String fullName;
     private String email;
-    private String password;
     private String avtUrl;
     private Date dob;
     private Date resetExp;
@@ -17,11 +16,10 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(String userId, String fullName, String email, String password, String avtUrl, Date dob, Date resetExp, String resetToken, String refreshToken) {
+    public UserDTO(String userId, String fullName, String email, String avtUrl, Date dob, Date resetExp, String resetToken, String refreshToken) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
-        this.password = password;
         this.avtUrl = avtUrl;
         this.dob = dob;
         this.resetExp = resetExp;
@@ -51,14 +49,6 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getAvtUrl() {

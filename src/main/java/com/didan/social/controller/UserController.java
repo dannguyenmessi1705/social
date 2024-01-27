@@ -1,6 +1,6 @@
 package com.didan.social.controller;
 
-import com.didan.social.service.LoginService;
+import com.didan.social.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    @Qualifier("UserService")
-    LoginService loginService;
+    AuthService loginService;
     @GetMapping("/getAllUser")
     public ResponseEntity<?> getAllUser(){
         return new ResponseEntity<>(loginService.getAllUser(), HttpStatus.OK);
