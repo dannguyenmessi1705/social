@@ -1,5 +1,7 @@
 package com.didan.social.utils;
 
+import com.didan.social.entity.BlacklistToken;
+import com.didan.social.repository.BlacklistRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -7,14 +9,21 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
 public class JwtUtils {
+    private final BlacklistRepository blacklistRepository;
+    @Autowired
+    public JwtUtils(BlacklistRepository blacklistRepository){
+        this.blacklistRepository = blacklistRepository;
+    }
     @Value("${jwt.secretkey}")
     private String secretKey;
     private static final long ACCESS_TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000; // Thời gian hết hạn của access token (1 ngày)
@@ -38,6 +47,8 @@ public class JwtUtils {
     // Xác thực accessToken
     public void validateAccessToken(String accessToken) throws Exception {
         try{
+            BlacklistToken blacklistToken = blacklistRepository.findFirstByToken(accessToken);
+            if(blacklistToken != null) throw new Exception("Invalid access token"); // Nếu token ở trong blacklist thì không xác thực
             SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secretKey));
             Jwts.parser().verifyWith(key).build().parseSignedClaims(accessToken); // Giải mã accessToken
         }catch(MalformedJwtException e){ // Nếu access token không hợp lệ thì bắn lỗi

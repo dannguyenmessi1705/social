@@ -14,4 +14,7 @@ public interface AuthServiceImpl {
 
     // Signup
     UserDTO signup(SignupRequest signupRequest) throws Exception;
+
+    // Logout
+    void logout() throws Exception;
 }

@@ -77,7 +77,17 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(){
-        return new ResponseEntity<>("Success", HttpStatus.OK);
+        ResponseData payload = new ResponseData();
+        try{
+            authService.logout();
+            payload.setDescription("Logout successful");
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        }catch (Exception e){
+            payload.setDescription(e.getMessage());
+            payload.setStatusCode(400);
+            payload.setSuccess(false);
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 
     @PostMapping("/token-reset")
