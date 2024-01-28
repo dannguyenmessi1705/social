@@ -11,12 +11,11 @@ public class UserDTO {
     private Date dob;
     private Date resetExp;
     private String resetToken;
-    private String refreshToken;
 
     public UserDTO() {
     }
 
-    public UserDTO(String userId, String fullName, String email, String avtUrl, Date dob, Date resetExp, String resetToken, String refreshToken) {
+    public UserDTO(String userId, String fullName, String email, String avtUrl, Date dob, Date resetExp, String resetToken) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -24,7 +23,6 @@ public class UserDTO {
         this.dob = dob;
         this.resetExp = resetExp;
         this.resetToken = resetToken;
-        this.refreshToken = refreshToken;
     }
 
     public String getUserId() {
@@ -83,11 +81,4 @@ public class UserDTO {
         this.resetToken = resetToken;
     }
 
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }

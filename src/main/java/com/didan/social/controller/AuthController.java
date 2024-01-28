@@ -26,13 +26,14 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> postLogin(@RequestParam String email, @RequestParam String password){
         ResponseData payload = new ResponseData();
-        Map<String, String> accessToken = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
         try{
             UserDTO user = authService.login(email, password);
             if (user != null) {
                 payload.setDescription("Login Successful");
-                accessToken.put("accessToken", jwtUtils.generateAccessToken(user.getEmail()));
-                payload.setData(accessToken);
+                response.put("userId", user.getUserId());
+                response.put("accessToken", jwtUtils.generateAccessToken(user.getEmail()));
+                payload.setData(response);
             }
             return new ResponseEntity<>(payload, HttpStatus.OK);
         } catch (Exception e){
@@ -46,14 +47,14 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> postSignup(@RequestBody SignupRequest signupRequest){
         ResponseData payload = new ResponseData();
-        Map<String, String> tokenAccessRefresh = new HashMap<>();
+        Map<String, String> response = new HashMap<>();
         try {
             UserDTO user = authService.signup(signupRequest);
             if (user != null){
                 payload.setDescription("SignUp Successful");
-                tokenAccessRefresh.put("accessToken", jwtUtils.generateAccessToken(user.getEmail()));
-                tokenAccessRefresh.put("refreshToken", user.getRefreshToken());
-                payload.setData(tokenAccessRefresh);
+                response.put("userId", user.getUserId());
+                response.put("accessToken", jwtUtils.generateAccessToken(user.getEmail()));
+                payload.setData(response);
             }
             return new ResponseEntity<>(payload, HttpStatus.OK);
         } catch (Exception e){

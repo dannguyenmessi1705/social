@@ -1,5 +1,7 @@
 package com.didan.social.payload;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ResponseData {
     private int statusCode = 200;
     private boolean isSuccess = true;
@@ -9,6 +11,7 @@ public class ResponseData {
     public ResponseData() {
     }
 
+    @JsonProperty(index = 0)
     public boolean isSuccess() {
         return isSuccess;
     }
@@ -17,6 +20,7 @@ public class ResponseData {
         isSuccess = success;
     }
 
+    @JsonProperty(index = 2)
     public String getDescription() {
         return description;
     }
@@ -25,6 +29,7 @@ public class ResponseData {
         this.description = description;
     }
 
+    @JsonProperty(index = 1)
     public int getStatusCode() {
         return statusCode;
     }
@@ -33,6 +38,7 @@ public class ResponseData {
         this.statusCode = statusCode;
     }
 
+    @JsonProperty(index = 3)
     public Object getData() {
         return data;
     }

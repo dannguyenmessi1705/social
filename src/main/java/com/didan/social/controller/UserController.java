@@ -1,5 +1,6 @@
 package com.didan.social.controller;
 
+import com.didan.social.payload.ResponseData;
 import com.didan.social.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,9 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    AuthService loginService;
+    AuthService authService;
     @GetMapping("/getAllUser")
     public ResponseEntity<?> getAllUser(){
-        return new ResponseEntity<>(loginService.getAllUser(), HttpStatus.OK);
+        ResponseData payload = new ResponseData();
+        try{
+            payload.setData(authService.getAllUser());
+            payload.setDescription("Get all user successful");
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        }catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription("Server Error");
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 }

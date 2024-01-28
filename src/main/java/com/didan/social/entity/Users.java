@@ -34,9 +34,6 @@ public class Users {
     @Column(name = "reset_password_token", nullable = true, length = 255)
     private String resetToken;
 
-    @Column(name = "refresh_token", nullable = true, length = 255)
-    private String refreshToken;
-
     @OneToMany(mappedBy = "users1", cascade = CascadeType.ALL)
     private Set<Followers> followers;
 
@@ -63,7 +60,7 @@ public class Users {
 
     public Users() {}
 
-    public Users(String userId, String fullName, String email, String password, String avtUrl, Date dob, Date resetExp, String resetToken, String refreshToken, Set<Followers> followers, Set<Followers> followeds, Set<PostLikes> postLikes, Set<UserPosts> userPosts, Set<Participants> participants, Set<Messages> messages, Set<UserComment> userComments, Set<CommentLikes> commentLikes) {
+    public Users(String userId, String fullName, String email, String password, String avtUrl, Date dob, Date resetExp, String resetToken, Set<Followers> followers, Set<Followers> followeds, Set<PostLikes> postLikes, Set<UserPosts> userPosts, Set<Participants> participants, Set<Messages> messages, Set<UserComment> userComments, Set<CommentLikes> commentLikes) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
@@ -72,7 +69,6 @@ public class Users {
         this.dob = dob;
         this.resetExp = resetExp;
         this.resetToken = resetToken;
-        this.refreshToken = refreshToken;
         this.followers = followers;
         this.followeds = followeds;
         this.postLikes = postLikes;
@@ -145,14 +141,6 @@ public class Users {
 
     public void setResetToken(String resetToken) {
         this.resetToken = resetToken;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
     }
 
     public Set<Followers> getFollowers() {

@@ -40,7 +40,6 @@ public class AuthService implements AuthServiceImpl {
             userDTO.setDob(user.getDob());
             userDTO.setResetExp(user.getResetExp());
             userDTO.setResetToken(user.getResetToken());
-            userDTO.setRefreshToken(user.getRefreshToken());
             userDTOS.add(userDTO);
         }
         return userDTOS;
@@ -58,7 +57,6 @@ public class AuthService implements AuthServiceImpl {
             userDTO.setDob(user.getDob());
             userDTO.setResetExp(user.getResetExp());
             userDTO.setResetToken(user.getResetToken());
-            userDTO.setRefreshToken(user.getRefreshToken());
             return userDTO;
         }
         else throw new Exception("Email and Password does not match");
@@ -78,9 +76,6 @@ public class AuthService implements AuthServiceImpl {
             userSave.setFullName(signupRequest.getFullName());
             userSave.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
             userSave.setAvtUrl(signupRequest.getAvtUrl());
-            String refreshToken = jwtUtils.generateRefreshToken(signupRequest.getEmail());
-            userSave.setRefreshToken(refreshToken);
-            userDTO.setRefreshToken(refreshToken);
             String dateString = signupRequest.getDob();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             java.util.Date utilDate = format.parse(dateString);
