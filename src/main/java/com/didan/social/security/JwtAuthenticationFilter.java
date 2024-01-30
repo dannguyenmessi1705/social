@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = getTokenFromHeader(request);
+        String accessToken = jwtUtils.getTokenFromHeader(request);
         if(StringUtils.hasText(accessToken)){
             try {
                 jwtUtils.validateAccessToken(accessToken);
@@ -47,14 +47,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
-    }
-
-    // Lấy token từ header
-    private String getTokenFromHeader(HttpServletRequest request){
-        String bearerToken = request.getHeader("Authorization"); // Lấy token từ header
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){ // Kiểm tra bearerToken khác null và có bắt đầu bằng Bearer
-            return bearerToken.substring(7); // Trả về token
-        }
-        return null; // Nếu token không hợp lệ thì trả về null
     }
 }

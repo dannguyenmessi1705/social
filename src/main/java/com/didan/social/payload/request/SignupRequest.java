@@ -1,12 +1,20 @@
 package com.didan.social.payload.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 
 public class SignupRequest {
+    @JsonProperty(required = true)
     private String fullName;
+    @JsonProperty(required = true)
     private String email;
+    @JsonProperty(required = true)
     private String password;
+    @JsonProperty(required = false)
     private String avtUrl;
+    @JsonProperty(required = true)
     private String dob;
 
     public String getFullName() {

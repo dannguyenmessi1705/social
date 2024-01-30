@@ -9,6 +9,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,6 +36,14 @@ public class JwtUtils {
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secretKey));
         String accessToken = Jwts.builder().signWith(key).subject(data).issuedAt(now).expiration(exp).compact();
         return accessToken;
+    }
+
+    // Lấy token từ header
+    public String getTokenFromHeader(HttpServletRequest request){
+        String bearerToken = request.getHeader("Authorization"); // Lấy token từ header
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")){ // Kiểm tra bearerToken khác null và có bắt đầu bằng Bearer
+            return bearerToken.substring(7); // Trả về token
+        } else return null;
     }
 
     // Giải mã accessToken để lấy userId

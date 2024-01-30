@@ -1,14 +1,20 @@
 package com.didan.social.controller;
 
 import com.didan.social.dto.UserDTO;
+import com.didan.social.entity.Users;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.SignupRequest;
 import com.didan.social.service.impl.AuthServiceImpl;
+import com.didan.social.service.impl.FileUploadsServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,21 +24,24 @@ import java.util.Map;
 public class AuthController {
     private final AuthServiceImpl authService;
     private final JwtUtils jwtUtils;
+    private final FileUploadsServiceImpl fileUploadsService;
     @Autowired
-    public AuthController(AuthServiceImpl authService, JwtUtils jwtUtils){
+    public AuthController(AuthServiceImpl authService, JwtUtils jwtUtils, FileUploadsServiceImpl fileUploadsService){
         this.authService = authService;
         this.jwtUtils = jwtUtils;
+        this.fileUploadsService = fileUploadsService;
     }
+
     @PostMapping("/signin")
     public ResponseEntity<?> postLogin(@RequestParam String email, @RequestParam String password){
         ResponseData payload = new ResponseData();
         Map<String, String> response = new HashMap<>();
         try{
-            UserDTO user = authService.login(email, password);
+            Users user = authService.login(email, password);
             if (user != null) {
                 payload.setDescription("Login Successful");
                 response.put("userId", user.getUserId());
-                response.put("accessToken", jwtUtils.generateAccessToken(user.getEmail()));
+                response.put("accessToken", user.getAccessToken());
                 payload.setData(response);
             }
             return new ResponseEntity<>(payload, HttpStatus.OK);
@@ -44,16 +53,16 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> postSignup(@RequestBody SignupRequest signupRequest){
+    @PostMapping(value = "/signup", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> postSignup(@RequestPart SignupRequest signupRequest, @RequestPart MultipartFile avatar){
         ResponseData payload = new ResponseData();
         Map<String, String> response = new HashMap<>();
         try {
-            UserDTO user = authService.signup(signupRequest);
+            Users user = authService.signup(signupRequest, avatar);
             if (user != null){
                 payload.setDescription("SignUp Successful");
                 response.put("userId", user.getUserId());
-                response.put("accessToken", jwtUtils.generateAccessToken(user.getEmail()));
+                response.put("accessToken", user.getAccessToken());
                 payload.setData(response);
             }
             return new ResponseEntity<>(payload, HttpStatus.OK);
@@ -63,16 +72,6 @@ public class AuthController {
             payload.setSuccess(false);
             return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
-    }
-
-    @PostMapping("/verify")
-    public ResponseEntity<?> verifyToken(){
-        return new ResponseEntity<>("Success", HttpStatus.OK);
-    }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(){
-        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @PostMapping("/logout")
