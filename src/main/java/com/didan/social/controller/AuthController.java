@@ -53,12 +53,13 @@ public class AuthController {
         }
     }
 
-    @PostMapping(value = "/signup", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> postSignup(@RequestPart SignupRequest signupRequest, @RequestPart MultipartFile avatar){
+    // Dùng @ModelAtrribute để upload file + Json trên form-data
+    @PostMapping(value = "/signup", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> postSignup(@ModelAttribute SignupRequest signupRequest){
         ResponseData payload = new ResponseData();
         Map<String, String> response = new HashMap<>();
         try {
-            Users user = authService.signup(signupRequest, avatar);
+            Users user = authService.signup(signupRequest, signupRequest.getAvatar());
             if (user != null){
                 payload.setDescription("SignUp Successful");
                 response.put("userId", user.getUserId());

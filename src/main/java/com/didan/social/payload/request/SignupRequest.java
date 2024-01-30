@@ -12,10 +12,18 @@ public class SignupRequest {
     private String email;
     @JsonProperty(required = true)
     private String password;
-    @JsonProperty(required = false)
-    private String avtUrl;
     @JsonProperty(required = true)
     private String dob;
+    @JsonProperty(required = true)
+    private MultipartFile avatar;
+
+    public MultipartFile getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(MultipartFile avatar) {
+        this.avatar = avatar;
+    }
 
     public String getFullName() {
         return fullName;
@@ -39,14 +47,6 @@ public class SignupRequest {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getAvtUrl() {
-        return avtUrl;
-    }
-
-    public void setAvtUrl(String avtUrl) {
-        this.avtUrl = avtUrl;
     }
 
     public String getDob() {
