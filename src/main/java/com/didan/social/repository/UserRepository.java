@@ -14,4 +14,7 @@ public interface UserRepository extends JpaRepository<Users, String> {
 
     // Find By Token Reset Password
     Users findFirstByResetToken(String token);
+
+    // Find User By userid
+    Users findFirstByUserId(String userId);
 }

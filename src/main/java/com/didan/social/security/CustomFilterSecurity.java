@@ -42,7 +42,7 @@ public class CustomFilterSecurity {
         http.csrf(csrf -> csrf.disable()); // Tắt csrf
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Tắt Session
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/auth/**", "/images/**")
+                .requestMatchers("/auth/**", "/user/**", "/images/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
