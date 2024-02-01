@@ -6,11 +6,13 @@ import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.SignupRequest;
 import com.didan.social.service.impl.AuthServiceImpl;
 import com.didan.social.service.impl.FileUploadsServiceImpl;
+import com.didan.social.service.impl.MailServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +27,13 @@ public class AuthController {
     private final AuthServiceImpl authService;
     private final JwtUtils jwtUtils;
     private final FileUploadsServiceImpl fileUploadsService;
+    private final MailServiceImpl mailService;
     @Autowired
-    public AuthController(AuthServiceImpl authService, JwtUtils jwtUtils, FileUploadsServiceImpl fileUploadsService){
+    public AuthController(AuthServiceImpl authService, JwtUtils jwtUtils, FileUploadsServiceImpl fileUploadsService, MailServiceImpl mailService){
         this.authService = authService;
         this.jwtUtils = jwtUtils;
         this.fileUploadsService = fileUploadsService;
+        this.mailService = mailService;
     }
 
     @PostMapping("/signin")
@@ -47,7 +51,7 @@ public class AuthController {
             return new ResponseEntity<>(payload, HttpStatus.OK);
         } catch (Exception e){
             payload.setDescription(e.getMessage());
-            payload.setStatusCode(400);
+            payload.setStatusCode(500);
             payload.setSuccess(false);
             return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -69,7 +73,7 @@ public class AuthController {
             return new ResponseEntity<>(payload, HttpStatus.OK);
         } catch (Exception e){
             payload.setDescription(e.getMessage());
-            payload.setStatusCode(400);
+            payload.setStatusCode(500);
             payload.setSuccess(false);
             return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -84,19 +88,73 @@ public class AuthController {
             return new ResponseEntity<>(payload, HttpStatus.OK);
         }catch (Exception e){
             payload.setDescription(e.getMessage());
-            payload.setStatusCode(400);
+            payload.setStatusCode(500);
             payload.setSuccess(false);
             return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
 
     @PostMapping("/token-reset")
-    public ResponseEntity<?> getTokenReset(){
-        return new ResponseEntity<>("Success", HttpStatus.OK);
+    public ResponseEntity<?> getTokenReset(@RequestParam(value = "email") String email){
+        ResponseData payload = new ResponseData();
+        Map<String, String> data = new HashMap<>();
+        try {
+            String token = authService.requestForgot(email);
+            if(StringUtils.hasText(token)){
+                payload.setDescription("Email sent, please check inbox");
+                data.put("token", token);
+                payload.setData(data);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setStatusCode(500);
+            payload.setSuccess(false);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 
-    @PostMapping("/update-password")
-    public ResponseEntity<?> updatePassword(){
-        return new ResponseEntity<>("Success", HttpStatus.OK);
+    @GetMapping("/reset/{tokenReset}")
+    public ResponseEntity<?> getResetPage(@PathVariable String tokenReset){
+        ResponseData payload = new ResponseData();
+        Map<String, String> data = new HashMap<>();
+        try{
+            String token = authService.verifyToken(tokenReset);
+            if (StringUtils.hasText(token)) {
+                payload.setDescription("Token reset password verified");
+                data.put("token", token);
+                payload.setData(data);
+                return new ResponseEntity<>(payload, HttpStatus.OK);
+            } else {
+                payload.setDescription("Token reset invalid");
+                payload.setStatusCode(400);
+                return new ResponseEntity<>(payload, HttpStatus.OK);
+            }
+        }catch (Exception e){
+            payload.setStatusCode(500);
+            payload.setSuccess(false);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    @PatchMapping("/reset")
+    public ResponseEntity<?> updatePassword(@RequestParam String token, @RequestParam String newPassword){
+        ResponseData payload = new ResponseData();
+        try{
+            if(authService.updatePassword(token, newPassword)){
+                payload.setDescription("Reset password successful");
+                return new ResponseEntity<>(payload, HttpStatus.OK);
+            } else {
+                payload.setDescription("Reset password false");
+                payload.setStatusCode(422);
+                return new ResponseEntity<>(payload, HttpStatus.OK);
+            }
+        } catch (Exception e){
+            payload.setStatusCode(500);
+            payload.setSuccess(false);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 }

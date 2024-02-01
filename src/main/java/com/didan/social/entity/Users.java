@@ -34,7 +34,7 @@ public class Users {
     @Column(name = "reset_password_token", nullable = true, length = 255)
     private String resetToken;
 
-    @Column(name = "access_token", nullable = false, length = 255)
+    @Column(name = "access_token", nullable = true, length = 255)
     private String accessToken;
 
     @OneToMany(mappedBy = "users1", cascade = CascadeType.ALL)

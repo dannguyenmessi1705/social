@@ -17,4 +17,13 @@ public interface AuthServiceImpl {
 
     // Logout
     void logout() throws Exception;
+
+    // Request Forgot Password
+    String requestForgot(String email) throws Exception;
+
+    // Verify Token Reset Password
+    String verifyToken(String token) throws Exception;
+
+    // Update Password
+    boolean updatePassword(String token, String newPassword) throws Exception;
 }

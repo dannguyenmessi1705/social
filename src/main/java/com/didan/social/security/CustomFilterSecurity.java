@@ -52,7 +52,7 @@ public class CustomFilterSecurity {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
-                    String jsonMessage = "{\"statusCode\": 401\n\t\"success\": \"false\"\n\t\"description\": \"Unauthorized or invalid access token\"}";
+                    String jsonMessage = "{\n\t\"statusCode\": 404\n\t\"success\": \"false\"\n\t\"description\": \"UNAUTHORIZED OR THE ROUTE IS NOT FOUND\"\n}";
                     response.getWriter().write(jsonMessage);
                 })
         ); // Bắt lỗi nếu không authorized được thì trả về message
