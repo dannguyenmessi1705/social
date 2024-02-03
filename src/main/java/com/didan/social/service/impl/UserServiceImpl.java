@@ -9,4 +9,6 @@ public interface UserServiceImpl {
     List<UserDTO> getAllUser();
     // Lấy user từ id
     UserDTO getUserById(String userId);
+    //Tìm kiếm
+    List<UserDTO> searchUser(String searchName) throws Exception;
 }

@@ -1,36 +1,149 @@
 package com.didan.social.controller;
 
+import com.didan.social.dto.PostDTO;
+import com.didan.social.payload.ResponseData;
+import com.didan.social.payload.request.CreatePostRequest;
+import com.didan.social.service.PostService;
+import com.didan.social.service.impl.PostServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/post")
 public class PostController {
+    private final PostServiceImpl postService;
+    @Autowired
+    public PostController(PostServiceImpl postService){
+        this.postService = postService;
+    }
     // Get Post
     @GetMapping("/get")
     public ResponseEntity<?> getPosts(){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        ResponseData payload = new ResponseData();
+        try {
+            List<PostDTO> postDTOs = postService.getAllPosts();
+            if (postDTOs.size() <= 0){
+                payload.setDescription("No posts in here");
+            } else {
+                payload.setDescription("Load all posts successful");
+                payload.setData(postDTOs);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
     // Create one Post
-    @PostMapping("/new")
-    public ResponseEntity<?> createPost(){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    @PostMapping(value = "/new", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> createPost(@ModelAttribute CreatePostRequest createPostRequest){
+        ResponseData payload = new ResponseData();
+        Map<String, String> data = new HashMap<>();
+        try {
+            String postId = postService.createPost(createPostRequest);
+            if (StringUtils.hasText(postId)){
+                payload.setDescription("Create post successful");
+                data.put("postId: ", postId);
+                payload.setData(data);
+            } else {
+                payload.setDescription("Create post failed");
+                payload.setStatusCode(422);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
     // Get Detail One Post
     @GetMapping("/{post_id}")
-    public ResponseEntity<?> getPostById(@PathVariable("post_id") String post_id) {
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    public ResponseEntity<?> getPostById(@PathVariable("post_id") String postId) {
+        ResponseData payload = new ResponseData();
+        try {
+            PostDTO postDTO = postService.getPostById(postId);
+            if (postDTO == null){
+                payload.setDescription("No post in here");
+            } else {
+                payload.setDescription("Load post successful");
+                payload.setData(postDTO);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
+
+    // Search Post
+    @GetMapping("/search")
+    public ResponseEntity<?> searchPostById(@RequestParam(name = "name") String name) {
+        ResponseData payload = new ResponseData();
+        try {
+            List<PostDTO> postDTOs = postService.getPostByTitle(name);
+            if (postDTOs.size() <= 0){
+                payload.setDescription("No post in here");
+            } else {
+                payload.setDescription("Load post successful");
+                payload.setData(postDTOs);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
     // React Post
     @PostMapping("/{post_id}")
-    public ResponseEntity<?> reactPost(@PathVariable("post_id") String post_id) {
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    public ResponseEntity<?> reactPost(@PathVariable("post_id") String postId) {
+        ResponseData payload = new ResponseData();
+        try {
+            if (postService.likePost(postId)){
+                payload.setDescription("Like post successful");
+            } else {
+                payload.setDescription("No post in here");
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
     // Delete React Post
     @DeleteMapping("{post_id}")
-    public ResponseEntity<?> delReactPost(@PathVariable("post_id") String post_id){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    public ResponseEntity<?> delReactPost(@PathVariable("post_id") String postId){
+        ResponseData payload = new ResponseData();
+        try {
+            if (postService.unlikePost(postId)){
+                payload.setDescription("Unlike post successful");
+            } else {
+                payload.setDescription("No post in here");
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
     // Update Post
     @PutMapping("/update/{post_id}")

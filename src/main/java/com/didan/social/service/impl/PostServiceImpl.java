@@ -1,0 +1,32 @@
+package com.didan.social.service.impl;
+
+import com.didan.social.dto.PostDTO;
+import com.didan.social.payload.request.CreatePostRequest;
+
+import java.util.List;
+
+public interface PostServiceImpl {
+    // Tạo 1 bài viết
+    String createPost(CreatePostRequest createPostRequest) throws Exception;
+
+    // Lấy tất cả các bài viết
+    List<PostDTO> getAllPosts() throws Exception;
+
+    // Lấy bài viết theo id
+    PostDTO getPostById(String postId) throws Exception;
+
+    // Tìm kiếm bài viết theo đề tài
+    List<PostDTO> getPostByTitle(String searchName) throws Exception;
+
+    // Like bài viết
+    boolean likePost(String postId) throws Exception;
+
+    // Unlike bài viết
+    boolean unlikePost(String postId) throws Exception;
+
+    // Cập nhật bài viết
+    PostDTO updatePost(String postId) throws Exception;
+
+    // Xóa bài viết
+    boolean deletePost(String postId) throws Exception;
+}

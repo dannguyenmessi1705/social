@@ -72,14 +72,14 @@ public class AuthService implements AuthServiceImpl {
         else throw new Exception("Email and Password does not match");
     }
     @Override
-    public Users signup(SignupRequest signupRequest, MultipartFile avatar) throws Exception{
+    public Users signup(SignupRequest signupRequest) throws Exception{
         Users user = userRepository.findFirstByEmail(signupRequest.getEmail());
         if(user != null) throw new Exception("Email is existed");
         if(signupRequest.getPassword().length() < 5) throw new Exception("The minimum password should be 5");
         else{
             UUID id = UUID.randomUUID();
             Users userSave = new Users();
-            String fileName = fileUploadsService.storeFile(avatar, "avatar", id.toString());
+            String fileName = fileUploadsService.storeFile(signupRequest.getAvatar(), "avatar", id.toString());
             userSave.setAvtUrl("avatar/"+fileName);
             userSave.setUserId(id.toString());
             userSave.setEmail(signupRequest.getEmail());
@@ -114,8 +114,17 @@ public class AuthService implements AuthServiceImpl {
     public String requestForgot(String email) throws Exception{
         Users user = userRepository.findFirstByEmail(email);
         if(user == null) throw new Exception("Email is not existed");
-        UUID token = UUID.randomUUID();
-        user.setResetToken(token.toString());
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder sb = new StringBuilder(6);
+        Random random = new Random();
+
+        for (int i = 0; i < 6; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            char randomChar = characters.charAt(randomIndex);
+            sb.append(randomChar);
+        }
+        String token = sb.toString();
+        user.setResetToken(token);
 
         // Thiết lập hạn token
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
@@ -126,12 +135,9 @@ public class AuthService implements AuthServiceImpl {
         userRepository.save(user);
 
         // send email
-        String protocol = request.getScheme();
-        String host = request.getHeader("host");
-        String http = protocol + "://" + host;
-        String html = "<h1>You requested reset passsword. Now click this <a href=" + "\"" + http +"/auth/reset/" + token.toString() + "\">link</a> to reset password";
+        String html = "<h1>You requested reset passsword. The OTP is <b>" + token + "</b>";
         mailService.sendTextEmail(email, "RESET PASSWORD", html);
-        return token.toString();
+        return token;
     }
 
     // Verify Token Reset

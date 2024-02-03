@@ -14,6 +14,9 @@ public class Posts {
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
+    @Column(name = "post_img", nullable = true, length = 255)
+    private String postImg;
+
     @Column(name = "body", nullable = false)
     private String body;
 
@@ -32,9 +35,10 @@ public class Posts {
 
     public Posts() {}
 
-    public Posts(String postId, String title, String body, Date postedAt, Set<UserPosts> userPosts, Set<PostLikes> postLikes, Set<UserComment> userComments) {
+    public Posts(String postId, String title, String postImg, String body, Date postedAt, Set<UserPosts> userPosts, Set<PostLikes> postLikes, Set<UserComment> userComments) {
         this.postId = postId;
         this.title = title;
+        this.postImg = postImg;
         this.body = body;
         this.postedAt = postedAt;
         this.userPosts = userPosts;
@@ -56,6 +60,14 @@ public class Posts {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getPostImg() {
+        return postImg;
+    }
+
+    public void setPostImg(String postImg) {
+        this.postImg = postImg;
     }
 
     public String getBody() {

@@ -63,7 +63,7 @@ public class AuthController {
         ResponseData payload = new ResponseData();
         Map<String, String> response = new HashMap<>();
         try {
-            Users user = authService.signup(signupRequest, signupRequest.getAvatar());
+            Users user = authService.signup(signupRequest);
             if (user != null){
                 payload.setDescription("SignUp Successful");
                 response.put("userId", user.getUserId());
@@ -107,30 +107,6 @@ public class AuthController {
             }
             return new ResponseEntity<>(payload, HttpStatus.OK);
         } catch (Exception e){
-            payload.setStatusCode(500);
-            payload.setSuccess(false);
-            payload.setDescription(e.getMessage());
-            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
-        }
-    }
-
-    @GetMapping("/reset/{tokenReset}")
-    public ResponseEntity<?> getResetPage(@PathVariable String tokenReset){
-        ResponseData payload = new ResponseData();
-        Map<String, String> data = new HashMap<>();
-        try{
-            String token = authService.verifyToken(tokenReset);
-            if (StringUtils.hasText(token)) {
-                payload.setDescription("Token reset password verified");
-                data.put("token", token);
-                payload.setData(data);
-                return new ResponseEntity<>(payload, HttpStatus.OK);
-            } else {
-                payload.setDescription("Token reset invalid");
-                payload.setStatusCode(400);
-                return new ResponseEntity<>(payload, HttpStatus.OK);
-            }
-        }catch (Exception e){
             payload.setStatusCode(500);
             payload.setSuccess(false);
             payload.setDescription(e.getMessage());

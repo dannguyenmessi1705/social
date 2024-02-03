@@ -20,4 +20,5 @@ public class FollowerId implements Serializable {
         this.followerId = followerId;
         this.followedId = followedId;
     }
+
 }

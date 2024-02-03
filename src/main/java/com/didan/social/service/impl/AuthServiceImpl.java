@@ -13,7 +13,7 @@ public interface AuthServiceImpl {
     Users login(String email, String password) throws Exception;
 
     // Signup
-    Users signup(SignupRequest signupRequest, MultipartFile avatar) throws Exception;
+    Users signup(SignupRequest signupRequest) throws Exception;
 
     // Logout
     void logout() throws Exception;
