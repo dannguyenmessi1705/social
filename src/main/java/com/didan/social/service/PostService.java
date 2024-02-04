@@ -7,6 +7,7 @@ import com.didan.social.dto.UserPostDTO;
 import com.didan.social.entity.*;
 import com.didan.social.entity.keys.UserPostId;
 import com.didan.social.payload.request.CreatePostRequest;
+import com.didan.social.payload.request.EditPostRequest;
 import com.didan.social.repository.*;
 import com.didan.social.service.impl.PostServiceImpl;
 import com.didan.social.utils.JwtUtils;
@@ -72,7 +73,7 @@ public class PostService implements PostServiceImpl {
         UUID postId = UUID.randomUUID();
         post.setPostId(postId.toString());
         post.setTitle(createPostRequest.getTitle());
-        if (createPostRequest.getPostImg() != null){
+        if (!createPostRequest.getPostImg().isEmpty()){
             String fileName = fileUploadsService.storeFile(createPostRequest.getPostImg(), "post", postId.toString());
             post.setPostImg("post/"+fileName);
         }
@@ -244,12 +245,73 @@ public class PostService implements PostServiceImpl {
     }
 
     @Override
-    public PostDTO updatePost(String postId) throws Exception {
-        return null;
+    public PostDTO updatePost(String postId, EditPostRequest editPostRequest) throws Exception {
+        String accessToken = jwtUtils.getTokenFromHeader(request);
+        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
+        if (email == null) throw new Exception("Have some errors");
+        Users user = userRepository.findFirstByEmail(email);
+        if (user == null) throw new Exception("User is not found");
+        UserPosts userPost = userPostRepository.findFirstByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
+        if (userPost == null) throw new Exception("The user hasn't this post or not authorized to edit this post");
+        Posts post = userPost.getPosts();
+        if (StringUtils.hasText(editPostRequest.getTitle())){
+            post.setTitle(editPostRequest.getTitle());
+        }
+        if (StringUtils.hasText(editPostRequest.getBody())){
+            post.setBody(editPostRequest.getBody());
+        }
+        if (!editPostRequest.getPostImg().isEmpty()){
+            String fileName = fileUploadsService.storeFile(editPostRequest.getPostImg(), "post", postId.toString());
+            post.setPostImg("post/"+fileName);
+        }
+        PostDTO postDTO = new PostDTO();
+        postDTO.setUserPosts(new UserPostDTO(user.getUserId(), post.getPostId()));
+        postDTO.setTitle(post.getTitle());
+        postDTO.setPostImg(post.getPostImg());
+        postDTO.setBody(post.getBody());
+        postDTO.setPostedAt(post.getPostedAt());
+        List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
+        List<PostLikeDTO> postLikeDTOs = new ArrayList<>();
+        for (PostLikes postLike : postLikes){
+            PostLikeDTO postLikeDTO = new PostLikeDTO();
+            postLikeDTO.setUserId(postLike.getUsers().getUserId());
+            postLikeDTOs.add(postLikeDTO);
+        }
+        postDTO.setPostLikes(postLikeDTOs);
+        postDTO.setLikesQuantity(postLikes.size());
+        List<UserComment> userComments = userCommentRepository.findByPosts_PostId(post.getPostId());
+        postDTO.setCommentsQuantity(userComments.size());
+        List<UserCommentDTO> userCommentDTOs = new ArrayList<>();
+        for (UserComment userComment : userComments){
+            UserCommentDTO userCommentDTO = new UserCommentDTO();
+            userCommentDTO.setUserId(userComment.getUsers().getUserId());
+            userCommentDTO.setCommentId(userComment.getComments().getCommentId());
+            userCommentDTOs.add(userCommentDTO);
+        }
+        postDTO.setUserComment(userCommentDTOs);
+        postRepository.save(post);
+        return postDTO;
     }
 
     @Override
     public boolean deletePost(String postId) throws Exception {
-        return false;
+        try{
+            String accessToken = jwtUtils.getTokenFromHeader(request);
+            if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+            String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
+            if (email == null) throw new Exception("Have some errors");
+            Users user = userRepository.findFirstByEmail(email);
+            if (user == null) throw new Exception("User is not found");
+            Posts post = postRepository.findFirstByPostId(postId);
+            if(post == null) throw new Exception("There isnt post to delete");
+            UserPosts userPosts = userPostRepository.findFirstByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
+            if (userPosts == null) throw new Exception("The user hasn't this post or not authorized to edit this post");
+            userPostRepository.delete(userPosts);
+            postRepository.delete(post);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
     }
 }

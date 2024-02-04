@@ -3,6 +3,7 @@ package com.didan.social.controller;
 import com.didan.social.dto.PostDTO;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.CreatePostRequest;
+import com.didan.social.payload.request.EditPostRequest;
 import com.didan.social.service.PostService;
 import com.didan.social.service.impl.PostServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,13 +147,42 @@ public class PostController {
         }
     }
     // Update Post
-    @PutMapping("/update/{post_id}")
-    public ResponseEntity<?> updatePost(@PathVariable("post_id") String post_id){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    @PatchMapping(value = "/update/{post_id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> updatePost(@PathVariable("post_id") String postId, @ModelAttribute EditPostRequest editPostRequest){
+        ResponseData payload = new ResponseData();
+        try {
+            PostDTO postDTO = postService.updatePost(postId, editPostRequest);
+            if (postDTO != null){
+                payload.setDescription("Update post successful");
+                payload.setData(postDTO);
+            } else {
+                payload.setDescription("Update post failed");
+                payload.setStatusCode(422);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
     // Delete Post
     @DeleteMapping("/delete/{post_id}")
-    public ResponseEntity<?> deletePost(@PathVariable("post_id") String post_id){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    public ResponseEntity<?> deletePost(@PathVariable("post_id") String postId){
+        ResponseData payload = new ResponseData();
+        try {
+            if (postService.deletePost(postId)){
+                payload.setDescription("Delete post successful");
+            } else {
+                payload.setDescription("No post in here");
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 }

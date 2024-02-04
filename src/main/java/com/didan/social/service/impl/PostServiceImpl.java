@@ -2,6 +2,7 @@ package com.didan.social.service.impl;
 
 import com.didan.social.dto.PostDTO;
 import com.didan.social.payload.request.CreatePostRequest;
+import com.didan.social.payload.request.EditPostRequest;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface PostServiceImpl {
     boolean unlikePost(String postId) throws Exception;
 
     // Cập nhật bài viết
-    PostDTO updatePost(String postId) throws Exception;
+    PostDTO updatePost(String postId, EditPostRequest editPostRequest) throws Exception;
 
     // Xóa bài viết
     boolean deletePost(String postId) throws Exception;
