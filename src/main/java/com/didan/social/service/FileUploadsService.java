@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -92,6 +93,25 @@ public class FileUploadsService implements FileUploadsServiceImpl {
             return fileName;
         }catch (Exception e){
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!", e); // Nếu không lưu được file thì sẽ báo lỗi
+        }
+    }
+
+    @Override
+    public boolean deleteFile(String fileName) throws Exception {
+        String[] pathFile = fileName.split("/");
+        init(pathFile[0]);
+        Path filePath1 = rootPath1.resolve(pathFile[1]);
+        Path filePath2 = rootPath2.resolve(pathFile[1]);
+        try{
+            if(Files.exists(filePath1)) {
+                Files.delete(filePath1);
+            }
+            if(Files.exists(filePath2)) {
+                Files.delete(filePath2);
+            }
+            return true;
+        }catch (Exception e){
+            throw new RuntimeException("Could not delete file " + fileName + ". Please try again!", e); // Nếu không lưu được file thì sẽ báo lỗi
         }
     }
 }

@@ -7,4 +7,5 @@ public interface FileUploadsServiceImpl {
     boolean isSupportedExtension(String extension);
     boolean isSupportedContentType(String contentType);
     String storeFile(MultipartFile file, String typeFile, String id) throws Exception;
+    boolean deleteFile(String fileName) throws Exception;
 }

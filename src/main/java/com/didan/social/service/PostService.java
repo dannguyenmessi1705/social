@@ -73,7 +73,7 @@ public class PostService implements PostServiceImpl {
         UUID postId = UUID.randomUUID();
         post.setPostId(postId.toString());
         post.setTitle(createPostRequest.getTitle());
-        if (!createPostRequest.getPostImg().isEmpty()){
+        if (createPostRequest.getPostImg() != null && !createPostRequest.getPostImg().isEmpty()){
             String fileName = fileUploadsService.storeFile(createPostRequest.getPostImg(), "post", postId.toString());
             post.setPostImg("post/"+fileName);
         }
@@ -261,7 +261,7 @@ public class PostService implements PostServiceImpl {
         if (StringUtils.hasText(editPostRequest.getBody())){
             post.setBody(editPostRequest.getBody());
         }
-        if (!editPostRequest.getPostImg().isEmpty()){
+        if (editPostRequest.getPostImg()!= null && !editPostRequest.getPostImg().isEmpty()){
             String fileName = fileUploadsService.storeFile(editPostRequest.getPostImg(), "post", postId.toString());
             post.setPostImg("post/"+fileName);
         }
@@ -309,9 +309,12 @@ public class PostService implements PostServiceImpl {
             if (userPosts == null) throw new Exception("The user hasn't this post or not authorized to edit this post");
             userPostRepository.delete(userPosts);
             postRepository.delete(post);
+            if(StringUtils.hasText(post.getPostImg())){
+                fileUploadsService.deleteFile(post.getPostImg());
+            }
             return true;
         } catch (Exception e){
-            return false;
+            throw new Exception(e.getMessage());
         }
     }
 }

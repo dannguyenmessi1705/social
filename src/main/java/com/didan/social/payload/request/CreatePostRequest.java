@@ -9,7 +9,7 @@ public class CreatePostRequest {
     @JsonProperty(required = true)
     private String title;
     @JsonProperty(required = false)
-    private MultipartFile postImg;
+    private MultipartFile postImg = null;
     @JsonProperty(required = true)
     private String body;
 

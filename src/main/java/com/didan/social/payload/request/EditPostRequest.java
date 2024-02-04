@@ -7,7 +7,7 @@ public class EditPostRequest {
     @JsonProperty(required = false)
     private String title;
     @JsonProperty(required = false)
-    private MultipartFile postImg;
+    private MultipartFile postImg = null;
     @JsonProperty(required = false)
     private String body;
 
