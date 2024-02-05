@@ -35,8 +35,8 @@ public class UserService implements UserServiceImpl {
             userDTO.setEmail(user.getEmail());
             userDTO.setAvtUrl(user.getAvtUrl());
             userDTO.setDob(user.getDob());
-            userDTO.setFollowers(user.getFollowers().size());
-            userDTO.setFolloweds(user.getFolloweds().size());
+            userDTO.setFollowers(user.getFolloweds().size());
+            userDTO.setFollowings(user.getFollowers().size());
             userDTO.setPosts(user.getUserPosts().size());
             for (UserPosts userPosts : user.getUserPosts()){
                 postId.add(userPosts.getUserPostId().getPostId());
@@ -45,7 +45,7 @@ public class UserService implements UserServiceImpl {
             userDTO.setParticipantGroups(user.getParticipants().size());
             userDTOS.add(userDTO);
         }
-        Collections.sort(userDTOS, Comparator.comparingInt(UserDTO::getFolloweds).reversed());
+        Collections.sort(userDTOS, Comparator.comparingInt(UserDTO::getFollowers).reversed());
         return userDTOS;
     }
 
@@ -61,8 +61,8 @@ public class UserService implements UserServiceImpl {
             userDTO.setEmail(user.getEmail());
             userDTO.setAvtUrl(user.getAvtUrl());
             userDTO.setDob(user.getDob());
-            userDTO.setFollowers(user.getFollowers().size());
-            userDTO.setFolloweds(user.getFolloweds().size());
+            userDTO.setFollowers(user.getFolloweds().size());
+            userDTO.setFollowings(user.getFollowers().size());
             userDTO.setPosts(user.getUserPosts().size());
             for (UserPosts userPosts : user.getUserPosts()){
                 postId.add(userPosts.getUserPostId().getPostId());
@@ -88,8 +88,8 @@ public class UserService implements UserServiceImpl {
             userDTO.setEmail(user.getEmail());
             userDTO.setAvtUrl(user.getAvtUrl());
             userDTO.setDob(user.getDob());
-            userDTO.setFollowers(user.getFollowers().size());
-            userDTO.setFolloweds(user.getFolloweds().size());
+            userDTO.setFollowers(user.getFolloweds().size());
+            userDTO.setFollowings(user.getFollowers().size());
             userDTO.setPosts(user.getUserPosts().size());
             for (UserPosts userPosts : user.getUserPosts()){
                 postId.add(userPosts.getUserPostId().getPostId());
@@ -98,7 +98,7 @@ public class UserService implements UserServiceImpl {
             userDTO.setParticipantGroups(user.getParticipants().size());
             userDTOS.add(userDTO);
         }
-        Collections.sort(userDTOS, Comparator.comparingInt(UserDTO::getFolloweds).reversed());
+        Collections.sort(userDTOS, Comparator.comparingInt(UserDTO::getFollowers).reversed());
         return userDTOS;
     }
 }

@@ -11,7 +11,7 @@ public class UserDTO {
     private String avtUrl;
     private Date dob;
     private int followers;
-    private int followeds;
+    private int followings;
     private int posts;
     private List<String> postId;
     private int participantGroups;
@@ -19,14 +19,14 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(String userId, String fullName, String email, String avtUrl, Date dob, int followers, int followeds, int posts, List<String> postId, int participantGroups) {
+    public UserDTO(String userId, String fullName, String email, String avtUrl, Date dob, int followers, int followings, int posts, List<String> postId, int participantGroups) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.avtUrl = avtUrl;
         this.dob = dob;
         this.followers = followers;
-        this.followeds = followeds;
+        this.followings = followings;
         this.posts = posts;
         this.postId = postId;
         this.participantGroups = participantGroups;
@@ -80,12 +80,12 @@ public class UserDTO {
         this.followers = followers;
     }
 
-    public int getFolloweds() {
-        return followeds;
+    public int getFollowings() {
+        return followings;
     }
 
-    public void setFolloweds(int followeds) {
-        this.followeds = followeds;
+    public void setFollowings(int followings) {
+        this.followings = followings;
     }
 
     public int getPosts() {

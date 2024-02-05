@@ -107,6 +107,7 @@ public class PostService implements PostServiceImpl {
             postDTO.setBody(post.getBody());
             postDTO.setPostedAt(post.getPostedAt());
             List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
+            // == Set<PostLikes> postLikes = post.getPostLike()
             List<PostLikeDTO> postLikeDTOs = new ArrayList<>();
             for (PostLikes postLike : postLikes){
                 PostLikeDTO postLikeDTO = new PostLikeDTO();
