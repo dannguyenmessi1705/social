@@ -16,7 +16,7 @@ public class PostLikeId implements Serializable {
     public PostLikeId() {
     }
 
-    public PostLikeId(String postId, String commentId, String userId) {
+    public PostLikeId(String postId, String userId) {
         this.postId = postId;
         this.userId = userId;
     }

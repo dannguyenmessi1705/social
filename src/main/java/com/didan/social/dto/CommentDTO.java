@@ -1,42 +1,33 @@
-package com.didan.social.entity;
+package com.didan.social.dto;
 
+import com.didan.social.entity.CommentLikes;
+import com.didan.social.entity.UserComment;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
-@Entity(name = "comments")
-public class Comments {
-    @Id
-    @Column(name = "comment_id")
+public class CommentDTO {
+    private String userComments;
     private String commentId;
-
-    @Column(name = "content", nullable = false)
     private String content;
-
-    @Column(name = "comment_img", nullable = true)
     private String commentImg;
-
-    @Column(name = "comment_at", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private Date commentAt;
+    private int commentLikes;
+    private List<String> userLikes;
 
-    @OneToMany(mappedBy = "comments", cascade = CascadeType.ALL)
-    private Set<UserComment> userComments;
+    public CommentDTO() {
+    }
 
-    @OneToMany(mappedBy = "comments", cascade = CascadeType.ALL)
-    private Set<CommentLikes> commentLikes;
-
-
-    public Comments() {}
-
-    public Comments(String commentId, String content, String commentImg, Date commentAt, Set<UserComment> userComments, Set<CommentLikes> commentLikes) {
+    public CommentDTO(String commentId, String content, String commentImg, Date commentAt, String userComments, int commentLikes, List<String> userLikes) {
         this.commentId = commentId;
         this.content = content;
         this.commentImg = commentImg;
         this.commentAt = commentAt;
         this.userComments = userComments;
         this.commentLikes = commentLikes;
+        this.userLikes = userLikes;
     }
 
     public String getCommentId() {
@@ -71,19 +62,27 @@ public class Comments {
         this.commentAt = commentAt;
     }
 
-    public Set<UserComment> getUserComments() {
+    public String getUserComments() {
         return userComments;
     }
 
-    public void setUserComments(Set<UserComment> userComments) {
+    public void setUserComments(String userComments) {
         this.userComments = userComments;
     }
 
-    public Set<CommentLikes> getCommentLikes() {
+    public int getCommentLikes() {
         return commentLikes;
     }
 
-    public void setCommentLikes(Set<CommentLikes> commentLikes) {
+    public void setCommentLikes(int commentLikes) {
         this.commentLikes = commentLikes;
+    }
+
+    public List<String> getUserLikes() {
+        return userLikes;
+    }
+
+    public void setUserLikes(List<String> userLikes) {
+        this.userLikes = userLikes;
     }
 }

@@ -10,4 +10,6 @@ import java.util.List;
 public interface UserCommentRepository extends JpaRepository<UserComment, String> {
     // Tìm theo postId
     List<UserComment> findByPosts_PostId(String postId);
+    UserComment findFirstByComments_CommentId(String commentId);
+    UserComment findFirstByUsers_UserIdAndComments_CommentId(String userId, String commentId);
 }

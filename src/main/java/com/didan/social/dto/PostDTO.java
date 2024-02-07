@@ -8,37 +8,47 @@ import java.util.Date;
 import java.util.List;
 
 public class PostDTO {
-    private UserPostDTO userPosts;
+    private String postId;
+    private String userCreatedPost;
     private String title;
     private String postImg;
     private String body;
     private Date postedAt;
     private int likesQuantity;
-    private List<PostLikeDTO> postLikes;
+    private List<String> userLikedPost;
     private int commentsQuantity;
-    private List<UserCommentDTO> userComments;
+    private List<CommentDTO> comments;
 
     public PostDTO() {
     }
 
-    public PostDTO(UserPostDTO userPosts, String title, String postImg, String body, Date postedAt, int likesQuantity, List<PostLikeDTO> postLikes, int commentsQuantity, List<UserCommentDTO> userComments) {
-        this.userPosts = userPosts;
+    public PostDTO(String postId, String userCreatedPost, String title, String postImg, String body, Date postedAt, int likesQuantity, List<String> userLikedPost, int commentsQuantity, List<CommentDTO> comments) {
+        this.postId = postId;
+        this.userCreatedPost = userCreatedPost;
         this.title = title;
         this.postImg = postImg;
         this.body = body;
         this.postedAt = postedAt;
         this.likesQuantity = likesQuantity;
-        this.postLikes = postLikes;
+        this.userLikedPost = userLikedPost;
         this.commentsQuantity = commentsQuantity;
-        this.userComments = userComments;
+        this.comments = comments;
     }
 
-    public UserPostDTO getUserPosts() {
-        return userPosts;
+    public String getPostId() {
+        return postId;
     }
 
-    public void setUserPosts(UserPostDTO userPosts) {
-        this.userPosts = userPosts;
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    public String getUserCreatedPost() {
+        return userCreatedPost;
+    }
+
+    public void setUserCreatedPost(String userCreatedPost) {
+        this.userCreatedPost = userCreatedPost;
     }
 
     public String getTitle() {
@@ -81,12 +91,12 @@ public class PostDTO {
         this.likesQuantity = likesQuantity;
     }
 
-    public List<PostLikeDTO> getPostLikes() {
-        return postLikes;
+    public List<String> getUserLikedPost() {
+        return userLikedPost;
     }
 
-    public void setPostLikes(List<PostLikeDTO> postLikes) {
-        this.postLikes = postLikes;
+    public void setUserLikedPost(List<String> userLikedPost) {
+        this.userLikedPost = userLikedPost;
     }
 
     public int getCommentsQuantity() {
@@ -97,11 +107,11 @@ public class PostDTO {
         this.commentsQuantity = commentsQuantity;
     }
 
-    public List<UserCommentDTO> getUserComment() {
-        return userComments;
+    public List<CommentDTO> getComments() {
+        return comments;
     }
 
-    public void setUserComment(List<UserCommentDTO> userComment) {
-        this.userComments = userComment;
+    public void setComments(List<CommentDTO> comments) {
+        this.comments = comments;
     }
 }

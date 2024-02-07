@@ -1,37 +1,37 @@
 package com.didan.social.entity;
 
+import com.didan.social.entity.keys.CommentLikeId;
 import jakarta.persistence.*;
 
 @Entity(name = "comment_likes")
 public class CommentLikes {
-    @Id
-    @Column(name = "like_id", nullable = false)
-    private String likeId;
+    @EmbeddedId
+    private CommentLikeId commentLikeId;
 
     // Khoa ngoai comment_id, user_id
     @ManyToOne
-    @JoinColumn(name = "comment_id")
+    @JoinColumn(name = "comment_id", updatable = false, insertable = false)
     private Comments comments;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", updatable = false, insertable = false)
     private Users users;
 
     public CommentLikes() {
     }
 
-    public CommentLikes(String likeId, Comments comments, Users users) {
-        this.likeId = likeId;
+    public CommentLikes(CommentLikeId commentLikeId, Comments comments, Users users) {
+        this.commentLikeId = commentLikeId;
         this.comments = comments;
         this.users = users;
     }
 
-    public String getLikeId() {
-        return likeId;
+    public CommentLikeId getCommentLikeId() {
+        return commentLikeId;
     }
 
-    public void setLikeId(String likeId) {
-        this.likeId = likeId;
+    public void setCommentLikeId(CommentLikeId commentLikeId) {
+        this.commentLikeId = commentLikeId;
     }
 
     public Comments getComments() {
