@@ -13,6 +13,9 @@ public class Messages {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "messageImg", nullable = true)
+    private String messageImg;
+
     @Column(name = "sent_at", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date sentAt;
@@ -27,9 +30,10 @@ public class Messages {
 
     public Messages() {}
 
-    public Messages(String messageId, String content, Date sentAt, Conversations conversations, Users users) {
+    public Messages(String messageId, String content, String messageImg, Date sentAt, Conversations conversations, Users users) {
         this.messageId = messageId;
         this.content = content;
+        this.messageImg = messageImg;
         this.sentAt = sentAt;
         this.conversations = conversations;
         this.users = users;
@@ -49,6 +53,14 @@ public class Messages {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getMessageImg() {
+        return messageImg;
+    }
+
+    public void setMessageImg(String messageImg) {
+        this.messageImg = messageImg;
     }
 
     public Date getSentAt() {

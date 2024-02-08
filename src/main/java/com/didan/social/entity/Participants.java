@@ -1,34 +1,34 @@
 package com.didan.social.entity;
 
+import com.didan.social.entity.keys.ParticipantId;
 import jakarta.persistence.*;
 
 @Entity(name = "participants")
 public class Participants {
-    @Id
-    @Column(name = "participant_id")
-    private String participantId;
+    @EmbeddedId
+    private ParticipantId participantId;
 
     @ManyToOne
-    @JoinColumn(name = "conversation_id")
+    @JoinColumn(name = "conversation_id", insertable = false, updatable = false)
     private Conversations conversations;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private Users users;
 
     public Participants() {}
 
-    public Participants(String participantId, Conversations conversations, Users users) {
+    public Participants(ParticipantId participantId, Conversations conversations, Users users) {
         this.participantId = participantId;
         this.conversations = conversations;
         this.users = users;
     }
 
-    public String getParticipantId() {
+    public ParticipantId getParticipantId() {
         return participantId;
     }
 
-    public void setParticipantId(String participantId) {
+    public void setParticipantId(ParticipantId participantId) {
         this.participantId = participantId;
     }
 

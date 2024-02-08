@@ -1,40 +1,175 @@
 package com.didan.social.controller;
 
+import com.didan.social.dto.CommentDTO;
+import com.didan.social.dto.ConversationDTO;
+import com.didan.social.dto.MessageDTO;
+import com.didan.social.payload.ResponseData;
+import com.didan.social.payload.request.SendMessageRequest;
+import com.didan.social.service.impl.ChatServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/chat")
 public class ChatController {
+    private final ChatServiceImpl chatService;
+    @Autowired
+    public ChatController(ChatServiceImpl chatService){
+        this.chatService = chatService;
+    }
     // Create Conversation
     @PostMapping("/create")
-    public ResponseEntity<?> createConversation(){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    public ResponseEntity<?> createConversation(@RequestParam String conversationName){
+        ResponseData payload = new ResponseData();
+        Map<String, String> data = new HashMap<>();
+        try {
+            String conversationId = chatService.createConversation(conversationName);
+            if (StringUtils.hasText(conversationId)){
+                payload.setDescription("Create a conversation successful");
+                data.put("conversationId: ", conversationId);
+                data.put("conversationName:", conversationName);
+                payload.setData(data);
+            } else {
+                payload.setDescription("Failed to create a conversation");
+                payload.setStatusCode(422);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
     // Join Conversation
-    @PostMapping("/join")
-    public ResponseEntity<?> joinConversation(){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    @PostMapping("/join/{conversation_id}")
+    public ResponseEntity<?> joinConversation(@PathVariable(name = "conversation_id") String conversationId){
+        ResponseData payload = new ResponseData();
+        try {
+            ConversationDTO data = chatService.joinConversation(conversationId);
+            if (data != null){
+                payload.setDescription(String.format("Join conversation %s successful", conversationId));
+                payload.setData(data);
+            } else {
+                payload.setDescription("Cannot join this conversation");
+                payload.setStatusCode(422);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
     // Leave Conversation
-    @PostMapping("/leave")
-    public ResponseEntity<?> leaveConversation(){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    @DeleteMapping("/leave/{conversation_id}")
+    public ResponseEntity<?> leaveConversation(@PathVariable(name = "conversation_id") String conversationId){
+        ResponseData payload = new ResponseData();
+        try {
+            boolean data = chatService.leaveConversation(conversationId);
+            if (data){
+                payload.setDescription(String.format("Leave conversation %s successful", conversationId));
+            } else {
+                payload.setDescription("Cannot leave this conversation");
+                payload.setStatusCode(422);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
     // Send Message
-    @PostMapping("/send")
-    public ResponseEntity<?> sendMessage(){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    @PostMapping("/send/{conversation_id}")
+    public ResponseEntity<?> sendMessage(@PathVariable("conversation_id") String conversationId, @ModelAttribute SendMessageRequest sendMessageRequest){
+        ResponseData payload = new ResponseData();
+        try {
+            MessageDTO data = chatService.sendMessage(conversationId, sendMessageRequest);
+            if (data != null){
+                payload.setDescription(String.format("Send message in conversation %s successful", conversationId));
+                payload.setData(data);
+            } else {
+                payload.setDescription("Send message failed");
+                payload.setStatusCode(422);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
-    // Get All Conversation
+    // Get All Conversation User joined
     @GetMapping("/conversation/alls")
     public ResponseEntity<?> getAllConversations(){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        ResponseData payload = new ResponseData();
+        try {
+            List<ConversationDTO> data = chatService.getAllConversation();
+            if (data != null){
+                payload.setDescription("Load all conversations you joined successful");
+                payload.setData(data);
+            } else {
+                payload.setDescription("Failed to load conversations");
+                payload.setStatusCode(422);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
-    // Get All Chat in Conversation
-    @GetMapping("/{conversation_id}")
-    public ResponseEntity<?> getAllMessages(@PathVariable("conversation_id") String conversation_id){
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    // Search Conversation to Join
+    @GetMapping("/conversation")
+    public ResponseEntity<?> searchConversation(@RequestParam(name = "name") String conversationName){
+        ResponseData payload = new ResponseData();
+        try {
+            List<ConversationDTO> data = chatService.searchConversation(conversationName);
+            if (data != null){
+                payload.setDescription("Found conversations successful");
+                payload.setData(data);
+            } else {
+                payload.setDescription("There is no conversation");
+                payload.setStatusCode(422);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+    // Get All Chat in Conversation User Join
+    @GetMapping("/conversation/{conversation_id}")
+    public ResponseEntity<?> getAllMessages(@PathVariable("conversation_id") String conversationId){
+        ResponseData payload = new ResponseData();
+        try {
+            List<MessageDTO> data = chatService.getAllMessagesInConversation(conversationId);
+            if (data != null){
+                payload.setDescription("Load all messages successful");
+                payload.setData(data);
+            } else {
+                payload.setDescription("There is no message in conversation");
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 }
