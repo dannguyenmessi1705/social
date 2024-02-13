@@ -9,24 +9,33 @@ import com.didan.social.payload.request.EditPostRequest;
 import com.didan.social.repository.*;
 import com.didan.social.service.impl.PostServiceImpl;
 import com.didan.social.utils.JwtUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 public class PostService implements PostServiceImpl {
+//    private Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
     private static Logger logger = LoggerFactory.getLogger(PostService.class);
     private final PostRepository postRepository;
     private final UserPostRepository userPostRepository;
@@ -37,6 +46,7 @@ public class PostService implements PostServiceImpl {
     private final UserCommentRepository userCommentRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
+//    private final RedisTemplate redisTemplate;
     private final HttpServletRequest request;
     @Autowired
     public PostService(PostRepository postRepository,
@@ -48,6 +58,7 @@ public class PostService implements PostServiceImpl {
                        UserCommentRepository userCommentRepository,
                        CommentRepository commentRepository,
                        CommentLikeRepository commentLikeRepository,
+//                       RedisTemplate redisTemplate,
                        HttpServletRequest request
     ){
         this.postRepository = postRepository;
@@ -59,6 +70,7 @@ public class PostService implements PostServiceImpl {
         this.userCommentRepository = userCommentRepository;
         this.commentRepository =commentRepository;
         this.commentLikeRepository = commentLikeRepository;
+//        this.redisTemplate = redisTemplate;
         this.request = request;
     }
     @Override
@@ -104,14 +116,20 @@ public class PostService implements PostServiceImpl {
     }
 
     @Override
-    public List<PostDTO> getAllPosts() throws Exception {
+    public List<PostDTO> getAllPosts(int index) throws Exception {
+        List<PostDTO> postDTOs = new ArrayList<>();
+//        redisTemplate.delete("posts");
+//        String postDataJson = (String) redisTemplate.opsForValue().get("posts");
+//        System.out.println(postDataJson);
+//        if (!StringUtils.hasText(postDataJson)) {
         Sort sortByPostedAt = Sort.by(Sort.Direction.DESC, "postedAt");
-        List<Posts> posts = postRepository.findAll(sortByPostedAt);
-        if (posts.size() <= 0) {
+        PageRequest pageRequest = PageRequest.of(index-1, 6, sortByPostedAt);
+        Page<Posts> posts = postRepository.findAll(pageRequest);
+//        List<Posts> posts = postRepository.findAll(sortByPostedAt);
+        if (posts == null) {
             logger.info("No posts are here");
             throw new Exception("No posts are here");
         }
-        List<PostDTO> postDTOs = new ArrayList<>();
         for (Posts post : posts){
             UserPosts userPost = userPostRepository.findFirstByPosts(post);
             PostDTO postDTO = new PostDTO();
@@ -146,7 +164,14 @@ public class PostService implements PostServiceImpl {
             Collections.sort(commentDTOs, Comparator.comparing(CommentDTO::getCommentAt).reversed());
             postDTO.setComments(commentDTOs);
             postDTOs.add(postDTO);
+//                String data = gson.toJson(postDTOs);
+//                redisTemplate.opsForValue().set("posts", data);
+//                redisTemplate.expire("posts", 30, TimeUnit.SECONDS);
         }
+//        } else {
+//            Type listType = new TypeToken<List<PostDTO>>(){}.getType();
+//            postDTOs = gson.fromJson(postDataJson, listType);
+//        }
         return postDTOs;
     }
 

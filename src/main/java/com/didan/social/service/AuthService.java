@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -40,6 +41,7 @@ public class AuthService implements AuthServiceImpl {
     private final Environment env;
     private final MailServiceImpl mailService;
     private final HttpServletRequest request;
+    private final RedisTemplate redisTemplate;
     @Autowired
     public AuthService (UserRepository userRepository,
                         PasswordEncoder passwordEncoder,
@@ -48,7 +50,8 @@ public class AuthService implements AuthServiceImpl {
                         FileUploadsServiceImpl fileUploadsService,
                         Environment env,
                         MailServiceImpl mailService,
-                        HttpServletRequest request
+                        HttpServletRequest request,
+                        RedisTemplate redisTemplate
     ){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -58,6 +61,7 @@ public class AuthService implements AuthServiceImpl {
         this.env = env;
         this.mailService = mailService;
         this.request = request;
+        this.redisTemplate = redisTemplate;
     }
     @Override
     public Users login(String email, String password) throws Exception{

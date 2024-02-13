@@ -27,10 +27,13 @@ public class PostController {
     }
     // Get Post
     @GetMapping("/get")
-    public ResponseEntity<?> getPosts(){
+    public ResponseEntity<?> getPosts(@RequestParam(value = "page", required = false) Integer page){
+        if (page == null){
+            page = 1;
+        }
         ResponseData payload = new ResponseData();
         try {
-            List<PostDTO> postDTOs = postService.getAllPosts();
+            List<PostDTO> postDTOs = postService.getAllPosts(page);
             if (postDTOs.size() <= 0){
                 payload.setDescription("No posts in here");
             } else {
