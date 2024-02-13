@@ -11,6 +11,8 @@ import com.didan.social.service.impl.FileUploadsServiceImpl;
 import com.didan.social.service.impl.MailServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +31,7 @@ import java.util.*;
 
 @Service
 public class AuthService implements AuthServiceImpl {
+    private static Logger logger = LoggerFactory.getLogger(AuthService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
@@ -59,7 +62,10 @@ public class AuthService implements AuthServiceImpl {
     @Override
     public Users login(String email, String password) throws Exception{
         Users user = userRepository.findFirstByEmail(email);
-        if(user == null) throw new Exception("Email is not existed");
+        if(user == null) {
+            logger.error("Email is not existed");
+            throw new Exception("Email is not existed");
+        }
         if (passwordEncoder.matches(password, user.getPassword())){
             if (StringUtils.hasText(user.getAccessToken())){
                 BlacklistToken blacklistToken = new BlacklistToken(user.getAccessToken());
@@ -69,13 +75,22 @@ public class AuthService implements AuthServiceImpl {
             userRepository.save(user);
             return user;
         }
-        else throw new Exception("Email and Password does not match");
+        else {
+            logger.error("Email and Password does not match");
+            throw new Exception("Email and Password does not match");
+        }
     }
     @Override
     public Users signup(SignupRequest signupRequest) throws Exception{
         Users user = userRepository.findFirstByEmail(signupRequest.getEmail());
-        if(user != null) throw new Exception("Email is existed");
-        if(signupRequest.getPassword().length() < 5) throw new Exception("The minimum password should be 5");
+        if(user != null) {
+            logger.error("Email is existed");
+            throw new Exception("Email is existed");
+        }
+        if(signupRequest.getPassword().length() < 5) {
+            logger.error("The minimum password should be 5");
+            throw new Exception("The minimum password should be 5");
+        }
         else{
             UUID id = UUID.randomUUID();
             Users userSave = new Users();
@@ -100,14 +115,23 @@ public class AuthService implements AuthServiceImpl {
     @Override
     public void logout() throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (accessToken == null) throw new Exception("Not Authorization");
+        if (accessToken == null) {
+            logger.error("Not Authorization");
+            throw new Exception("Not Authorization");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
         Users user = userRepository.findFirstByEmail(email);
-        if(user == null) throw new Exception("User is not existed");
+        if(user == null) {
+            logger.error("User is not existed");
+            throw new Exception("User is not existed");
+        }
         if(StringUtils.hasText(user.getAccessToken())){
             BlacklistToken blacklistToken = new BlacklistToken(user.getAccessToken());
             blacklistRepository.save(blacklistToken);
-        } else throw new Exception("Server error");
+        } else{
+            logger.error("Server error");
+            throw new Exception("Server error");
+        }
     }
 
     @Override
@@ -144,11 +168,15 @@ public class AuthService implements AuthServiceImpl {
     @Override
     public String verifyToken(String token) throws Exception{
         Users user = userRepository.findFirstByResetToken(token);
-        if (user == null) throw new Exception("Request error");
+        if (user == null) {
+            logger.error("Request error");
+            throw new Exception("Request error");
+        }
         else {
             LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
             Date nowDate = Timestamp.valueOf(now);
             if (nowDate.after(user.getResetExp())){
+                logger.error("Expired token");
                 return null;
             } else {
                 return token;
@@ -159,15 +187,22 @@ public class AuthService implements AuthServiceImpl {
     @Override
     public boolean updatePassword(String token, String newPassword) throws Exception {
         if (StringUtils.hasText(verifyToken(token))){
-            if (newPassword.length() < 5) return false;
+            if (newPassword.length() < 5) {
+                logger.error("The minimum password should be 5");
+                return false;
+            }
             else {
                 Users user = userRepository.findFirstByResetToken(token);
                 String passEncode = passwordEncoder.encode(newPassword);
                 user.setPassword(passEncode);
                 userRepository.save(user);
+                logger.info("Update password successful");
                 return true;
             }
         }
-        else return false;
+        else {
+            logger.error("Cannot update password");
+            return false;
+        }
     }
 }

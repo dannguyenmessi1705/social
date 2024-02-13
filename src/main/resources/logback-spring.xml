@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Thẻ configuration chứa các thẻ con như appender, logger, root, ... -->
+<configuration>
+    <!-- Thẻ property dùng để khai báo các biến môi trường, name là tên biến, value là giá trị của biến -->
+    <property name="LOGS" value="./logs" />
+    <!-- Thẻ appender dùng để khai báo các appender, name là tên của appender, class là tên của class appender -->
+    <!-- Thẻ appender này dùng để ghi log ra màn hình console -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- Thẻ layout dùng để khai báo định dạng của log -->
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!-- Pattern là định dạng của log -->
+            <Pattern>%d{yyyy-MM-dd-HH:mm:ss.SSS} [%thread] %-5level ${PID:-} %logger{36} : %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <!-- Thẻ appender này dùng để ghi log ra file -->
+    <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Thẻ file dùng để khai báo tên file log biến LOGS là biến môi trường khai báo ở trên -->
+        <file>${LOGS}/app.log</file>
+        <!-- Thẻ encoder dùng để khai báo định dạng của log -->
+        <encoder>
+            <!-- Thẻ pattern dùng để khai báo định dạng của log -->
+            <Pattern>%d{yyyy-MM-dd-HH:mm:ss.SSS} [%thread] %-5level ${PID:-} %logger{36} : %msg%n</Pattern>
+        </encoder>
+
+        <!-- Thẻ rollingPolicy dùng để khai báo cách thức quản lý file log -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Thẻ fileNamePattern dùng để khai báo định dạng tên file log -->
+            <fileNamePattern>${LOGS}/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- Thẻ maxHistory dùng để khai báo số lượng file log tối đa
+            <maxHistory>30</maxHistory> -->
+            <!-- Thẻ timeBasedFileNamingAndTriggeringPolicy dùng để khai báo cách thức quản lý file log -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- Thẻ maxFileSize dùng để khai báo dung lượng file log tối đa -->
+                <maxFileSize>1MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <!-- Thẻ layout dùng để khai báo định dạng của log -->
+    </appender>
+
+    <!-- Thẻ root dùng để khai báo cấu hình cho tất cả các logger -->
+    <!-- Sử dụng cấp độ log là info => sẽ log ra tất cả các log có cấp độ từ info trở lên (info, warn, error) -->
+    <root level="info">
+        <!-- Thẻ appender-ref dùng để tham chiếu đến appender -->
+        <appender-ref ref="RollingFile" />
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

@@ -9,6 +9,8 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Attachments;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.io.IOException;
 
 @Service
 public class MailService implements MailServiceImpl {
+    private static Logger logger = LoggerFactory.getLogger(MailService.class);
     private final Environment env;
     @Autowired
     public MailService(Environment env){
@@ -38,7 +41,9 @@ public class MailService implements MailServiceImpl {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
+            logger.info(response.getBody());
         }catch (IOException e){
+            logger.error("Server Error");
             throw new IOException("Server Error", e);
         }
     }

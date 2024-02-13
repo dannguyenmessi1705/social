@@ -10,6 +10,8 @@ import com.didan.social.repository.*;
 import com.didan.social.service.impl.PostServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.parameters.P;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PostService implements PostServiceImpl {
+    private static Logger logger = LoggerFactory.getLogger(PostService.class);
     private final PostRepository postRepository;
     private final UserPostRepository userPostRepository;
     private final FileUploadsService fileUploadsService;
@@ -61,16 +64,26 @@ public class PostService implements PostServiceImpl {
     @Override
     public String createPost(CreatePostRequest createPostRequest) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         if (!StringUtils.hasText(createPostRequest.getTitle())
             || !StringUtils.hasText(createPostRequest.getBody())
         ){
+            logger.error("Miss some fields");
             throw new Exception("Miss some fields");
         }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Posts post = new Posts();
         UserPosts userPost = new UserPosts();
         UUID postId = UUID.randomUUID();
@@ -94,7 +107,10 @@ public class PostService implements PostServiceImpl {
     public List<PostDTO> getAllPosts() throws Exception {
         Sort sortByPostedAt = Sort.by(Sort.Direction.DESC, "postedAt");
         List<Posts> posts = postRepository.findAll(sortByPostedAt);
-        if (posts.size() <= 0) throw new Exception("No posts are here");
+        if (posts.size() <= 0) {
+            logger.info("No posts are here");
+            throw new Exception("No posts are here");
+        }
         List<PostDTO> postDTOs = new ArrayList<>();
         for (Posts post : posts){
             UserPosts userPost = userPostRepository.findFirstByPosts(post);
@@ -137,7 +153,10 @@ public class PostService implements PostServiceImpl {
     @Override
     public PostDTO getPostById(String postId) throws Exception {
         Posts post = postRepository.findFirstByPostId(postId);
-        if (post == null) throw new Exception("No post is here");
+        if (post == null) {
+            logger.info("No post is here");
+            throw new Exception("No post is here");
+        }
         PostDTO postDTO = new PostDTO();
         postDTO.setPostId(post.getPostId());
         UserPosts userPost = userPostRepository.findFirstByPosts(post);
@@ -175,7 +194,10 @@ public class PostService implements PostServiceImpl {
     @Override
     public List<PostDTO> getPostByTitle(String searchName) throws Exception {
         List<Posts> posts = postRepository.findByTitleOrBodyContainingOrderByPostedAtDesc(searchName, searchName);
-        if (posts.size() <= 0) throw new Exception("No posts are here");
+        if (posts.size() <= 0) {
+            logger.info("No posts are here");
+            throw new Exception("No posts are here");
+        }
         List<PostDTO> postDTOs = new ArrayList<>();
         for (Posts post : posts){
             PostDTO postDTO = new PostDTO();
@@ -217,15 +239,30 @@ public class PostService implements PostServiceImpl {
     @Override
     public boolean likePost(String postId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Posts post = postRepository.findFirstByPostId(postId);
-        if (post==null) throw new Exception("No post is here");
+        if (post==null) {
+            logger.info("No post is here");
+            throw new Exception("No post is here");
+        }
         PostLikes postLikes = postLikeRepository.findByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
-        if (postLikes != null) throw new Exception("User liked post and cannot do it twice");
+        if (postLikes != null) {
+            logger.warn("User liked post and cannot do it twice");
+            throw new Exception("User liked post and cannot do it twice");
+        }
         PostLikes newPostLike = new PostLikes();
         newPostLike.setPostLikeId(new PostLikeId(postId, user.getUserId()));
         newPostLike.setPosts(post);
@@ -237,15 +274,30 @@ public class PostService implements PostServiceImpl {
     @Override
     public boolean unlikePost(String postId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Posts post = postRepository.findFirstByPostId(postId);
-        if (post==null) throw new Exception("No post is here");
+        if (post==null) {
+            logger.info("No post is here");
+            throw new Exception("No post is here");
+        }
         PostLikes postLikes = postLikeRepository.findByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
-        if (postLikes == null) throw new Exception("User hasn't liked post yet");
+        if (postLikes == null) {
+            logger.info("User hasn't liked post yet");
+            throw new Exception("User hasn't liked post yet");
+        }
         postLikeRepository.delete(postLikes);
         return true;
     }
@@ -253,13 +305,25 @@ public class PostService implements PostServiceImpl {
     @Override
     public PostDTO updatePost(String postId, EditPostRequest editPostRequest) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         UserPosts userPost = userPostRepository.findFirstByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
-        if (userPost == null) throw new Exception("The user hasn't this post or not authorized to edit this post");
+        if (userPost == null) {
+            logger.error("The user hasn't this post or not authorized to edit this post");
+            throw new Exception("The user hasn't this post or not authorized to edit this post");
+        }
         Posts post = userPost.getPosts();
         if (StringUtils.hasText(editPostRequest.getTitle())){
             post.setTitle(editPostRequest.getTitle());
@@ -309,15 +373,30 @@ public class PostService implements PostServiceImpl {
     public boolean deletePost(String postId) throws Exception {
         try{
             String accessToken = jwtUtils.getTokenFromHeader(request);
-            if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+            if (!StringUtils.hasText(accessToken)) {
+                logger.error("Not Authorized");
+                throw new Exception("Not Authorized");
+            }
             String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-            if (email == null) throw new Exception("Have some errors");
+            if (email == null) {
+                logger.error("Have some errors");
+                throw new Exception("Have some errors");
+            }
             Users user = userRepository.findFirstByEmail(email);
-            if (user == null) throw new Exception("User is not found");
+            if (user == null) {
+                logger.error("User is not found");
+                throw new Exception("User is not found");
+            }
             Posts post = postRepository.findFirstByPostId(postId);
-            if(post == null) throw new Exception("There isnt post to delete");
+            if(post == null) {
+                logger.info("There is not post to delete");
+                throw new Exception("There is not post to delete");
+            }
             UserPosts userPosts = userPostRepository.findFirstByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
-            if (userPosts == null) throw new Exception("The user hasn't this post or not authorized to edit this post");
+            if (userPosts == null) {
+                logger.error("The user hasn't this post or not authorized to edit this post");
+                throw new Exception("The user hasn't this post or not authorized to edit this post");
+            }
             userPostRepository.delete(userPosts);
             postRepository.delete(post);
             if(StringUtils.hasText(post.getPostImg())){
@@ -325,6 +404,7 @@ public class PostService implements PostServiceImpl {
             }
             return true;
         } catch (Exception e){
+            logger.error(e.getMessage());
             throw new Exception(e.getMessage());
         }
     }

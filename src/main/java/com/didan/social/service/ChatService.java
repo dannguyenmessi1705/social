@@ -13,6 +13,8 @@ import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.ChatServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -24,6 +26,7 @@ import java.util.*;
 
 @Service
 public class ChatService implements ChatServiceImpl {
+    private static Logger logger = LoggerFactory.getLogger(ChatService.class);
     private final ConversationRepository conversationRepository;
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
@@ -50,11 +53,20 @@ public class ChatService implements ChatServiceImpl {
     @Override
     public String createConversation(String conversationName) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Conversations conversation = new Conversations();
         String conversationId = UUID.randomUUID().toString();
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
@@ -74,15 +86,30 @@ public class ChatService implements ChatServiceImpl {
     @Override
     public ConversationDTO joinConversation(String conversationId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Conversations conversation = conversationRepository.findFirstByConversationId(conversationId);
-        if (conversation == null) throw new Exception("There is no conversation");
+        if (conversation == null) {
+            logger.error("There is no conversation");
+            throw new Exception("There is no conversation");
+        }
         Participants findParticipant = participantRepository.findFirstByConversations_ConversationIdAndUsers_UserId(conversationId, user.getUserId());
-        if (findParticipant != null) throw new Exception("User has already joined conversation");
+        if (findParticipant != null) {
+            logger.error("User has already joined conversation");
+            throw new Exception("User has already joined conversation");
+        }
         Participants participant = new Participants();
         participant.setParticipantId(new ParticipantId(conversationId, user.getUserId()));
         participant.setConversations(conversation);
@@ -98,15 +125,30 @@ public class ChatService implements ChatServiceImpl {
     @Override
     public boolean leaveConversation(String conversationId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Conversations conversation = conversationRepository.findFirstByConversationId(conversationId);
-        if (conversation == null) throw new Exception("There is no conversation");
+        if (conversation == null){
+            logger.error("There is no conversation");
+            throw new Exception("There is no conversation");
+        }
         Participants findParticipant = participantRepository.findFirstByConversations_ConversationIdAndUsers_UserId(conversationId, user.getUserId());
-        if (findParticipant == null) throw new Exception("User has not joined conversation yet");
+        if (findParticipant == null) {
+            logger.error("User has not joined conversation yet");
+            throw new Exception("User has not joined conversation yet");
+        }
         participantRepository.delete(findParticipant);
         return true;
     }
@@ -114,15 +156,30 @@ public class ChatService implements ChatServiceImpl {
     @Override
     public MessageDTO sendMessage(String conversationId, SendMessageRequest sendMessageRequest) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Conversations conversation = conversationRepository.findFirstByConversationId(conversationId);
-        if (conversation == null) throw new Exception("There is no conversation");
+        if (conversation == null) {
+            logger.error("There is no conversation");
+            throw new Exception("There is no conversation");
+        }
         Participants findParticipant = participantRepository.findFirstByConversations_ConversationIdAndUsers_UserId(conversationId, user.getUserId());
-        if (findParticipant == null) throw new Exception("User has not joined conversation yet");
+        if (findParticipant == null) {
+            logger.error("User has not joined conversation yet");
+            throw new Exception("User has not joined conversation yet");
+        }
         Messages message = new Messages();
         String messageId = UUID.randomUUID().toString();
         message.setMessageId(messageId);
@@ -149,13 +206,23 @@ public class ChatService implements ChatServiceImpl {
     @Override
     public List<ConversationDTO> getAllConversation() throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         List<Participants> participants = participantRepository.findAllByUsers_UserId(user.getUserId());
         if (participants.size() <= 0){
+            logger.error("You hasnot joined any conversations yet");
             throw new Exception("You hasnot joined any conversations yet");
         }
         List<ConversationDTO> conversationDTOs = new ArrayList<>();
@@ -175,7 +242,10 @@ public class ChatService implements ChatServiceImpl {
     public List<ConversationDTO> searchConversation(String conversationName) throws Exception {
         List<ConversationDTO> conversationDTOs = new ArrayList<>();
         List<Conversations> conversations = conversationRepository.findAllByConversationNameContainingOrderByCreatedAtDesc(conversationName);
-        if (conversations.size() <= 0) throw new Exception("Not found conversations");
+        if (conversations.size() <= 0) {
+            logger.error("Not found conversations");
+            throw new Exception("Not found conversations");
+        }
         for (Conversations conversation : conversations){
             ConversationDTO conversationDTO = new ConversationDTO();
             conversationDTO.setConversationId(conversation.getConversationId());
@@ -189,13 +259,23 @@ public class ChatService implements ChatServiceImpl {
     @Override
     public List<MessageDTO> getAllMessagesInConversation(String conversationId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Participants participants = participantRepository.findFirstByConversations_ConversationIdAndUsers_UserId(conversationId, user.getUserId());
         if (participants == null){
+            logger.error("You hasnot joined any conversations yet");
             throw new Exception("You hasnot joined any conversations yet");
         }
         List<Messages> messages = messageRepository.findAllByConversations_ConversationIdOrderBySentAt(conversationId);

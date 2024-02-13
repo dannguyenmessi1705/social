@@ -15,6 +15,8 @@ import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.CommentServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class CommentService implements CommentServiceImpl {
+    private static Logger logger = LoggerFactory.getLogger(CommentService.class);
     private final UserCommentRepository userCommentRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
@@ -77,14 +80,24 @@ public class CommentService implements CommentServiceImpl {
     @Override
     public String postCommentInPost(String postId, CreateCommentRequest createCommentRequest) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)){
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         if (!StringUtils.hasText(createCommentRequest.getContent())){
+            logger.error("Miss some fields");
             throw new Exception("Miss some fields");
         }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Comments comment = new Comments();
         UserComment userComment = new UserComment();
         UUID commentId = UUID.randomUUID();
@@ -124,15 +137,30 @@ public class CommentService implements CommentServiceImpl {
     @Override
     public boolean likeComment(String commentId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Comments comment = commentRepository.findByCommentId(commentId);
-        if (comment == null) throw new Exception("No comment is here");
+        if (comment == null) {
+            logger.error("No comment is here");
+            throw new Exception("No comment is here");
+        }
         CommentLikes commentLike = commentLikeRepository.findFirstByUsers_UserIdAndComments_CommentId(user.getUserId(), commentId);
-        if (commentLike != null) throw new Exception("User liked comment and cannot do it twice");
+        if (commentLike != null) {
+            logger.error("User liked comment and cannot do it twice");
+            throw new Exception("User liked comment and cannot do it twice");
+        }
         CommentLikes newCommentLike = new CommentLikes();
         newCommentLike.setCommentLikeId(new CommentLikeId(commentId, user.getUserId()));
         newCommentLike.setUsers(user);
@@ -144,15 +172,30 @@ public class CommentService implements CommentServiceImpl {
     @Override
     public boolean unlikeComment(String commentId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Comments comment = commentRepository.findByCommentId(commentId);
-        if (comment == null) throw new Exception("No comment is here");
+        if (comment == null) {
+            logger.error("No comment is here");
+            throw new Exception("No comment is here");
+        }
         CommentLikes commentLike = commentLikeRepository.findFirstByUsers_UserIdAndComments_CommentId(user.getUserId(), commentId);
-        if (commentLike == null) throw new Exception("User hasn't liked post yet");
+        if (commentLike == null) {
+            logger.error("User hasn't liked post yet");
+            throw new Exception("User hasn't liked post yet");
+        }
         commentLikeRepository.delete(commentLike);
         return true;
     }
@@ -160,13 +203,25 @@ public class CommentService implements CommentServiceImpl {
     @Override
     public CommentDTO updateComment(String commentId, EditCommentRequest editCommentRequest) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         UserComment userComment = userCommentRepository.findFirstByUsers_UserIdAndComments_CommentId(user.getUserId(), commentId);
-        if (userComment == null) throw new Exception("The user hasn't this comment or not authorized to edit this comment");
+        if (userComment == null) {
+            logger.error("The user hasn't this comment or not authorized to edit this comment");
+            throw new Exception("The user hasn't this comment or not authorized to edit this comment");
+        }
         Comments comment = userComment.getComments();
         if (StringUtils.hasText(editCommentRequest.getContent())){
             comment.setContent(editCommentRequest.getContent());
@@ -193,15 +248,30 @@ public class CommentService implements CommentServiceImpl {
     @Override
     public boolean deleteComment(String commentId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Comments comment = commentRepository.findByCommentId(commentId);
-        if(comment == null) throw new Exception("There isnt comment to delete");
+        if(comment == null) {
+            logger.error("There is not comment to delete");
+            throw new Exception("There is not comment to delete");
+        }
         UserComment userComment = userCommentRepository.findFirstByUsers_UserIdAndComments_CommentId(user.getUserId(), commentId);
-        if (userComment == null) throw new Exception("The user hasn't this comment or not authorized to edit this comment");
+        if (userComment == null) {
+            logger.error("The user hasn't this comment or not authorized to edit this comment");
+            throw new Exception("The user hasn't this comment or not authorized to edit this comment");
+        }
         userCommentRepository.delete(userComment);
         if(StringUtils.hasText(comment.getCommentImg())){
             fileUploadsService.deleteFile(comment.getCommentImg());

@@ -5,6 +5,8 @@ import com.didan.social.entity.UserPosts;
 import com.didan.social.entity.Users;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.UserServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import java.util.List;
 
 @Service
 public class UserService implements UserServiceImpl {
+    private static Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     @Autowired
     public UserService(UserRepository userRepository){
@@ -24,6 +27,7 @@ public class UserService implements UserServiceImpl {
     public List<UserDTO> getAllUser(){
         List<Users> users = userRepository.findAll();
         if (users.size() <= 0) {
+            logger.info("No one");
             return null;
         }
         List<UserDTO> userDTOS = new ArrayList<>();
@@ -52,7 +56,10 @@ public class UserService implements UserServiceImpl {
     @Override
     public UserDTO getUserById(String userId) {
         Users user = userRepository.findFirstByUserId(userId);
-        if (user == null) return null;
+        if (user == null) {
+            logger.info("No user to found");
+            return null;
+        }
         else {
             UserDTO userDTO = new UserDTO();
             List<String> postId = new ArrayList<>();
@@ -77,6 +84,7 @@ public class UserService implements UserServiceImpl {
     public List<UserDTO> searchUser(String searchName) throws Exception {
         List<Users> users = userRepository.findByFullNameContainingOrEmailLike(searchName, searchName);
         if (users.size() <= 0) {
+            logger.info("No one");
             return null;
         }
         List<UserDTO> userDTOS = new ArrayList<>();

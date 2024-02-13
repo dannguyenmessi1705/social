@@ -1,0 +1,1270 @@
+{
+	"info": {
+		"_postman_id": "48d6a7e6-0d14-4114-be49-fb827155a26a",
+		"name": "JAVA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26464204"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "SignUp",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "fullName",
+									"value": "Hoang Viet Bach",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "veyawip510@flexvio.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								},
+								{
+									"key": "dob",
+									"value": "2000-06-18",
+									"contentType": "",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/D:/messi/Pictures/cv9.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/auth/signup",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signin",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "messiprohy@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/auth/signin",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzcGI3QGdtYWlsLmNvbSIsImlhdCI6MTcwNjU4ODU2NiwiZXhwIjoxNzA2Njc0OTY2fQ.MDehMiZTru78yjkLzPdUM2vhepKO3dANtOXmDhGck54",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/auth/logout",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request Forget password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "messiprohy@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/auth/token-reset",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"auth",
+								"token-reset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Password",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "AP3QZ7",
+									"type": "text"
+								},
+								{
+									"key": "newPassword",
+									"value": "12345",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/auth/reset",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"auth",
+								"reset"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "getAllUser",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzE1MDQ1NywiZXhwIjoxNzA3MjM2ODU3fQ.zAA56F80-Vb94FOKjnL1b2golzv0XBh7Wwlnqy8ytP0",
+								"type": "text"
+							},
+							{
+								"key": "Password",
+								"value": "789",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/user/getAllUser",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"user",
+								"getAllUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzA0Mjc1OSwiZXhwIjoxNzA3MTI5MTU5fQ.FgsyL4HrFfTOe66gvrdYKCcPf7gZb4rr5c_7v8OdKcM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/user/c7831745-5302-417d-bba8-7055e6354d8f",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"user",
+								"c7831745-5302-417d-bba8-7055e6354d8f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Post by Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNjk3ODIwOCwiZXhwIjoxNzA3MDY0NjA4fQ.ueFZ9VG-Jm_z6oaLL-0XjXvHvr0LvH5e43xZL0e5jro",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/user/search?name=nguyenadasdasvana@gmailasdas.com",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"user",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "nguyenadasdasvana@gmailasdas.com"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Create Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzA0Mjc1OSwiZXhwIjoxNzA3MTI5MTU5fQ.FgsyL4HrFfTOe66gvrdYKCcPf7gZb4rr5c_7v8OdKcM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Test thôi mà phát nữa =))",
+									"type": "text"
+								},
+								{
+									"key": "body",
+									"value": "Spring Boot test create post",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/post/new",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"post",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Post",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/post/get",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"post",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Post By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzA0Mjc1OSwiZXhwIjoxNzA3MTI5MTU5fQ.FgsyL4HrFfTOe66gvrdYKCcPf7gZb4rr5c_7v8OdKcM",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/post/8bcb93ee-14d8-4646-94bf-bb5146cf80c8",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"post",
+								"8bcb93ee-14d8-4646-94bf-bb5146cf80c8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Post by Title or Body",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNjk3ODIwOCwiZXhwIjoxNzA3MDY0NjA4fQ.ueFZ9VG-Jm_z6oaLL-0XjXvHvr0LvH5e43xZL0e5jro",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Ab",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/post/search?name=Fundacion",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"post",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Fundacion"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/post/836bd440-8489-4ca1-8dde-b3f5d02c75b0",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"post",
+								"836bd440-8489-4ca1-8dde-b3f5d02c75b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unlike Post",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/post/836bd440-8489-4ca1-8dde-b3f5d02c75b0",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"post",
+								"836bd440-8489-4ca1-8dde-b3f5d02c75b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Chans",
+									"type": "text"
+								},
+								{
+									"key": "body",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "postImg",
+									"type": "file",
+									"src": "/D:/messi/Pictures/cach-mang-nong-nghiep-anh.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/post/update/e697d5fe-1938-437c-9a51-8f28a4e0fd15",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"post",
+								"update",
+								"e697d5fe-1938-437c-9a51-8f28a4e0fd15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzA0Mjc1OSwiZXhwIjoxNzA3MTI5MTU5fQ.FgsyL4HrFfTOe66gvrdYKCcPf7gZb4rr5c_7v8OdKcM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/post/delete/2ed8e4c4-82c3-435a-b3a6-64749bd3328f",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"post",
+								"delete",
+								"2ed8e4c4-82c3-435a-b3a6-64749bd3328f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Follow",
+			"item": [
+				{
+					"name": "Get Followers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzE1MDQ1NywiZXhwIjoxNzA3MjM2ODU3fQ.zAA56F80-Vb94FOKjnL1b2golzv0XBh7Wwlnqy8ytP0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/follow/followers/b2bb132c-bc70-43c1-8c88-10756aafff4e",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"follow",
+								"followers",
+								"b2bb132c-bc70-43c1-8c88-10756aafff4e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Following",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzE1MDQ1NywiZXhwIjoxNzA3MjM2ODU3fQ.zAA56F80-Vb94FOKjnL1b2golzv0XBh7Wwlnqy8ytP0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/follow/followings/b2bb132c-bc70-43c1-8c88-10756aafff4e",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"follow",
+								"followings",
+								"b2bb132c-bc70-43c1-8c88-10756aafff4e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Follow User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/follow/b2bb132c-bc70-43c1-8c88-10756aafff4e",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"follow",
+								"b2bb132c-bc70-43c1-8c88-10756aafff4e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unfollow User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzE1MDQ1NywiZXhwIjoxNzA3MjM2ODU3fQ.zAA56F80-Vb94FOKjnL1b2golzv0XBh7Wwlnqy8ytP0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/follow/c7831745-5302-417d-bba8-7055e6354d8ft",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"follow",
+								"c7831745-5302-417d-bba8-7055e6354d8ft"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Comment",
+			"item": [
+				{
+					"name": "Get All Comments In Post",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/comment/post/2265fe8e-baf8-4cdb-a94b-1b14a588a841",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"comment",
+								"post",
+								"2265fe8e-baf8-4cdb-a94b-1b14a588a841"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Comment By Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/comment/201c3edd-ef5a-4c83-94eb-3261b98bd1db",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"comment",
+								"201c3edd-ef5a-4c83-94eb-3261b98bd1db"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Up Comment in Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "content",
+									"value": "kajdqd",
+									"type": "text"
+								},
+								{
+									"key": "commentImg",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/comment/post/2265fe8e-baf8-4cdb-a94b-1b14a588a841",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"comment",
+								"post",
+								"2265fe8e-baf8-4cdb-a94b-1b14a588a841"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Like Comment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/comment/9ce2b674-e9b0-4702-b767-277c84ee1131",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"comment",
+								"9ce2b674-e9b0-4702-b767-277c84ee1131"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unlike Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "content",
+									"value": "Test comment in Spring Boot",
+									"type": "text"
+								},
+								{
+									"key": "commentImg",
+									"type": "file",
+									"src": "/D:/messi/Pictures/151516_download.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/comment/9ce2b674-e9b0-4702-b767-277c84ee1131",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"comment",
+								"9ce2b674-e9b0-4702-b767-277c84ee1131"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Comment",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "content",
+									"value": "Test comment in Spring Boot 2",
+									"type": "text"
+								},
+								{
+									"key": "commentImg",
+									"type": "file",
+									"src": "/D:/messi/Pictures/aci1.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/comment/update/201c3edd-ef5a-4c83-94eb-3261b98bd1db",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"comment",
+								"update",
+								"201c3edd-ef5a-4c83-94eb-3261b98bd1db"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/comment/delete/201c3edd-ef5a-4c83-94eb-3261b98bd1db",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"comment",
+								"delete",
+								"201c3edd-ef5a-4c83-94eb-3261b98bd1db"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Chat",
+			"item": [
+				{
+					"name": "Create Conversation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "conversationName",
+									"value": "IoT 2024",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/chat/create",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"chat",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Join Conversation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/chat/join/ec292bb0-d4ff-4b8b-ab4d-d50db336c607",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"chat",
+								"join",
+								"ec292bb0-d4ff-4b8b-ab4d-d50db336c607"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leave Conversation",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/chat/leave/26348ad6-3791-4ed4-8fbe-fb8c5c434240",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"chat",
+								"leave",
+								"26348ad6-3791-4ed4-8fbe-fb8c5c434240"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send Message In Conversation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "content",
+									"value": "Hello Spring",
+									"type": "text"
+								},
+								{
+									"key": "messageImg",
+									"type": "file",
+									"src": "/D:/messi/Pictures/messi-1024x562-15976585975641743901905.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/chat/send/4eabdef8-643f-4169-99ba-02bc0ec41f6c",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"chat",
+								"send",
+								"4eabdef8-643f-4169-99ba-02bc0ec41f6c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Joined Conversation",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/chat/conversation/alls",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"chat",
+								"conversation",
+								"alls"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Conversation",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Me",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/chat/conversation",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"chat",
+								"conversation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Message In Joined Conversation",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/chat/conversation/ec292bb0-d4ff-4b8b-ab4d-d50db336c607",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"chat",
+								"conversation",
+								"ec292bb0-d4ff-4b8b-ab4d-d50db336c607"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

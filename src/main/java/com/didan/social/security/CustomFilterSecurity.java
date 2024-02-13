@@ -1,5 +1,7 @@
 package com.didan.social.security;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +30,7 @@ public class CustomFilterSecurity {
 //        // CustomFilterSecurity
 //        this.customUserDetailsService = customUserDetailsService;
 //    }
+    private static Logger logger = LoggerFactory.getLogger(CustomFilterSecurity.class);
     private final JwtAuthenticationFilter jwtAuthenticationFilter; // Khai báo biến customUserDetailsService để tiêm
     // vào đây
     @Autowired // Tiêm JwtAuthenticationFilter vào đây (tự động tìm kiếm và tiêm)
@@ -54,6 +57,7 @@ public class CustomFilterSecurity {
                     response.setCharacterEncoding("UTF-8");
                     String jsonMessage = "{\n\t\"statusCode\": 404\n\t\"success\": \"false\"\n\t\"description\": \"UNAUTHORIZED OR THE ROUTE IS NOT FOUND\"\n}";
                     response.getWriter().write(jsonMessage);
+                    logger.error("UNAUTHORIZED OR THE ROUTE IS NOT FOUND");
                 })
         ); // Bắt lỗi nếu không authorized được thì trả về message
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

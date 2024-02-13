@@ -9,6 +9,8 @@ import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.FollowServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,6 +19,7 @@ import java.util.*;
 
 @Service
 public class FollowService implements FollowServiceImpl {
+    private static Logger logger = LoggerFactory.getLogger(FollowService.class);
     private final FollowRepository followRepository;
     private final JwtUtils jwtUtils;
     private final HttpServletRequest request;
@@ -37,7 +40,10 @@ public class FollowService implements FollowServiceImpl {
     @Override
     public FollowDTO getFollowers(String userId) throws Exception {
         Users user = userRepository.findFirstByUserId(userId);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         List<String> userFollows = new ArrayList<>();
         Set<Followers> followers = user.getFolloweds();
         for (Followers follower : followers){
@@ -49,7 +55,10 @@ public class FollowService implements FollowServiceImpl {
     @Override
     public FollowDTO getFollowings(String userId) throws Exception {
         Users user = userRepository.findFirstByUserId(userId);
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         List<String> userFollowings = new ArrayList<>();
         Set<Followers> followings = user.getFollowers();
         for (Followers follower : followings){
@@ -61,15 +70,37 @@ public class FollowService implements FollowServiceImpl {
     @Override
     public boolean followUser(String userId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user.getUserId().equals(userId)) throw new Exception("Can not follow yourself");
-        if (userRepository.findFirstByUserId(userId) == null) throw new Exception("The user isnt existed");
-        if (user == null) throw new Exception("User is not found");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
+        if (user.getUserId().equals(userId)) {
+            logger.warn("Can not follow yourself");
+            throw new Exception("Can not follow yourself");
+        }
+        if (userRepository.findFirstByUserId(userId) == null) {
+            logger.error("The user isnt existed");
+            throw new Exception("The user isnt existed");
+        }
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
         Followers follower = new Followers();
-        if(followRepository.findFirstByUsers1_UserIdAndUsers2_UserId(user.getUserId(), userId) != null) throw new Exception("This user has already followed");
+        if(followRepository.findFirstByUsers1_UserIdAndUsers2_UserId(user.getUserId(), userId) != null) {
+            logger.error("This user has already followed");
+            throw new Exception("This user has already followed");
+        }
         else {
             follower.setFolId(new FollowerId(user.getUserId(), userId));
         }
@@ -80,15 +111,33 @@ public class FollowService implements FollowServiceImpl {
     @Override
     public boolean unfollowUser(String userId) throws Exception {
         String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) throw new Exception("Not Authorized");
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
         String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) throw new Exception("Have some errors");
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
         Users user = userRepository.findFirstByEmail(email);
-        if (user == null) throw new Exception("User is not found");
-        if (user.getUserId().equals(userId)) throw new Exception("Can not unfollow yourself");
-        if (userRepository.findFirstByUserId(userId) == null) throw new Exception("The user isnt existed");
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
+        if (user.getUserId().equals(userId)) {
+            logger.warn("Can not unfollow yourself");
+            throw new Exception("Can not unfollow yourself");
+        }
+        if (userRepository.findFirstByUserId(userId) == null) {
+            logger.error("The user isnt existed");
+            throw new Exception("The user isnt existed");
+        }
         Followers follower = followRepository.findFirstByUsers1_UserIdAndUsers2_UserId(user.getUserId(), userId);
-        if(follower == null) throw new Exception("This user hasn't followed yet");
+        if(follower == null) {
+            logger.error("This user hasn't followed yet");
+            throw new Exception("This user hasn't followed yet");
+        }
         else {
             followRepository.delete(follower);
         }
