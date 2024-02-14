@@ -9,6 +9,7 @@ import com.didan.social.service.impl.FileUploadsServiceImpl;
 import com.didan.social.service.impl.MailServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,7 +82,9 @@ public class AuthController {
         }
     }
 
-    @Operation(summary = "Logout from forum app", description = "When you logout, the access token will be added in blacklist token")
+    @Operation(summary = "Logout from forum app",
+            description = "When you logout, the access token will be added in blacklist token",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/logout")
     public ResponseEntity<?> logout(){
         ResponseData payload = new ResponseData();
