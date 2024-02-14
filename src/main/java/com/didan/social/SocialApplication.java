@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
+import io.swagger.v3.oas.annotations.servers.Servers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -23,7 +25,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 						name = "Nguyen Di Dan",
 						url = "https://znnguyenportfolio.netlify.app/"
 				)
-		)
+		),
+		servers = {
+				@Server(
+						url = "https://forum.didan.id.vn/",
+						description = "Url for https"
+				),
+				@Server(
+						url = "http://forum.didan.id.vn/",
+						description = "Url for http"
+				),
+				@Server(
+						url = "http://localhost:8081/",
+						description = "Url for localhost"
+				)
+		}
 )
 @SecurityScheme(
 		name = "bearerAuth",
