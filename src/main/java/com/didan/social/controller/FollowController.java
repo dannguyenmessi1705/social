@@ -3,6 +3,9 @@ package com.didan.social.controller;
 import com.didan.social.dto.FollowDTO;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.service.impl.FollowServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@Tag(name = "Follow")
 @RequestMapping("/follow")
 public class FollowController {
     private final FollowServiceImpl followService;
@@ -21,6 +25,9 @@ public class FollowController {
         this.followService = followService;
     }
     // Get Follower
+    @Operation(summary = "Get all people who followed you",
+            description = "Get all people who followed you",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/followers/{userId}")
     public ResponseEntity<?> getFollowers(@PathVariable String userId){
         ResponseData payload = new ResponseData();
@@ -36,6 +43,9 @@ public class FollowController {
         }
     }
     // Get Followings
+    @Operation(summary = "Get all people who are followed by you",
+            description = "Get all people who are followed by you",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/followings/{userId}")
     public ResponseEntity<?> getFollowings(@PathVariable String userId){
         ResponseData payload = new ResponseData();
@@ -51,6 +61,9 @@ public class FollowController {
         }
     }
     // Follow
+    @Operation(summary = "Follow user",
+            description = "Enter the id use you want to follow",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/{userId}")
     public ResponseEntity<?> postFollow(@PathVariable String userId){
         ResponseData payload = new ResponseData();
@@ -73,6 +86,9 @@ public class FollowController {
         }
     }
     // Unfollow
+    @Operation(summary = "Unfollow",
+            description = "Enter id user ypu want to unfollow",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> unfollow(@PathVariable String userId){
         ResponseData payload = new ResponseData();

@@ -6,6 +6,9 @@ import com.didan.social.payload.request.CreatePostRequest;
 import com.didan.social.payload.request.EditPostRequest;
 import com.didan.social.service.PostService;
 import com.didan.social.service.impl.PostServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Tag(name = "Post")
 @RequestMapping("/post")
 public class PostController {
     private final PostServiceImpl postService;
@@ -26,6 +30,9 @@ public class PostController {
         this.postService = postService;
     }
     // Get Post
+    @Operation(summary = "Get posts by page",
+            description = "Enter the page number you want to get posts",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/get")
     public ResponseEntity<?> getPosts(@RequestParam(value = "page", required = false) Integer page){
         if (page == null){
@@ -49,6 +56,9 @@ public class PostController {
         }
     }
     // Create one Post
+    @Operation(summary = "Create a post",
+            description = "Create a post by entering properties of post",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/new", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> createPost(@ModelAttribute CreatePostRequest createPostRequest){
         ResponseData payload = new ResponseData();
@@ -72,6 +82,9 @@ public class PostController {
         }
     }
     // Get Detail One Post
+    @Operation(summary = "Get detail a post",
+            description = "Enter the id post you want to get detail",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{post_id}")
     public ResponseEntity<?> getPostById(@PathVariable("post_id") String postId) {
         ResponseData payload = new ResponseData();
@@ -93,6 +106,9 @@ public class PostController {
     }
 
     // Search Post
+    @Operation(summary = "Search post",
+            description = "Enter the name post you want to find",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/search")
     public ResponseEntity<?> searchPostById(@RequestParam(name = "name") String name) {
         ResponseData payload = new ResponseData();
@@ -114,6 +130,9 @@ public class PostController {
     }
 
     // React Post
+    @Operation(summary = "Like post",
+            description = "Enter the id post you want to like",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/{post_id}")
     public ResponseEntity<?> reactPost(@PathVariable("post_id") String postId) {
         ResponseData payload = new ResponseData();
@@ -132,6 +151,9 @@ public class PostController {
         }
     }
     // Delete React Post
+    @Operation(summary = "Unlike post",
+            description = "Enter the id post you want to unlike",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("{post_id}")
     public ResponseEntity<?> delReactPost(@PathVariable("post_id") String postId){
         ResponseData payload = new ResponseData();
@@ -150,6 +172,9 @@ public class PostController {
         }
     }
     // Update Post
+    @Operation(summary = "Update/Edit post",
+            description = "Enter the id post you want to update/edit",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PatchMapping(value = "/update/{post_id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> updatePost(@PathVariable("post_id") String postId, @ModelAttribute EditPostRequest editPostRequest){
         ResponseData payload = new ResponseData();
@@ -171,6 +196,9 @@ public class PostController {
         }
     }
     // Delete Post
+    @Operation(summary = "Delte post",
+            description = "Enter the id post you want to delete",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/delete/{post_id}")
     public ResponseEntity<?> deletePost(@PathVariable("post_id") String postId){
         ResponseData payload = new ResponseData();

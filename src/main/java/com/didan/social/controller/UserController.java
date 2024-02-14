@@ -4,6 +4,10 @@ import com.didan.social.dto.UserDTO;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.service.AuthService;
 import com.didan.social.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -13,10 +17,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name = "User")
 @RequestMapping("/user")
 public class UserController {
     @Autowired
     UserService userService;
+    @Operation(summary = "Get all users",
+            description = "Get all users",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/getAllUser")
     public ResponseEntity<?> getAllUser(){
         ResponseData payload = new ResponseData();
@@ -36,6 +44,9 @@ public class UserController {
             return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+    @Operation(summary = "Get detail an user",
+            description = "Enter the id user you want get detail",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable String userId){
         ResponseData payload = new ResponseData();
@@ -56,6 +67,9 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Search user",
+            description = "Enter the name user you want to find",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/search")
     public ResponseEntity<?> searchUser(@RequestParam(name = "name") String name){
         ResponseData payload = new ResponseData();

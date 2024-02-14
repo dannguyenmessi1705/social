@@ -6,6 +6,9 @@ import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.CreateCommentRequest;
 import com.didan.social.payload.request.EditCommentRequest;
 import com.didan.social.service.impl.CommentServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Tag(name = "Comment")
 @RequestMapping("/comment")
 public class CommentController {
     private final CommentServiceImpl commentService;
@@ -27,6 +31,9 @@ public class CommentController {
     }
     // Get Comments in Post
     @GetMapping("/post/{post_id}")
+    @Operation(summary = "Get all comments in a post",
+            description = "Enter the id post to get all comments",
+            security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<?> getCommentInPost(@PathVariable("post_id") String postId){
         ResponseData payload = new ResponseData();
         try {
@@ -46,6 +53,9 @@ public class CommentController {
         }
     }
     // Post Comment
+    @Operation(summary = "Post comment in a post",
+            description = "Require id post and properties of the comment",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/post/{post_id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> postCommentInPost(@PathVariable("post_id") String postId, @ModelAttribute CreateCommentRequest createCommentRequest){
         ResponseData payload = new ResponseData();
@@ -69,6 +79,9 @@ public class CommentController {
         }
     }
     // Get Comment By Id
+    @Operation(summary = "Get detail a comment",
+            description = "Enter the id comment to get detail",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/{comment_id}")
     public ResponseEntity<?> getCommentById(@PathVariable("comment_id") String commentId){
         ResponseData payload = new ResponseData();
@@ -89,6 +102,9 @@ public class CommentController {
         }
     }
     // React Comment
+    @Operation(summary = "Like comment",
+            description = "Enter the id comment you want to like",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/{comment_id}")
     public ResponseEntity<?> reactComment(@PathVariable("comment_id") String commentId){
         ResponseData payload = new ResponseData();
@@ -107,6 +123,9 @@ public class CommentController {
         }
     }
     // Delete React Comment
+    @Operation(summary = "Unlike comment",
+            description = "Enter the id comment you want to unlike",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/{comment_id}")
     public ResponseEntity<?> delReactComment(@PathVariable("comment_id") String commentId){
         ResponseData payload = new ResponseData();
@@ -125,6 +144,9 @@ public class CommentController {
         }
     }
     // Update Comment
+    @Operation(summary = "Edit/Update the comment",
+            description = "Enter id comment then properties of comment you want to edit/update",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PatchMapping(value = "/update/{comment_id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> updateComment(@PathVariable("comment_id") String commentId, @ModelAttribute EditCommentRequest editCommentRequest){
         ResponseData payload = new ResponseData();
@@ -146,6 +168,9 @@ public class CommentController {
         }
     }
     // Delete Comment
+    @Operation(summary = "Delete the comment",
+            description = "Enter the id your comment you want to delete",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/delete/{comment_id}")
     public ResponseEntity<?> deleteComment(@PathVariable("comment_id") String commentId){
         ResponseData payload = new ResponseData();

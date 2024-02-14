@@ -45,7 +45,7 @@ public class CustomFilterSecurity {
         http.csrf(csrf -> csrf.disable()); // Tắt csrf
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Tắt Session
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/auth/**", "/images/**")
+                .requestMatchers("/auth/**", "/images/**", "/api-docs**/**", "swagger-ui/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

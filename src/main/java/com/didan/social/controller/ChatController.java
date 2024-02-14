@@ -6,6 +6,9 @@ import com.didan.social.dto.MessageDTO;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.SendMessageRequest;
 import com.didan.social.service.impl.ChatServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Tag(name = "Chat")
 @RequestMapping("/chat")
 public class ChatController {
     private final ChatServiceImpl chatService;
@@ -25,6 +29,9 @@ public class ChatController {
         this.chatService = chatService;
     }
     // Create Conversation
+    @Operation(summary = "Create conversation to invite everyone to box chat",
+                description = "Create conversation to invite everyone to box chat",
+                security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/create")
     public ResponseEntity<?> createConversation(@RequestParam String conversationName){
         ResponseData payload = new ResponseData();
@@ -49,6 +56,9 @@ public class ChatController {
         }
     }
     // Join Conversation
+    @Operation(summary = "Join conversation to chat",
+            description = "Enter the id conversation to join",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/join/{conversation_id}")
     public ResponseEntity<?> joinConversation(@PathVariable(name = "conversation_id") String conversationId){
         ResponseData payload = new ResponseData();
@@ -70,6 +80,9 @@ public class ChatController {
         }
     }
     // Leave Conversation
+    @Operation(summary = "Leave the conversation",
+            description = "Enter id conversation you want to leave. When you leave the conversation, you cannot chat in it",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/leave/{conversation_id}")
     public ResponseEntity<?> leaveConversation(@PathVariable(name = "conversation_id") String conversationId){
         ResponseData payload = new ResponseData();
@@ -90,6 +103,9 @@ public class ChatController {
         }
     }
     // Send Message
+    @Operation(summary = "Send a message",
+            description = "You can send a message in conversations you joined",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/send/{conversation_id}")
     public ResponseEntity<?> sendMessage(@PathVariable("conversation_id") String conversationId, @ModelAttribute SendMessageRequest sendMessageRequest){
         ResponseData payload = new ResponseData();
@@ -112,6 +128,9 @@ public class ChatController {
     }
     // Get All Conversation User joined
     @GetMapping("/conversation/alls")
+    @Operation(summary = "Get all conversations you joined",
+            description = "Get all conversations you joined",
+            security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<?> getAllConversations(){
         ResponseData payload = new ResponseData();
         try {
@@ -132,6 +151,9 @@ public class ChatController {
         }
     }
     // Search Conversation to Join
+    @Operation(summary = "Search conversations you want to find",
+            description = "Enter the name conversation you want to find",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/conversation")
     public ResponseEntity<?> searchConversation(@RequestParam(name = "name") String conversationName){
         ResponseData payload = new ResponseData();
@@ -153,6 +175,9 @@ public class ChatController {
         }
     }
     // Get All Chat in Conversation User Join
+    @Operation(summary = "Get all messages in a conversation you joined",
+            description = "Entr the id conversation you want to get all messages",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/conversation/{conversation_id}")
     public ResponseEntity<?> getAllMessages(@PathVariable("conversation_id") String conversationId){
         ResponseData payload = new ResponseData();
