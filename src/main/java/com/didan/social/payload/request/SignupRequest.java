@@ -13,7 +13,7 @@ public class SignupRequest {
     @JsonProperty(required = true)
     private String password;
     @JsonProperty(required = true)
-    private String dob;
+    private String birthday;
     @JsonProperty(required = true)
     private MultipartFile avatar;
 
@@ -50,10 +50,10 @@ public class SignupRequest {
     }
 
     public String getDob() {
-        return dob;
+        return birthday;
     }
 
     public void setDob(String dob) {
-        this.dob = dob;
+        this.birthday = dob;
     }
 }

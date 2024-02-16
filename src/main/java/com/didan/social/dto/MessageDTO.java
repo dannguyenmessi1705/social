@@ -10,14 +10,14 @@ public class MessageDTO {
     private String messageId;
     private String content;
     private String messageImg;
-    private Date sentAt;
+    private String sentAt;
     private String conversationId;
     private String senderId;
 
     public MessageDTO() {
     }
 
-    public MessageDTO(String messageId, String content, String messageImg, Date sentAt, String conversationId, String senderId) {
+    public MessageDTO(String messageId, String content, String messageImg, String sentAt, String conversationId, String senderId) {
         this.messageId = messageId;
         this.content = content;
         this.messageImg = messageImg;
@@ -50,11 +50,11 @@ public class MessageDTO {
         this.messageImg = messageImg;
     }
 
-    public Date getSentAt() {
+    public String getSentAt() {
         return sentAt;
     }
 
-    public void setSentAt(Date sentAt) {
+    public void setSentAt(String sentAt) {
         this.sentAt = sentAt;
     }
 

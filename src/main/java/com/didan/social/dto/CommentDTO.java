@@ -13,14 +13,14 @@ public class CommentDTO {
     private String commentId;
     private String content;
     private String commentImg;
-    private Date commentAt;
+    private String commentAt;
     private int commentLikes;
     private List<String> userLikes;
 
     public CommentDTO() {
     }
 
-    public CommentDTO(String commentId, String content, String commentImg, Date commentAt, String userComments, int commentLikes, List<String> userLikes) {
+    public CommentDTO(String commentId, String content, String commentImg, String commentAt, String userComments, int commentLikes, List<String> userLikes) {
         this.commentId = commentId;
         this.content = content;
         this.commentImg = commentImg;
@@ -54,11 +54,11 @@ public class CommentDTO {
         this.commentImg = commentImg;
     }
 
-    public Date getCommentAt() {
+    public String getCommentAt() {
         return commentAt;
     }
 
-    public void setCommentAt(Date commentAt) {
+    public void setCommentAt(String commentAt) {
         this.commentAt = commentAt;
     }
 

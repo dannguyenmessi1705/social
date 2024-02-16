@@ -38,7 +38,7 @@ public class UserService implements UserServiceImpl {
             userDTO.setFullName(user.getFullName());
             userDTO.setEmail(user.getEmail());
             userDTO.setAvtUrl(user.getAvtUrl());
-            userDTO.setDob(user.getDob());
+            userDTO.setDob(user.getDob().toString());
             userDTO.setFollowers(user.getFolloweds().size());
             userDTO.setFollowings(user.getFollowers().size());
             userDTO.setPosts(user.getUserPosts().size());
@@ -67,7 +67,7 @@ public class UserService implements UserServiceImpl {
             userDTO.setFullName(user.getFullName());
             userDTO.setEmail(user.getEmail());
             userDTO.setAvtUrl(user.getAvtUrl());
-            userDTO.setDob(user.getDob());
+            userDTO.setDob(user.getDob().toString());
             userDTO.setFollowers(user.getFolloweds().size());
             userDTO.setFollowings(user.getFollowers().size());
             userDTO.setPosts(user.getUserPosts().size());
@@ -95,7 +95,7 @@ public class UserService implements UserServiceImpl {
             userDTO.setFullName(user.getFullName());
             userDTO.setEmail(user.getEmail());
             userDTO.setAvtUrl(user.getAvtUrl());
-            userDTO.setDob(user.getDob());
+            userDTO.setDob(user.getDob().toString());
             userDTO.setFollowers(user.getFolloweds().size());
             userDTO.setFollowings(user.getFollowers().size());
             userDTO.setPosts(user.getUserPosts().size());

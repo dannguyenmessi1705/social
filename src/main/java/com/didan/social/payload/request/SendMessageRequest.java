@@ -3,8 +3,6 @@ package com.didan.social.payload.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-
 public class SendMessageRequest {
     @JsonProperty(required = true)
     private String content;

@@ -13,7 +13,7 @@ public class PostDTO {
     private String title;
     private String postImg;
     private String body;
-    private Date postedAt;
+    private String postedAt;
     private int likesQuantity;
     private List<String> userLikedPost;
     private int commentsQuantity;
@@ -22,7 +22,7 @@ public class PostDTO {
     public PostDTO() {
     }
 
-    public PostDTO(String postId, String userCreatedPost, String title, String postImg, String body, Date postedAt, int likesQuantity, List<String> userLikedPost, int commentsQuantity, List<CommentDTO> comments) {
+    public PostDTO(String postId, String userCreatedPost, String title, String postImg, String body, String postedAt, int likesQuantity, List<String> userLikedPost, int commentsQuantity, List<CommentDTO> comments) {
         this.postId = postId;
         this.userCreatedPost = userCreatedPost;
         this.title = title;
@@ -75,11 +75,11 @@ public class PostDTO {
         this.body = body;
     }
 
-    public Date getPostedAt() {
+    public String getPostedAt() {
         return postedAt;
     }
 
-    public void setPostedAt(Date postedAt) {
+    public void setPostedAt(String postedAt) {
         this.postedAt = postedAt;
     }
 

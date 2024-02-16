@@ -9,7 +9,7 @@ public class UserDTO {
     private String fullName;
     private String email;
     private String avtUrl;
-    private Date dob;
+    private String dateOfBirth;
     private int followers;
     private int followings;
     private int posts;
@@ -19,12 +19,12 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(String userId, String fullName, String email, String avtUrl, Date dob, int followers, int followings, int posts, List<String> postId, int participantGroups) {
+    public UserDTO(String userId, String fullName, String email, String avtUrl, String dateOfBirth, int followers, int followings, int posts, List<String> postId, int participantGroups) {
         this.userId = userId;
         this.fullName = fullName;
         this.email = email;
         this.avtUrl = avtUrl;
-        this.dob = dob;
+        this.dateOfBirth = dateOfBirth;
         this.followers = followers;
         this.followings = followings;
         this.posts = posts;
@@ -64,12 +64,12 @@ public class UserDTO {
         this.avtUrl = avtUrl;
     }
 
-    public Date getDob() {
-        return dob;
+    public String getDob() {
+        return dateOfBirth;
     }
 
-    public void setDob(Date dob) {
-        this.dob = dob;
+    public void setDob(String dob) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public int getFollowers() {

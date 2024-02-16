@@ -6,12 +6,12 @@ import java.util.Date;
 public class ConversationDTO {
     private String conversationId;
     private String conversationName;
-    private Date createdAt;
+    private String createdAt;
 
     public ConversationDTO() {
     }
 
-    public ConversationDTO(String conversationId, String conversationName, Date createdAt) {
+    public ConversationDTO(String conversationId, String conversationName, String createdAt) {
         this.conversationId = conversationId;
         this.conversationName = conversationName;
         this.createdAt = createdAt;
@@ -33,11 +33,11 @@ public class ConversationDTO {
         this.conversationName = conversationName;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 }

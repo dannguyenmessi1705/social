@@ -66,7 +66,7 @@ public class CommentService implements CommentServiceImpl {
             commentDTO.setUserComments(userComment.getUsers().getUserId());
             commentDTO.setContent(comment.getContent());
             commentDTO.setCommentImg(comment.getCommentImg());
-            commentDTO.setCommentAt(comment.getCommentAt());
+            commentDTO.setCommentAt(comment.getCommentAt().toString());
             List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
             commentDTO.setCommentLikes(commentLikes.size());
             List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
@@ -126,7 +126,7 @@ public class CommentService implements CommentServiceImpl {
         commentDTO.setUserComments(userComment.getUsers().getUserId());
         commentDTO.setContent(comment.getContent());
         commentDTO.setCommentImg(comment.getCommentImg());
-        commentDTO.setCommentAt(comment.getCommentAt());
+        commentDTO.setCommentAt(comment.getCommentAt().toString());
         List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
         commentDTO.setCommentLikes(commentLikes.size());
         List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
@@ -237,7 +237,7 @@ public class CommentService implements CommentServiceImpl {
         commentDTO.setUserComments(userComment.getUsers().getUserId());
         commentDTO.setContent(comment.getContent());
         commentDTO.setCommentImg(comment.getCommentImg());
-        commentDTO.setCommentAt(comment.getCommentAt());
+        commentDTO.setCommentAt(comment.getCommentAt().toString());
         List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
         commentDTO.setCommentLikes(commentLikes.size());
         List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());

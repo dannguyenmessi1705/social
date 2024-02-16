@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket</title>
+</head>
+<body>
+    <button type="submit">SEND</button>
+</body>
+<script type="module" >
+    import {io} from "./socket.io-client.min.js"
+    const socket = new io("http://localhost:8082?conversationID=4eabdef8-643f-4169-99ba-02bc0ec41f6c&token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwODA5NjEwMCwiZXhwIjoxNzA4MTgyNTAwfQ.vbq7YqzNMBRiqWKoBoWB59r0p4_4uP9vEKz7TWlQoSk") // Tạo 1 socket mới
+    socket.on("connect", (socket) => {
+        // Khi socket kết nối thành công
+        console.log("Connected to server!");
+    });
+    socket.on("disconnect", (socket) => {
+        // Khi socket bị mất kết nối
+        console.log("Disconnected from server!");
+    });
+    socket.on("get_message", (data) => {
+        // Khi nhận được message từ server
+        console.log("Message from server: ", data);
+    });
+    const sendButton = document.querySelector("button");
+    const input = {
+        content: "Hello server!"
+    }
+    sendButton.addEventListener("click", () => {
+        socket.emit("send_message", input); // Gửi message tới server
+    });
+</script>
+</html>

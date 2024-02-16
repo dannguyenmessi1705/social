@@ -118,7 +118,7 @@ public class ChatService implements ChatServiceImpl {
         ConversationDTO conversationDTO = new ConversationDTO();
         conversationDTO.setConversationId(conversationId);
         conversationDTO.setConversationName(conversation.getConversationName());
-        conversationDTO.setCreatedAt(conversation.getCreatedAt());
+        conversationDTO.setCreatedAt(conversation.getCreatedAt().toString());
         return conversationDTO;
     }
 
@@ -198,7 +198,7 @@ public class ChatService implements ChatServiceImpl {
         return new MessageDTO(messageId,
                                 sendMessageRequest.getContent(),
                                 "message/"+fileName,
-                                nowSql,
+                                nowSql.toString(),
                                 conversationId,
                                 user.getUserId());
     }
@@ -231,7 +231,7 @@ public class ChatService implements ChatServiceImpl {
             Conversations conversation = conversationRepository.findFirstByConversationId(participant.getConversations().getConversationId());
             conversationDTO.setConversationId(conversation.getConversationId());
             conversationDTO.setConversationName(conversation.getConversationName());
-            conversationDTO.setCreatedAt(conversation.getCreatedAt());
+            conversationDTO.setCreatedAt(conversation.getCreatedAt().toString());
             conversationDTOs.add(conversationDTO);
         }
         Collections.sort(conversationDTOs, Comparator.comparing(ConversationDTO::getCreatedAt).reversed());
@@ -250,7 +250,7 @@ public class ChatService implements ChatServiceImpl {
             ConversationDTO conversationDTO = new ConversationDTO();
             conversationDTO.setConversationId(conversation.getConversationId());
             conversationDTO.setConversationName(conversation.getConversationName());
-            conversationDTO.setCreatedAt(conversation.getCreatedAt());
+            conversationDTO.setCreatedAt(conversation.getCreatedAt().toString());
             conversationDTOs.add(conversationDTO);
         }
         return conversationDTOs;
@@ -288,7 +288,7 @@ public class ChatService implements ChatServiceImpl {
             messageDTO.setMessageId(message.getMessageId());
             messageDTO.setContent(message.getContent());
             messageDTO.setMessageImg(message.getMessageImg());
-            messageDTO.setSentAt(message.getSentAt());
+            messageDTO.setSentAt(message.getSentAt().toString());
             messageDTO.setSenderId(message.getUsers().getUserId());
             messageDTO.setConversationId(conversationId);
             messageDTOs.add(messageDTO);

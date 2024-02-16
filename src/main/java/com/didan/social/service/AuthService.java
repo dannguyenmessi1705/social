@@ -41,7 +41,7 @@ public class AuthService implements AuthServiceImpl {
     private final Environment env;
     private final MailServiceImpl mailService;
     private final HttpServletRequest request;
-    private final RedisTemplate redisTemplate;
+//    private final RedisTemplate redisTemplate;
     @Autowired
     public AuthService (UserRepository userRepository,
                         PasswordEncoder passwordEncoder,
@@ -50,8 +50,8 @@ public class AuthService implements AuthServiceImpl {
                         FileUploadsServiceImpl fileUploadsService,
                         Environment env,
                         MailServiceImpl mailService,
-                        HttpServletRequest request,
-                        RedisTemplate redisTemplate
+                        HttpServletRequest request
+//                        RedisTemplate redisTemplate
     ){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -61,7 +61,7 @@ public class AuthService implements AuthServiceImpl {
         this.env = env;
         this.mailService = mailService;
         this.request = request;
-        this.redisTemplate = redisTemplate;
+//        this.redisTemplate = redisTemplate;
     }
     @Override
     public Users login(String email, String password) throws Exception{

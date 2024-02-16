@@ -138,7 +138,7 @@ public class PostService implements PostServiceImpl {
             postDTO.setTitle(post.getTitle());
             postDTO.setPostImg(post.getPostImg());
             postDTO.setBody(post.getBody());
-            postDTO.setPostedAt(post.getPostedAt());
+            postDTO.setPostedAt(post.getPostedAt().toString());
             List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
             // == Set<PostLikes> postLikes = post.getPostLike()
             List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
@@ -154,7 +154,7 @@ public class PostService implements PostServiceImpl {
                 commentDTO.setUserComments(userComment.getUsers().getUserId());
                 commentDTO.setContent(comment.getContent());
                 commentDTO.setCommentImg(comment.getCommentImg());
-                commentDTO.setCommentAt(comment.getCommentAt());
+                commentDTO.setCommentAt(comment.getCommentAt().toString());
                 List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
                 commentDTO.setCommentLikes(commentLikes.size());
                 List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
@@ -189,7 +189,7 @@ public class PostService implements PostServiceImpl {
         postDTO.setTitle(post.getTitle());
         postDTO.setPostImg(post.getPostImg());
         postDTO.setBody(post.getBody());
-        postDTO.setPostedAt(post.getPostedAt());
+        postDTO.setPostedAt(post.getPostedAt().toString());
         List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
         List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
         postDTO.setUserLikedPost(userLikedPosts);
@@ -204,7 +204,7 @@ public class PostService implements PostServiceImpl {
             commentDTO.setUserComments(userComment.getUsers().getUserId());
             commentDTO.setContent(comment.getContent());
             commentDTO.setCommentImg(comment.getCommentImg());
-            commentDTO.setCommentAt(comment.getCommentAt());
+            commentDTO.setCommentAt(comment.getCommentAt().toString());
             List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
             commentDTO.setCommentLikes(commentLikes.size());
             List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
@@ -232,7 +232,7 @@ public class PostService implements PostServiceImpl {
             postDTO.setTitle(post.getTitle());
             postDTO.setPostImg(post.getPostImg());
             postDTO.setBody(post.getBody());
-            postDTO.setPostedAt(post.getPostedAt());
+            postDTO.setPostedAt(post.getPostedAt().toString());
             List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
             List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
             postDTO.setUserLikedPost(userLikedPosts);
@@ -247,7 +247,7 @@ public class PostService implements PostServiceImpl {
                 commentDTO.setUserComments(userComment.getUsers().getUserId());
                 commentDTO.setContent(comment.getContent());
                 commentDTO.setCommentImg(comment.getCommentImg());
-                commentDTO.setCommentAt(comment.getCommentAt());
+                commentDTO.setCommentAt(comment.getCommentAt().toString());
                 List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
                 commentDTO.setCommentLikes(commentLikes.size());
                 List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
@@ -367,7 +367,7 @@ public class PostService implements PostServiceImpl {
         postDTO.setTitle(post.getTitle());
         postDTO.setPostImg(post.getPostImg());
         postDTO.setBody(post.getBody());
-        postDTO.setPostedAt(post.getPostedAt());
+        postDTO.setPostedAt(post.getPostedAt().toString());
         List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
         List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
         postDTO.setUserLikedPost(userLikedPosts);
@@ -382,7 +382,7 @@ public class PostService implements PostServiceImpl {
             commentDTO.setUserComments(userComment.getUsers().getUserId());
             commentDTO.setContent(comment.getContent());
             commentDTO.setCommentImg(comment.getCommentImg());
-            commentDTO.setCommentAt(comment.getCommentAt());
+            commentDTO.setCommentAt(comment.getCommentAt().toString());
             List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
             commentDTO.setCommentLikes(commentLikes.size());
             List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
