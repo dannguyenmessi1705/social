@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "48d6a7e6-0d14-4114-be49-fb827155a26a",
+		"_postman_id": "9d5182db-c3b1-4be4-99eb-6ad3b74e38b1",
 		"name": "JAVA",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "26464204"
+		"_exporter_id": "26464204",
+		"_collection_link": "https://www.postman.com/lunar-module-cosmologist-19298354/workspace/java-forum/collection/26464204-9d5182db-c3b1-4be4-99eb-6ad3b74e38b1?action=share&source=collection_link&creator=26464204"
 	},
 	"item": [
 		{
@@ -43,7 +44,7 @@
 									"type": "text"
 								},
 								{
-									"key": "dob",
+									"key": "birthday",
 									"value": "2000-06-18",
 									"contentType": "",
 									"type": "text"

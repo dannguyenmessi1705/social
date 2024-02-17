@@ -1,0 +1,7 @@
+Kết nối socket realtime chat:
+    - Link socket connect: socket.didan.id.vn?conversationID=123456&token=123456
+        + conversationID: id của nhóm trò chuyện
+        + token: access token của user
+    - Các event của socket:
+        + "get_message": nhận tin nhắn từ server
+        + "send_message": gửi tin nhắn lên server

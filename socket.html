@@ -9,7 +9,7 @@
 </body>
 <script type="module" >
     import {io} from "./socket.io-client.min.js"
-    const socket = new io("http://localhost:8082?conversationID=4eabdef8-643f-4169-99ba-02bc0ec41f6c&token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwODA5NjEwMCwiZXhwIjoxNzA4MTgyNTAwfQ.vbq7YqzNMBRiqWKoBoWB59r0p4_4uP9vEKz7TWlQoSk") // Tạo 1 socket mới
+    const socket = new io("https://socket.didan.id.vn/ws?conversationID=4eabdef8-643f-4169-99ba-02bc0ec41f6c&token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwODExMjU3NiwiZXhwIjoxNzA4MTk4OTc2fQ.jwZD6sJccx9L1kMOvQUpYp8vxNFicB4IqJdIdgQ15hc") // Tạo 1 socket mới
     socket.on("connect", (socket) => {
         // Khi socket kết nối thành công
         console.log("Connected to server!");

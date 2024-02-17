@@ -43,7 +43,7 @@
 									"type": "text"
 								},
 								{
-									"key": "dob",
+									"key": "birthday",
 									"value": "2000-06-18",
 									"contentType": "",
 									"type": "text"
@@ -338,7 +338,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwODA5NjEwMCwiZXhwIjoxNzA4MTgyNTAwfQ.vbq7YqzNMBRiqWKoBoWB59r0p4_4uP9vEKz7TWlQoSk",
 								"type": "text"
 							}
 						],
@@ -681,7 +681,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwODA5NjEwMCwiZXhwIjoxNzA4MTgyNTAwfQ.vbq7YqzNMBRiqWKoBoWB59r0p4_4uP9vEKz7TWlQoSk",
 								"type": "text"
 							}
 						],
@@ -1024,7 +1024,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwODA5NjEwMCwiZXhwIjoxNzA4MTgyNTAwfQ.vbq7YqzNMBRiqWKoBoWB59r0p4_4uP9vEKz7TWlQoSk",
 								"type": "text"
 							}
 						],
@@ -1033,13 +1033,14 @@
 							"formdata": [
 								{
 									"key": "content",
-									"value": "Hello Spring",
+									"value": "Oke",
 									"type": "text"
 								},
 								{
 									"key": "messageImg",
 									"type": "file",
-									"src": "/D:/messi/Pictures/messi-1024x562-15976585975641743901905.jpg"
+									"src": "/D:/messi/Pictures/messi-1024x562-15976585975641743901905.jpg",
+									"disabled": true
 								}
 							]
 						},
@@ -1068,7 +1069,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwNzMyMjkwMywiZXhwIjoxNzA3NDA5MzAzfQ.X77ipWksz_byjCyUDN3-r90CvRLoAqm5ZtqlJMBwJok",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtZXNzaXByb2h5QGdtYWlsLmNvbSIsImlhdCI6MTcwODA5NjEwMCwiZXhwIjoxNzA4MTgyNTAwfQ.vbq7YqzNMBRiqWKoBoWB59r0p4_4uP9vEKz7TWlQoSk",
 								"type": "text"
 							}
 						],
