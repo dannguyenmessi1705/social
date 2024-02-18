@@ -41,6 +41,7 @@ public class CustomFilterSecurity {
     // Quy định các rules
     @Bean // Đánh dấu đây là Bean, ghi đè lên Bean mặc định của Spring Security
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception { // Cấu hình bộ lọc
+        http.cors();
         http.csrf(csrf -> csrf.disable()); // Tắt csrf
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Tắt Session
         http.authorizeHttpRequests(authorize -> authorize
