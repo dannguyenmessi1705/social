@@ -227,6 +227,9 @@ public class CommentService implements CommentServiceImpl {
             comment.setContent(editCommentRequest.getContent());
         }
         if (editCommentRequest.getCommentImg()!= null && !editCommentRequest.getCommentImg().isEmpty()){
+            if(StringUtils.hasText(comment.getCommentImg())){
+                fileUploadsService.deleteFile(comment.getCommentImg());
+            }
             String fileName = fileUploadsService.storeFile(editCommentRequest.getCommentImg(), "comment", commentId);
             comment.setCommentImg("comment/"+fileName);
         }

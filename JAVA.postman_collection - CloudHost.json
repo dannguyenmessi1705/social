@@ -310,6 +310,59 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Edit User",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmhua0BnbWFpbC5jb20iLCJpYXQiOjE3MDk1NjkwNjksImV4cCI6MTcwOTY1NTQ2OX0.wiiBTfYfdLcEJxQCaWSYAdxk3Mv0eGL5YcyuX5C3YcQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								},
+								{
+									"key": "newPassword",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/D:/messi/Pictures/UCL/tải xuống.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://forum.didan.id.vn/user/edit",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"user",
+								"edit"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

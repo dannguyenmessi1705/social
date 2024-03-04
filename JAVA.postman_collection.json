@@ -285,6 +285,56 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Edit User",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmhua0BnbWFpbC5jb20iLCJpYXQiOjE3MDk1Njk0MDUsImV4cCI6MTcwOTY1NTgwNX0.DBhrS-ZbncJsqn2nkCkzj-Kk_n2-V6aPmV994e3EUOY",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "12345",
+									"type": "text"
+								},
+								{
+									"key": "newPassword",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"type": "file",
+									"src": "/D:/messi/Pictures/UCL/champions league.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:8081/user/edit",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"user",
+								"edit"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

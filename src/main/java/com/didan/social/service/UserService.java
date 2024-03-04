@@ -164,6 +164,9 @@ public class UserService implements UserServiceImpl {
                 user.setPassword(passwordEncoder.encode(editUserRequest.getNewPassword()));
             }
             if (editUserRequest.getAvatar() != null && !editUserRequest.getAvatar().isEmpty()){
+                if(StringUtils.hasText(user.getAvtUrl())){
+                    fileUploadsService.deleteFile(user.getAvtUrl());
+                }
                 String fileName = fileUploadsService.storeFile(editUserRequest.getAvatar(), "avatar", user.getUserId());
                 user.setAvtUrl("avatar/"+fileName);
             }

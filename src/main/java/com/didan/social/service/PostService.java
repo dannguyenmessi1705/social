@@ -357,6 +357,9 @@ public class PostService implements PostServiceImpl {
             post.setBody(editPostRequest.getBody());
         }
         if (editPostRequest.getPostImg()!= null && !editPostRequest.getPostImg().isEmpty()){
+            if(StringUtils.hasText(post.getPostImg())){
+                fileUploadsService.deleteFile(post.getPostImg());
+            }
             String fileName = fileUploadsService.storeFile(editPostRequest.getPostImg(), "post", postId.toString());
             post.setPostImg("post/"+fileName);
         }
