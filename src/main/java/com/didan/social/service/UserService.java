@@ -154,13 +154,13 @@ public class UserService implements UserServiceImpl {
             logger.error("Password is incorrect");
             throw new Exception("Password is incorrect");
         } else {
-            if (editUserRequest.getEmail() != null) {
+            if (StringUtils.hasText(editUserRequest.getEmail())) {
                 Users user_email = userRepository.findFirstByEmail(editUserRequest.getEmail());
                 if (user_email != null){
                     logger.info("Email is registed!");
                 } else user.setEmail(editUserRequest.getEmail());
             }
-            if (editUserRequest.getNewPassword() != null) {
+            if (StringUtils.hasText(editUserRequest.getNewPassword())) {
                 user.setPassword(passwordEncoder.encode(editUserRequest.getNewPassword()));
             }
             if (editUserRequest.getAvatar() != null && !editUserRequest.getAvatar().isEmpty()){

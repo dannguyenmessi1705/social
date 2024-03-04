@@ -49,11 +49,11 @@ public class SignupRequest {
         this.password = password;
     }
 
-    public String getDob() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setDob(String dob) {
-        this.birthday = dob;
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }

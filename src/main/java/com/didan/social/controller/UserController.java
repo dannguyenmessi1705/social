@@ -99,7 +99,7 @@ public class UserController {
     @Operation(summary = "Edit user info", description = "Require password",
             security = @SecurityRequirement(name = "bearerAuth"))
     @PatchMapping(value = "/edit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> postSignup(@ModelAttribute EditUserRequest editUserRequest){
+    public ResponseEntity<?> patchEdit(@ModelAttribute EditUserRequest editUserRequest){
         ResponseData payload = new ResponseData();
         try {
             if (userService.updateUser(editUserRequest)){

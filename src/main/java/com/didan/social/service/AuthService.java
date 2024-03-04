@@ -104,7 +104,7 @@ public class AuthService implements AuthServiceImpl {
             userSave.setEmail(signupRequest.getEmail());
             userSave.setFullName(signupRequest.getFullName());
             userSave.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
-            String dateString = signupRequest.getDob();
+            String dateString = signupRequest.getBirthday();
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             java.util.Date utilDate = format.parse(dateString);
             java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());

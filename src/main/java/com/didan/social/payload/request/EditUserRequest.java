@@ -5,11 +5,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class EditUserRequest {
     @JsonProperty(required = false)
-    private String email;
+    private String email = null;
     @JsonProperty(required = true)
-    private String password;
+    private String password = null;
     @JsonProperty(required = false)
-    private String newPassword;
+    private String newPassword = null;
     @JsonProperty(required = false)
     private MultipartFile avatar = null;
 
