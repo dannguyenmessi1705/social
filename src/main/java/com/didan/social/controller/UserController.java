@@ -1,7 +1,10 @@
 package com.didan.social.controller;
 
 import com.didan.social.dto.UserDTO;
+import com.didan.social.entity.Users;
 import com.didan.social.payload.ResponseData;
+import com.didan.social.payload.request.EditUserRequest;
+import com.didan.social.payload.request.SignupRequest;
 import com.didan.social.service.AuthService;
 import com.didan.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,10 +14,13 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Tag(name = "User")
@@ -86,6 +92,24 @@ public class UserController {
             payload.setSuccess(false);
             payload.setStatusCode(500);
             payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
+    @Operation(summary = "Edit user info", description = "Require password",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PatchMapping(value = "/edit", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> postSignup(@ModelAttribute EditUserRequest editUserRequest){
+        ResponseData payload = new ResponseData();
+        try {
+            if (userService.updateUser(editUserRequest)){
+                payload.setDescription("Edit user successful");
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setDescription(e.getMessage());
+            payload.setStatusCode(500);
+            payload.setSuccess(false);
             return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
