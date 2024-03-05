@@ -113,4 +113,23 @@ public class UserController {
             return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    // Grant admin
+    @Operation(summary = "Grant user for admin role", description = "Require admin to do this",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @PatchMapping(value = "/grant")
+    public ResponseEntity<?> grantUser(@RequestParam String userId){
+        ResponseData payload = new ResponseData();
+        try {
+            if (userService.grantAdmin(userId)){
+                payload.setDescription("Grant user for admin role successful");
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setDescription(e.getMessage());
+            payload.setStatusCode(500);
+            payload.setSuccess(false);
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
 }

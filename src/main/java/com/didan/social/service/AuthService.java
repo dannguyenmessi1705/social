@@ -98,6 +98,7 @@ public class AuthService implements AuthServiceImpl {
         else{
             UUID id = UUID.randomUUID();
             Users userSave = new Users();
+            userSave.setIsAdmin(0);
             String fileName = fileUploadsService.storeFile(signupRequest.getAvatar(), "avatar", id.toString());
             userSave.setAvtUrl("avatar/"+fileName);
             userSave.setUserId(id.toString());

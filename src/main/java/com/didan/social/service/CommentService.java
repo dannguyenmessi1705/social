@@ -270,10 +270,15 @@ public class CommentService implements CommentServiceImpl {
             logger.error("There is not comment to delete");
             throw new Exception("There is not comment to delete");
         }
-        UserComment userComment = userCommentRepository.findFirstByUsers_UserIdAndComments_CommentId(user.getUserId(), commentId);
+        UserComment userComment = new UserComment();
+        if (user.getIsAdmin() == 0){
+            userComment = userCommentRepository.findFirstByUsers_UserIdAndComments_CommentId(user.getUserId(), commentId);
+        } else {
+            userComment = userCommentRepository.findFirstByComments_CommentId(commentId);
+        }
         if (userComment == null) {
-            logger.error("The user hasn't this comment or not authorized to edit this comment");
-            throw new Exception("The user hasn't this comment or not authorized to edit this comment");
+            logger.error("The user hasn't this post or not authorized to edit this post");
+            throw new Exception("The user hasn't this post or not authorized to edit this post");
         }
         userCommentRepository.delete(userComment);
         if(StringUtils.hasText(comment.getCommentImg())){

@@ -174,4 +174,39 @@ public class UserService implements UserServiceImpl {
             return true;
         }
     }
+
+    @Override
+    public boolean grantAdmin(String userId) throws Exception {
+        String accessToken = jwtUtils.getTokenFromHeader(request);
+        if (!StringUtils.hasText(accessToken)) {
+            logger.error("Not Authorized");
+            throw new Exception("Not Authorized");
+        }
+        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
+        if (email == null) {
+            logger.error("Have some errors");
+            throw new Exception("Have some errors");
+        }
+        Users user = userRepository.findFirstByEmail(email);
+        if (user == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
+        if (user.getIsAdmin() == 0){
+            logger.error("You are not admin");
+            throw new Exception("You are not admin");
+        }
+        Users user_grant = userRepository.findFirstByUserId(userId);
+        if (user_grant == null) {
+            logger.error("User is not found");
+            throw new Exception("User is not found");
+        }
+        if (user_grant.getIsAdmin() == 1){
+            logger.error("User is already admin");
+            throw new Exception("User is already admin");
+        }
+        user_grant.setIsAdmin(1);
+        userRepository.save(user_grant);
+        return true;
+    }
 }

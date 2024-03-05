@@ -363,6 +363,40 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Grant User for Admin role",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmhua0BnbWFpbC5jb20iLCJpYXQiOjE3MDk1NjkwNjksImV4cCI6MTcwOTY1NTQ2OX0.wiiBTfYfdLcEJxQCaWSYAdxk3Mv0eGL5YcyuX5C3YcQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://forum.didan.id.vn/user/grant?userId=c7831745-5302-417d-bba8-7055e6354d8f",
+							"protocol": "https",
+							"host": [
+								"forum",
+								"didan",
+								"id",
+								"vn"
+							],
+							"path": [
+								"user",
+								"grant"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "c7831745-5302-417d-bba8-7055e6354d8f"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

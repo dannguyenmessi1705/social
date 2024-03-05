@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface UserPostRepository extends JpaRepository<UserPosts, String> {
     UserPosts findFirstByPosts_PostIdAndUsers_UserId(String postId, String userId);
+    UserPosts findFirstByPosts_PostId(String postId);
     UserPosts findFirstByPosts(Posts posts);
 }

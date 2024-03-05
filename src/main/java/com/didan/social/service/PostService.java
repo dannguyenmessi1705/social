@@ -420,12 +420,21 @@ public class PostService implements PostServiceImpl {
                 logger.info("There is not post to delete");
                 throw new Exception("There is not post to delete");
             }
-            UserPosts userPosts = userPostRepository.findFirstByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
-            if (userPosts == null) {
+            UserPosts userPost = new UserPosts();
+            if (user.getIsAdmin() == 0){
+                userPost = userPostRepository.findFirstByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
+            } else {
+                userPost = userPostRepository.findFirstByPosts_PostId(postId);
+            }
+            if (userPost == null) {
                 logger.error("The user hasn't this post or not authorized to edit this post");
                 throw new Exception("The user hasn't this post or not authorized to edit this post");
             }
-            userPostRepository.delete(userPosts);
+            if (userPost == null) {
+                logger.error("The user hasn't this post or not authorized to edit this post");
+                throw new Exception("The user hasn't this post or not authorized to edit this post");
+            }
+            userPostRepository.delete(userPost);
             postRepository.delete(post);
             if(StringUtils.hasText(post.getPostImg())){
                 fileUploadsService.deleteFile(post.getPostImg());

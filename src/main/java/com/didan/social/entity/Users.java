@@ -11,6 +11,9 @@ public class Users {
     @Column(name = "user_id", unique = true)
     private String userId;
 
+    @Column(name = "is_admin", nullable = false)
+    private int isAdmin;
+
     @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
@@ -63,8 +66,9 @@ public class Users {
 
     public Users() {}
 
-    public Users(String userId, String fullName, String email, String password, String avtUrl, Date dob, Date resetExp, String resetToken, String accessToken, Set<Followers> followers, Set<Followers> followeds, Set<PostLikes> postLikes, Set<UserPosts> userPosts, Set<Participants> participants, Set<Messages> messages, Set<UserComment> userComments, Set<CommentLikes> commentLikes) {
+    public Users(String userId, int isAdmin, String fullName, String email, String password, String avtUrl, Date dob, Date resetExp, String resetToken, String accessToken, Set<Followers> followers, Set<Followers> followeds, Set<PostLikes> postLikes, Set<UserPosts> userPosts, Set<Participants> participants, Set<Messages> messages, Set<UserComment> userComments, Set<CommentLikes> commentLikes) {
         this.userId = userId;
+        this.isAdmin = isAdmin;
         this.fullName = fullName;
         this.email = email;
         this.password = password;
@@ -89,6 +93,14 @@ public class Users {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public int getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(int isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
     public String getFullName() {
