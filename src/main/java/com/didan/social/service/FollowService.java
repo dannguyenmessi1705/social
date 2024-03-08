@@ -6,6 +6,7 @@ import com.didan.social.entity.Users;
 import com.didan.social.entity.keys.FollowerId;
 import com.didan.social.repository.FollowRepository;
 import com.didan.social.repository.UserRepository;
+import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.FollowServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,21 +20,21 @@ import java.util.*;
 
 @Service
 public class FollowService implements FollowServiceImpl {
-    private static Logger logger = LoggerFactory.getLogger(FollowService.class);
+    private final Logger logger = LoggerFactory.getLogger(FollowService.class);
     private final FollowRepository followRepository;
     private final JwtUtils jwtUtils;
-    private final HttpServletRequest request;
+    private final AuthorizePathServiceImpl authorizePathService;
     private final UserRepository userRepository;
 
     @Autowired
     public FollowService(JwtUtils jwtUtils,
                          FollowRepository followRepository,
-                         HttpServletRequest request,
+                         AuthorizePathServiceImpl authorizePathService,
                          UserRepository userRepository)
     {
         this.followRepository = followRepository;
         this.jwtUtils = jwtUtils;
-        this.request = request;
+        this.authorizePathService = authorizePathService;
         this.userRepository = userRepository;
     }
 
@@ -68,27 +69,18 @@ public class FollowService implements FollowServiceImpl {
     }
 
     @Override
-    public boolean followUser(String userId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+    public boolean followUser(String userIdFollow) throws Exception {
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
         }
-        if (user.getUserId().equals(userId)) {
+        if (user.getUserId().equals(userIdFollow)) {
             logger.warn("Can not follow yourself");
             throw new Exception("Can not follow yourself");
         }
-        if (userRepository.findFirstByUserId(userId) == null) {
+        if (userRepository.findFirstByUserId(userIdFollow) == null) {
             logger.error("The user isnt existed");
             throw new Exception("The user isnt existed");
         }
@@ -97,43 +89,34 @@ public class FollowService implements FollowServiceImpl {
             throw new Exception("User is not found");
         }
         Followers follower = new Followers();
-        if(followRepository.findFirstByUsers1_UserIdAndUsers2_UserId(user.getUserId(), userId) != null) {
+        if(followRepository.findFirstByUsers1_UserIdAndUsers2_UserId(user.getUserId(), userIdFollow) != null) {
             logger.error("This user has already followed");
             throw new Exception("This user has already followed");
         }
         else {
-            follower.setFolId(new FollowerId(user.getUserId(), userId));
+            follower.setFolId(new FollowerId(user.getUserId(), userIdFollow));
         }
         followRepository.save(follower);
         return true;
     }
 
     @Override
-    public boolean unfollowUser(String userId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+    public boolean unfollowUser(String userIdUnfollow) throws Exception {
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
         }
-        if (user.getUserId().equals(userId)) {
+        if (user.getUserId().equals(userIdUnfollow)) {
             logger.warn("Can not unfollow yourself");
             throw new Exception("Can not unfollow yourself");
         }
-        if (userRepository.findFirstByUserId(userId) == null) {
+        if (userRepository.findFirstByUserId(userIdUnfollow) == null) {
             logger.error("The user isnt existed");
             throw new Exception("The user isnt existed");
         }
-        Followers follower = followRepository.findFirstByUsers1_UserIdAndUsers2_UserId(user.getUserId(), userId);
+        Followers follower = followRepository.findFirstByUsers1_UserIdAndUsers2_UserId(user.getUserId(), userIdUnfollow);
         if(follower == null) {
             logger.error("This user hasn't followed yet");
             throw new Exception("This user hasn't followed yet");

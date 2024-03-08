@@ -20,7 +20,7 @@ import java.util.Date;
 
 @Service
 public class FileUploadsService implements FileUploadsServiceImpl {
-    private static Logger logger = LoggerFactory.getLogger(FileUploadsService.class);
+    private final Logger logger = LoggerFactory.getLogger(FileUploadsService.class);
     private final Environment env;
     @Autowired
     public FileUploadsService(Environment env){

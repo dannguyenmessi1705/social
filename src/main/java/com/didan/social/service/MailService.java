@@ -19,7 +19,7 @@ import java.io.IOException;
 
 @Service
 public class MailService implements MailServiceImpl {
-    private static Logger logger = LoggerFactory.getLogger(MailService.class);
+    private final Logger logger = LoggerFactory.getLogger(MailService.class);
     private final Environment env;
     @Autowired
     public MailService(Environment env){

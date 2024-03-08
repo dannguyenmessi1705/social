@@ -12,6 +12,7 @@ import com.didan.social.repository.CommentLikeRepository;
 import com.didan.social.repository.CommentRepository;
 import com.didan.social.repository.UserCommentRepository;
 import com.didan.social.repository.UserRepository;
+import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.CommentServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,14 +30,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class CommentService implements CommentServiceImpl {
-    private static Logger logger = LoggerFactory.getLogger(CommentService.class);
+    private final Logger logger = LoggerFactory.getLogger(CommentService.class);
     private final UserCommentRepository userCommentRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final FileUploadsService fileUploadsService;
-    private final HttpServletRequest request;
+    private final AuthorizePathServiceImpl authorizePathService;
     @Autowired
     public CommentService(UserCommentRepository userCommentRepository,
                           CommentRepository commentRepository,
@@ -44,14 +45,14 @@ public class CommentService implements CommentServiceImpl {
                           JwtUtils jwtUtils,
                           UserRepository userRepository,
                           FileUploadsService fileUploadsService,
-                          HttpServletRequest request){
+                          AuthorizePathServiceImpl authorizePathService){
         this.userCommentRepository = userCommentRepository;
         this.commentRepository = commentRepository;
         this.commentLikeRepository = commentLikeRepository;
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.fileUploadsService = fileUploadsService;
-        this.request = request;
+        this.authorizePathService = authorizePathService;
     }
 
     @Override
@@ -79,21 +80,12 @@ public class CommentService implements CommentServiceImpl {
 
     @Override
     public String postCommentInPost(String postId, CreateCommentRequest createCommentRequest) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)){
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
         if (!StringUtils.hasText(createCommentRequest.getContent())){
             logger.error("Miss some fields");
             throw new Exception("Miss some fields");
         }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -136,17 +128,8 @@ public class CommentService implements CommentServiceImpl {
 
     @Override
     public boolean likeComment(String commentId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -171,17 +154,8 @@ public class CommentService implements CommentServiceImpl {
 
     @Override
     public boolean unlikeComment(String commentId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -202,17 +176,8 @@ public class CommentService implements CommentServiceImpl {
 
     @Override
     public CommentDTO updateComment(String commentId, EditCommentRequest editCommentRequest) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -250,17 +215,8 @@ public class CommentService implements CommentServiceImpl {
 
     @Override
     public boolean deleteComment(String commentId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");

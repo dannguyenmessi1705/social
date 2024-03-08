@@ -10,6 +10,7 @@ import com.didan.social.repository.ConversationRepository;
 import com.didan.social.repository.MessageRepository;
 import com.didan.social.repository.ParticipantRepository;
 import com.didan.social.repository.UserRepository;
+import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.ChatServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,14 +27,14 @@ import java.util.*;
 
 @Service
 public class ChatService implements ChatServiceImpl {
-    private static Logger logger = LoggerFactory.getLogger(ChatService.class);
+    private final Logger logger = LoggerFactory.getLogger(ChatService.class);
     private final ConversationRepository conversationRepository;
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
-    private final HttpServletRequest request;
     private final ParticipantRepository participantRepository;
     private final FileUploadsService fileUploadsService;
     private final MessageRepository messageRepository;
+    private final AuthorizePathServiceImpl authorizePathService;
     @Autowired
     public ChatService(ConversationRepository conversationRepository,
                        JwtUtils jwtUtils,
@@ -41,28 +42,19 @@ public class ChatService implements ChatServiceImpl {
                        ParticipantRepository participantRepository,
                        FileUploadsService fileUploadsService,
                        MessageRepository messageRepository,
-                       HttpServletRequest request){
+                       AuthorizePathServiceImpl authorizePathService){
         this.conversationRepository = conversationRepository;
         this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.participantRepository = participantRepository;
         this.fileUploadsService = fileUploadsService;
         this.messageRepository = messageRepository;
-        this.request = request;
+        this.authorizePathService = authorizePathService;
     }
     @Override
     public String createConversation(String conversationName) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -85,17 +77,8 @@ public class ChatService implements ChatServiceImpl {
 
     @Override
     public ConversationDTO joinConversation(String conversationId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -124,17 +107,8 @@ public class ChatService implements ChatServiceImpl {
 
     @Override
     public boolean leaveConversation(String conversationId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -155,17 +129,8 @@ public class ChatService implements ChatServiceImpl {
 
     @Override
     public MessageDTO sendMessage(String conversationId, SendMessageRequest sendMessageRequest) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -205,17 +170,8 @@ public class ChatService implements ChatServiceImpl {
 
     @Override
     public List<ConversationDTO> getAllConversation() throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -258,17 +214,8 @@ public class ChatService implements ChatServiceImpl {
 
     @Override
     public List<MessageDTO> getAllMessagesInConversation(String conversationId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");

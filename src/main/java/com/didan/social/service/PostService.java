@@ -7,6 +7,7 @@ import com.didan.social.entity.keys.UserPostId;
 import com.didan.social.payload.request.CreatePostRequest;
 import com.didan.social.payload.request.EditPostRequest;
 import com.didan.social.repository.*;
+import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.PostServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import com.google.gson.Gson;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -36,62 +39,47 @@ import java.util.stream.Collectors;
 @Service
 public class PostService implements PostServiceImpl {
 //    private Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
-    private static Logger logger = LoggerFactory.getLogger(PostService.class);
+    private final Logger logger = LoggerFactory.getLogger(PostService.class);
     private final PostRepository postRepository;
     private final UserPostRepository userPostRepository;
     private final FileUploadsService fileUploadsService;
-    private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final PostLikeRepository postLikeRepository;
     private final UserCommentRepository userCommentRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
-//    private final RedisTemplate redisTemplate;
-    private final HttpServletRequest request;
+    private final AuthorizePathServiceImpl authorizePathService;
     @Autowired
     public PostService(PostRepository postRepository,
                        UserPostRepository userPostRepository,
                        FileUploadsService fileUploadsService,
-                       JwtUtils jwtUtils,
                        UserRepository userRepository,
                        PostLikeRepository postLikeRepository,
                        UserCommentRepository userCommentRepository,
                        CommentRepository commentRepository,
                        CommentLikeRepository commentLikeRepository,
-//                       RedisTemplate redisTemplate,
-                       HttpServletRequest request
+                       AuthorizePathServiceImpl authorizePathService
     ){
         this.postRepository = postRepository;
         this.userPostRepository = userPostRepository;
         this.fileUploadsService = fileUploadsService;
-        this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.postLikeRepository = postLikeRepository;
         this.userCommentRepository = userCommentRepository;
         this.commentRepository =commentRepository;
         this.commentLikeRepository = commentLikeRepository;
-//        this.redisTemplate = redisTemplate;
-        this.request = request;
+        this.authorizePathService = authorizePathService;
     }
     @Override
     public String createPost(CreatePostRequest createPostRequest) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
+        String userId = authorizePathService.getUserIdAuthoried();
         if (!StringUtils.hasText(createPostRequest.getTitle())
-            || !StringUtils.hasText(createPostRequest.getBody())
+                || !StringUtils.hasText(createPostRequest.getBody())
         ){
             logger.error("Miss some fields");
             throw new Exception("Miss some fields");
         }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -251,17 +239,8 @@ public class PostService implements PostServiceImpl {
 
     @Override
     public boolean likePost(String postId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -286,17 +265,8 @@ public class PostService implements PostServiceImpl {
 
     @Override
     public boolean unlikePost(String postId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -317,17 +287,8 @@ public class PostService implements PostServiceImpl {
 
     @Override
     public PostDTO updatePost(String postId, EditPostRequest editPostRequest) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -388,17 +349,8 @@ public class PostService implements PostServiceImpl {
     @Override
     public boolean deletePost(String postId) throws Exception {
         try{
-            String accessToken = jwtUtils.getTokenFromHeader(request);
-            if (!StringUtils.hasText(accessToken)) {
-                logger.error("Not Authorized");
-                throw new Exception("Not Authorized");
-            }
-            String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-            if (email == null) {
-                logger.error("Have some errors");
-                throw new Exception("Have some errors");
-            }
-            Users user = userRepository.findFirstByEmail(email);
+            String userId = authorizePathService.getUserIdAuthoried();
+            Users user = userRepository.findFirstByUserId(userId);
             if (user == null) {
                 logger.error("User is not found");
                 throw new Exception("User is not found");

@@ -5,6 +5,7 @@ import com.didan.social.entity.UserPosts;
 import com.didan.social.entity.Users;
 import com.didan.social.payload.request.EditUserRequest;
 import com.didan.social.repository.UserRepository;
+import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.FileUploadsServiceImpl;
 import com.didan.social.service.impl.UserServiceImpl;
 import com.didan.social.utils.JwtUtils;
@@ -23,22 +24,19 @@ import java.util.List;
 
 @Service
 public class UserService implements UserServiceImpl {
-    private static Logger logger = LoggerFactory.getLogger(UserService.class);
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
-    private final JwtUtils jwtUtils;
-    private final HttpServletRequest request;
+    private final AuthorizePathServiceImpl authorizePathService;
     private final PasswordEncoder passwordEncoder;
     private final FileUploadsService fileUploadsService;
     @Autowired
     public UserService(UserRepository userRepository,
-                       JwtUtils jwtUtils,
-                       HttpServletRequest request,
+                       AuthorizePathServiceImpl authorizePathService,
                        PasswordEncoder passwordEncoder,
                        FileUploadsService fileUploadsService
     ){
         this.userRepository = userRepository;
-        this.jwtUtils = jwtUtils;
-        this.request = request;
+        this.authorizePathService = authorizePathService;
         this.passwordEncoder = passwordEncoder;
         this.fileUploadsService = fileUploadsService;
     }
@@ -131,21 +129,12 @@ public class UserService implements UserServiceImpl {
 
     @Override
     public boolean updateUser(EditUserRequest editUserRequest) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
         if (!StringUtils.hasText(editUserRequest.getPassword())){
             logger.error("The password is required");
             throw new Exception("The password is required");
         }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -176,18 +165,9 @@ public class UserService implements UserServiceImpl {
     }
 
     @Override
-    public boolean grantAdmin(String userId) throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (!StringUtils.hasText(accessToken)) {
-            logger.error("Not Authorized");
-            throw new Exception("Not Authorized");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        if (email == null) {
-            logger.error("Have some errors");
-            throw new Exception("Have some errors");
-        }
-        Users user = userRepository.findFirstByEmail(email);
+    public boolean grantAdmin(String userIdGranted) throws Exception {
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
@@ -196,7 +176,7 @@ public class UserService implements UserServiceImpl {
             logger.error("You are not admin");
             throw new Exception("You are not admin");
         }
-        Users user_grant = userRepository.findFirstByUserId(userId);
+        Users user_grant = userRepository.findFirstByUserId(userIdGranted);
         if (user_grant == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");

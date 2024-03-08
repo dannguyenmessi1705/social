@@ -75,7 +75,7 @@ public class AuthService implements AuthServiceImpl {
                 BlacklistToken blacklistToken = new BlacklistToken(user.getAccessToken());
                 blacklistRepository.save(blacklistToken);
             }
-            user.setAccessToken(jwtUtils.generateAccessToken(user.getEmail()));
+            user.setAccessToken(jwtUtils.generateAccessToken(user.getUserId()));
             userRepository.save(user);
             return user;
         }
@@ -110,7 +110,7 @@ public class AuthService implements AuthServiceImpl {
             java.util.Date utilDate = format.parse(dateString);
             java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
             userSave.setDob(sqlDate);
-            userSave.setAccessToken(jwtUtils.generateAccessToken(signupRequest.getEmail()));
+            userSave.setAccessToken(jwtUtils.generateAccessToken(id.toString()));
             userRepository.save(userSave);
             mailService.sendTextEmail(signupRequest.getEmail(), "WELCOME", "<h1>You signup successfully. Welcome to our service</h1>");
             return userSave;
