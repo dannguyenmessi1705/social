@@ -7,6 +7,7 @@ import com.didan.social.payload.request.SignupRequest;
 import com.didan.social.repository.BlacklistRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.AuthServiceImpl;
+import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.FileUploadsServiceImpl;
 import com.didan.social.service.impl.MailServiceImpl;
 import com.didan.social.utils.JwtUtils;
@@ -32,36 +33,30 @@ import java.util.*;
 
 @Service
 public class AuthService implements AuthServiceImpl {
-    private static Logger logger = LoggerFactory.getLogger(AuthService.class);
+    private final Logger logger = LoggerFactory.getLogger(AuthService.class);
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtils jwtUtils;
     private final BlacklistRepository blacklistRepository;
     private final FileUploadsServiceImpl fileUploadsService;
-    private final Environment env;
     private final MailServiceImpl mailService;
-    private final HttpServletRequest request;
-//    private final RedisTemplate redisTemplate;
+    private final AuthorizePathServiceImpl authorizePathService;
+    private final JwtUtils jwtUtils;
     @Autowired
     public AuthService (UserRepository userRepository,
                         PasswordEncoder passwordEncoder,
-                        JwtUtils jwtUtils,
                         BlacklistRepository blacklistRepository,
                         FileUploadsServiceImpl fileUploadsService,
-                        Environment env,
+                        JwtUtils jwtUtils,
                         MailServiceImpl mailService,
-                        HttpServletRequest request
-//                        RedisTemplate redisTemplate
+                        AuthorizePathServiceImpl authorizePathService
     ){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
+        this.authorizePathService = authorizePathService;
         this.blacklistRepository = blacklistRepository;
         this.fileUploadsService = fileUploadsService;
-        this.env = env;
         this.mailService = mailService;
-        this.request = request;
-//        this.redisTemplate = redisTemplate;
+        this.jwtUtils = jwtUtils;
     }
     @Override
     public Users login(String email, String password) throws Exception{
@@ -119,13 +114,8 @@ public class AuthService implements AuthServiceImpl {
 
     @Override
     public void logout() throws Exception {
-        String accessToken = jwtUtils.getTokenFromHeader(request);
-        if (accessToken == null) {
-            logger.error("Not Authorization");
-            throw new Exception("Not Authorization");
-        }
-        String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
-        Users user = userRepository.findFirstByEmail(email);
+        String userId = authorizePathService.getUserIdAuthoried();
+        Users user = userRepository.findFirstByUserId(userId);
         if(user == null) {
             logger.error("User is not existed");
             throw new Exception("User is not existed");
