@@ -41,8 +41,9 @@ public class PostController {
         ResponseData payload = new ResponseData();
         try {
             List<PostDTO> postDTOs = postService.getAllPosts(page);
-            if (postDTOs.size() <= 0){
+            if (postDTOs.isEmpty()){
                 payload.setDescription("No posts in here");
+                payload.setData(postDTOs);
             } else {
                 payload.setDescription("Load all posts successful");
                 payload.setData(postDTOs);

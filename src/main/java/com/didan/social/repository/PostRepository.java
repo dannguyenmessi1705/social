@@ -17,7 +17,12 @@ public interface PostRepository extends JpaRepository<Posts, String> {
             "GROUP BY p " +
             "ORDER BY MAX(COALESCE(c.commentAt, p.postedAt)) DESC")
     Page<Posts> findAllPostByCommentAtOrPostAt(Pageable pageable);
+
+    // Join all the tables to get the post, user, likes, comments and sub-comments
+    @EntityGraph(attributePaths = {"userPost", "postLikes", "userComments", "userComments.comments"}, type = EntityGraph.EntityGraphType.FETCH)
     Posts findFirstByPostId(String postId);
+
+    @EntityGraph(attributePaths = {"userPost", "postLikes", "userComments", "userComments.comments"})
     List<Posts> findByTitleOrBodyContainingOrderByPostedAtDesc(String title, String body);
 
 }

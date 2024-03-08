@@ -12,4 +12,6 @@ public interface PostLikeRepository extends JpaRepository<PostLikes, String> {
     // Tìm likeid và userid theo postId
     List<PostLikes> findByPosts_PostId(String postId);
     PostLikes findByPosts_PostIdAndUsers_UserId(String postId, String userId);
+    boolean existsByPostLikeId_PostIdAndUsers_UserId(String postId, String userId);
+    void deleteByPostLikeId_PostId(String postId);
 }

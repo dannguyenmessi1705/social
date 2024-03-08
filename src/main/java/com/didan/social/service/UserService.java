@@ -45,28 +45,14 @@ public class UserService implements UserServiceImpl {
         List<Users> users = userRepository.findAll();
         if (users.size() <= 0) {
             logger.info("No one");
-            return null;
+            return Collections.emptyList();
         }
         List<UserDTO> userDTOS = new ArrayList<>();
         for (Users user : users){
-            UserDTO userDTO = new UserDTO();
-            List<String> postId = new ArrayList<>();
-            userDTO.setUserId(user.getUserId());
-            userDTO.setFullName(user.getFullName());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setAvtUrl(user.getAvtUrl());
-            userDTO.setDob(user.getDob().toString());
-            userDTO.setFollowers(user.getFolloweds().size());
-            userDTO.setFollowings(user.getFollowers().size());
-            userDTO.setPosts(user.getUserPosts().size());
-            for (UserPosts userPosts : user.getUserPosts()){
-                postId.add(userPosts.getUserPostId().getPostId());
-            }
-            userDTO.setPostId(postId);
-            userDTO.setParticipantGroups(user.getParticipants().size());
+            UserDTO userDTO = convertToUserDTO(user);
             userDTOS.add(userDTO);
         }
-        Collections.sort(userDTOS, Comparator.comparingInt(UserDTO::getFollowers).reversed());
+        userDTOS.sort(Comparator.comparingInt(UserDTO::getFollowers).reversed());
         return userDTOS;
     }
 
@@ -78,52 +64,23 @@ public class UserService implements UserServiceImpl {
             return null;
         }
         else {
-            UserDTO userDTO = new UserDTO();
-            List<String> postId = new ArrayList<>();
-            userDTO.setUserId(user.getUserId());
-            userDTO.setFullName(user.getFullName());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setAvtUrl(user.getAvtUrl());
-            userDTO.setDob(user.getDob().toString());
-            userDTO.setFollowers(user.getFolloweds().size());
-            userDTO.setFollowings(user.getFollowers().size());
-            userDTO.setPosts(user.getUserPosts().size());
-            for (UserPosts userPosts : user.getUserPosts()){
-                postId.add(userPosts.getUserPostId().getPostId());
-            }
-            userDTO.setPostId(postId);
-            userDTO.setParticipantGroups(user.getParticipants().size());
-            return userDTO;
+            return convertToUserDTO(user);
         }
     }
 
     @Override
     public List<UserDTO> searchUser(String searchName) throws Exception {
         List<Users> users = userRepository.findByFullNameContainingOrEmailLike(searchName, searchName);
-        if (users.size() <= 0) {
+        if (users.isEmpty()) {
             logger.info("No one");
-            return null;
+            return Collections.emptyList();
         }
         List<UserDTO> userDTOS = new ArrayList<>();
         for (Users user : users){
-            UserDTO userDTO = new UserDTO();
-            List<String> postId = new ArrayList<>();
-            userDTO.setUserId(user.getUserId());
-            userDTO.setFullName(user.getFullName());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setAvtUrl(user.getAvtUrl());
-            userDTO.setDob(user.getDob().toString());
-            userDTO.setFollowers(user.getFolloweds().size());
-            userDTO.setFollowings(user.getFollowers().size());
-            userDTO.setPosts(user.getUserPosts().size());
-            for (UserPosts userPosts : user.getUserPosts()){
-                postId.add(userPosts.getUserPostId().getPostId());
-            }
-            userDTO.setPostId(postId);
-            userDTO.setParticipantGroups(user.getParticipants().size());
+            UserDTO userDTO = convertToUserDTO(user);
             userDTOS.add(userDTO);
         }
-        Collections.sort(userDTOS, Comparator.comparingInt(UserDTO::getFollowers).reversed());
+        userDTOS.sort(Comparator.comparingInt(UserDTO::getFollowers).reversed());
         return userDTOS;
     }
 
@@ -188,5 +145,24 @@ public class UserService implements UserServiceImpl {
         user_grant.setIsAdmin(1);
         userRepository.save(user_grant);
         return true;
+    }
+
+    private UserDTO convertToUserDTO(Users user){
+        UserDTO userDTO = new UserDTO();
+        List<String> postId = new ArrayList<>();
+        userDTO.setUserId(user.getUserId());
+        userDTO.setFullName(user.getFullName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setAvtUrl(user.getAvtUrl());
+        userDTO.setDob(user.getDob().toString());
+        userDTO.setFollowers(user.getFolloweds().size());
+        userDTO.setFollowings(user.getFollowers().size());
+        userDTO.setPosts(user.getUserPosts().size());
+        for (UserPosts userPosts : user.getUserPosts()){
+            postId.add(userPosts.getUserPostId().getPostId());
+        }
+        userDTO.setPostId(postId);
+        userDTO.setParticipantGroups(user.getParticipants().size());
+        return userDTO;
     }
 }

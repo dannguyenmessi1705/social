@@ -7,10 +7,7 @@ import com.didan.social.entity.keys.CommentLikeId;
 import com.didan.social.entity.keys.UserCommentId;
 import com.didan.social.payload.request.CreateCommentRequest;
 import com.didan.social.payload.request.EditCommentRequest;
-import com.didan.social.repository.CommentLikeRepository;
-import com.didan.social.repository.CommentRepository;
-import com.didan.social.repository.UserCommentRepository;
-import com.didan.social.repository.UserRepository;
+import com.didan.social.repository.*;
 import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.CommentServiceImpl;
 import com.didan.social.service.impl.FileUploadsServiceImpl;
@@ -18,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
@@ -32,6 +30,7 @@ public class CommentService implements CommentServiceImpl {
     private final UserCommentRepository userCommentRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final FileUploadsServiceImpl fileUploadsService;
     private final AuthorizePathServiceImpl authorizePathService;
@@ -41,38 +40,31 @@ public class CommentService implements CommentServiceImpl {
                           CommentLikeRepository commentLikeRepository,
                           UserRepository userRepository,
                           FileUploadsServiceImpl fileUploadsService,
-                          AuthorizePathServiceImpl authorizePathService){
+                          AuthorizePathServiceImpl authorizePathService,
+                          PostRepository postRepository){
         this.userCommentRepository = userCommentRepository;
         this.commentRepository = commentRepository;
         this.commentLikeRepository = commentLikeRepository;
         this.userRepository = userRepository;
         this.fileUploadsService = fileUploadsService;
         this.authorizePathService = authorizePathService;
+        this.postRepository = postRepository;
     }
 
     @Override
     public List<CommentDTO> getCommentsInPost(String postId) throws Exception {
         List<UserComment> userComments = userCommentRepository.findByPosts_PostId(postId);
-        if(userComments == null) return null;
+        if(userComments == null) return Collections.emptyList();
         List<CommentDTO> commentDTOs = new ArrayList<>();
         for (UserComment userComment : userComments){
-            Comments comment = commentRepository.findByCommentId(userComment.getComments().getCommentId());
-            CommentDTO commentDTO = new CommentDTO();
-            commentDTO.setCommentId(comment.getCommentId());
-            commentDTO.setUserComments(userComment.getUsers().getUserId());
-            commentDTO.setContent(comment.getContent());
-            commentDTO.setCommentImg(comment.getCommentImg());
-            commentDTO.setCommentAt(comment.getCommentAt().toString());
-            List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
-            commentDTO.setCommentLikes(commentLikes.size());
-            List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
-            commentDTO.setUserLikes(userLikes);
+            CommentDTO commentDTO = convertToCommentDTO(userComment);
             commentDTOs.add(commentDTO);
         }
         commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
         return commentDTOs;
     }
 
+    @Transactional
     @Override
     public String postCommentInPost(String postId, CreateCommentRequest createCommentRequest) throws Exception {
         if (!StringUtils.hasText(createCommentRequest.getContent())){
@@ -84,6 +76,11 @@ public class CommentService implements CommentServiceImpl {
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");
+        }
+        Posts post = postRepository.findFirstByPostId(postId);
+        if (post == null) {
+            logger.error("No post is here");
+            throw new Exception("No post is here");
         }
         Comments comment = new Comments();
         UserComment userComment = new UserComment();
@@ -97,8 +94,8 @@ public class CommentService implements CommentServiceImpl {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         Date nowSql = Timestamp.valueOf(now);
         comment.setCommentAt(nowSql);
-        userComment.setUserCommentId(new UserCommentId(postId, commentId.toString(), user.getUserId()));
         commentRepository.save(comment);
+        userComment.setUserCommentId(new UserCommentId(postId, comment.getCommentId(), user.getUserId()));
         userCommentRepository.save(userComment);
         return commentId.toString();
     }
@@ -107,20 +104,10 @@ public class CommentService implements CommentServiceImpl {
     public CommentDTO getCommentById(String commentId) throws Exception {
         UserComment userComment = userCommentRepository.findFirstByComments_CommentId(commentId);
         if (userComment == null) return null;
-        Comments comment = commentRepository.findByCommentId(userComment.getComments().getCommentId());
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setCommentId(comment.getCommentId());
-        commentDTO.setUserComments(userComment.getUsers().getUserId());
-        commentDTO.setContent(comment.getContent());
-        commentDTO.setCommentImg(comment.getCommentImg());
-        commentDTO.setCommentAt(comment.getCommentAt().toString());
-        List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
-        commentDTO.setCommentLikes(commentLikes.size());
-        List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
-        commentDTO.setUserLikes(userLikes);
-        return commentDTO;
+        return convertToCommentDTO(userComment);
     }
 
+    @Transactional
     @Override
     public boolean likeComment(String commentId) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();
@@ -134,7 +121,8 @@ public class CommentService implements CommentServiceImpl {
             logger.error("No comment is here");
             throw new Exception("No comment is here");
         }
-        CommentLikes commentLike = commentLikeRepository.findFirstByUsers_UserIdAndComments_CommentId(user.getUserId(), commentId);
+        CommentLikes commentLike = comment.getCommentLikes().stream().filter(cmtLike -> cmtLike.getUsers().getUserId().equals(user.getUserId())).findFirst().orElse(null);
+//        CommentLikes commentLike = commentLikeRepository.findFirstByUsers_UserIdAndComments_CommentId(user.getUserId(), commentId);
         if (commentLike != null) {
             logger.error("User liked comment and cannot do it twice");
             throw new Exception("User liked comment and cannot do it twice");
@@ -147,6 +135,7 @@ public class CommentService implements CommentServiceImpl {
         return true;
     }
 
+    @Transactional
     @Override
     public boolean unlikeComment(String commentId) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();
@@ -160,7 +149,7 @@ public class CommentService implements CommentServiceImpl {
             logger.error("No comment is here");
             throw new Exception("No comment is here");
         }
-        CommentLikes commentLike = commentLikeRepository.findFirstByUsers_UserIdAndComments_CommentId(user.getUserId(), commentId);
+        CommentLikes commentLike = comment.getCommentLikes().stream().filter(cmtLike -> cmtLike.getUsers().getUserId().equals(user.getUserId())).findFirst().orElse(null);
         if (commentLike == null) {
             logger.error("User hasn't liked post yet");
             throw new Exception("User hasn't liked post yet");
@@ -237,5 +226,19 @@ public class CommentService implements CommentServiceImpl {
         }
         commentRepository.delete(comment);
         return true;
+    }
+
+    private CommentDTO convertToCommentDTO(UserComment userComment){
+        CommentDTO commentDTO = new CommentDTO();
+        commentDTO.setCommentId(userComment.getComments().getCommentId());
+        commentDTO.setUserComments(userComment.getUsers().getUserId());
+        commentDTO.setContent(userComment.getComments().getContent());
+        commentDTO.setCommentImg(userComment.getComments().getCommentImg());
+        commentDTO.setCommentAt(userComment.getComments().getCommentAt().toString());
+        List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(userComment.getComments().getCommentId());
+        commentDTO.setCommentLikes(commentLikes.size());
+        List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
+        commentDTO.setUserLikes(userLikes);
+        return commentDTO;
     }
 }

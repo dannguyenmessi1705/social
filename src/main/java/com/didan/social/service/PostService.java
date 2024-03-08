@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
@@ -57,6 +58,7 @@ public class PostService implements PostServiceImpl {
         this.commentLikeRepository = commentLikeRepository;
         this.authorizePathService = authorizePathService;
     }
+    @Transactional
     @Override
     public String createPost(CreatePostRequest createPostRequest) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();
@@ -84,8 +86,6 @@ public class PostService implements PostServiceImpl {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         Date nowSql = Timestamp.valueOf(now);
         post.setPostedAt(nowSql);
-        userPost.setPosts(post);
-        userPost.setUsers(user);
         userPost.setUserPostId(new UserPostId(postId.toString(), user.getUserId()));
         postRepository.save(post);
         userPostRepository.save(userPost);
@@ -94,48 +94,13 @@ public class PostService implements PostServiceImpl {
 
     @Override
     public List<PostDTO> getAllPosts(int index) throws Exception {
-        List<PostDTO> postDTOs = new ArrayList<>();
         PageRequest pageRequest = PageRequest.of(index-1, 10);
         Page<Posts> posts = postRepository.findAllPostByCommentAtOrPostAt(pageRequest);
         if (posts == null) {
             logger.info("No posts are here");
-            throw new Exception("No posts are here");
+            return Collections.emptyList();
         }
-        for (Posts post : posts){
-            UserPosts userPost = post.getUserPost();
-            PostDTO postDTO = new PostDTO();
-            postDTO.setPostId(post.getPostId());
-            postDTO.setUserCreatedPost(userPost.getUserPostId().getUserId());
-            postDTO.setTitle(post.getTitle());
-            postDTO.setPostImg(post.getPostImg());
-            postDTO.setBody(post.getBody());
-            postDTO.setPostedAt(post.getPostedAt().toString());
-            Set<PostLikes> postLikes = post.getPostLikes();
-            List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
-            postDTO.setUserLikedPost(userLikedPosts);
-            postDTO.setLikesQuantity(postLikes.size());
-            Set<UserComment> userComments = post.getUserComments();
-            postDTO.setCommentsQuantity(userComments.size());
-            List<CommentDTO> commentDTOs = new ArrayList<>();
-            for (UserComment userComment : userComments){
-                Comments comment = userComment.getComments();
-                CommentDTO commentDTO = new CommentDTO();
-                commentDTO.setCommentId(comment.getCommentId());
-                commentDTO.setUserComments(userComment.getUsers().getUserId());
-                commentDTO.setContent(comment.getContent());
-                commentDTO.setCommentImg(comment.getCommentImg());
-                commentDTO.setCommentAt(comment.getCommentAt().toString());
-                Set<CommentLikes> commentLikes = comment.getCommentLikes();
-                commentDTO.setCommentLikes(commentLikes.size());
-                List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
-                commentDTO.setUserLikes(userLikes);
-                commentDTOs.add(commentDTO);
-            }
-            commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
-            postDTO.setComments(commentDTOs);
-            postDTOs.add(postDTO);
-        }
-        return postDTOs;
+        return posts.getContent().stream().map(this::convertToPostDTO).collect(Collectors.toList());
     }
 
     @Override
@@ -143,87 +108,22 @@ public class PostService implements PostServiceImpl {
         Posts post = postRepository.findFirstByPostId(postId);
         if (post == null) {
             logger.info("No post is here");
-            throw new Exception("No post is here");
+            return null;
         }
-        PostDTO postDTO = new PostDTO();
-        postDTO.setPostId(post.getPostId());
-        UserPosts userPost = userPostRepository.findFirstByPosts(post);
-        postDTO.setUserCreatedPost(userPost.getUserPostId().getUserId());
-        postDTO.setTitle(post.getTitle());
-        postDTO.setPostImg(post.getPostImg());
-        postDTO.setBody(post.getBody());
-        postDTO.setPostedAt(post.getPostedAt().toString());
-        List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
-        List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
-        postDTO.setUserLikedPost(userLikedPosts);
-        postDTO.setLikesQuantity(postLikes.size());
-        List<UserComment> userComments = userCommentRepository.findByPosts_PostId(post.getPostId());
-        postDTO.setCommentsQuantity(userComments.size());
-        List<CommentDTO> commentDTOs = new ArrayList<>();
-        for (UserComment userComment : userComments){
-            Comments comment = commentRepository.findByCommentId(userComment.getComments().getCommentId());
-            CommentDTO commentDTO = new CommentDTO();
-            commentDTO.setCommentId(comment.getCommentId());
-            commentDTO.setUserComments(userComment.getUsers().getUserId());
-            commentDTO.setContent(comment.getContent());
-            commentDTO.setCommentImg(comment.getCommentImg());
-            commentDTO.setCommentAt(comment.getCommentAt().toString());
-            List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
-            commentDTO.setCommentLikes(commentLikes.size());
-            List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
-            commentDTO.setUserLikes(userLikes);
-            commentDTOs.add(commentDTO);
-        }
-        commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
-        postDTO.setComments(commentDTOs);
-        return postDTO;
+        return convertToPostDTO(post);
     }
 
     @Override
     public List<PostDTO> getPostByTitle(String searchName) throws Exception {
         List<Posts> posts = postRepository.findByTitleOrBodyContainingOrderByPostedAtDesc(searchName, searchName);
-        if (posts.size() <= 0) {
+        if (posts.isEmpty()) {
             logger.info("No posts are here");
-            throw new Exception("No posts are here");
+            return Collections.emptyList();
         }
-        List<PostDTO> postDTOs = new ArrayList<>();
-        for (Posts post : posts){
-            PostDTO postDTO = new PostDTO();
-            postDTO.setPostId(post.getPostId());
-            UserPosts userPost = userPostRepository.findFirstByPosts(post);
-            postDTO.setUserCreatedPost(userPost.getUserPostId().getUserId());
-            postDTO.setTitle(post.getTitle());
-            postDTO.setPostImg(post.getPostImg());
-            postDTO.setBody(post.getBody());
-            postDTO.setPostedAt(post.getPostedAt().toString());
-            List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
-            List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
-            postDTO.setUserLikedPost(userLikedPosts);
-            postDTO.setLikesQuantity(postLikes.size());
-            List<UserComment> userComments = userCommentRepository.findByPosts_PostId(post.getPostId());
-            postDTO.setCommentsQuantity(userComments.size());
-            List<CommentDTO> commentDTOs = new ArrayList<>();
-            for (UserComment userComment : userComments){
-                Comments comment = commentRepository.findByCommentId(userComment.getComments().getCommentId());
-                CommentDTO commentDTO = new CommentDTO();
-                commentDTO.setCommentId(comment.getCommentId());
-                commentDTO.setUserComments(userComment.getUsers().getUserId());
-                commentDTO.setContent(comment.getContent());
-                commentDTO.setCommentImg(comment.getCommentImg());
-                commentDTO.setCommentAt(comment.getCommentAt().toString());
-                List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
-                commentDTO.setCommentLikes(commentLikes.size());
-                List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
-                commentDTO.setUserLikes(userLikes);
-                commentDTOs.add(commentDTO);
-            }
-            commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
-            postDTO.setComments(commentDTOs);
-            postDTOs.add(postDTO);
-        }
-        return postDTOs;
+        return posts.stream().map(this::convertToPostDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public boolean likePost(String postId) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();
@@ -232,24 +132,21 @@ public class PostService implements PostServiceImpl {
             logger.error("User is not found");
             throw new Exception("User is not found");
         }
-        Posts post = postRepository.findFirstByPostId(postId);
-        if (post==null) {
+        if (!postRepository.existsById(postId)) {
             logger.info("No post is here");
             throw new Exception("No post is here");
         }
-        PostLikes postLikes = postLikeRepository.findByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
-        if (postLikes != null) {
+        if (postLikeRepository.existsByPostLikeId_PostIdAndUsers_UserId(postId, user.getUserId())) {
             logger.warn("User liked post and cannot do it twice");
             throw new Exception("User liked post and cannot do it twice");
         }
         PostLikes newPostLike = new PostLikes();
         newPostLike.setPostLikeId(new PostLikeId(postId, user.getUserId()));
-        newPostLike.setPosts(post);
-        newPostLike.setUsers(user);
         postLikeRepository.save(newPostLike);
         return true;
     }
 
+    @Transactional
     @Override
     public boolean unlikePost(String postId) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();
@@ -258,20 +155,19 @@ public class PostService implements PostServiceImpl {
             logger.error("User is not found");
             throw new Exception("User is not found");
         }
-        Posts post = postRepository.findFirstByPostId(postId);
-        if (post==null) {
+        if (!postRepository.existsById(postId)) {
             logger.info("No post is here");
             throw new Exception("No post is here");
         }
-        PostLikes postLikes = postLikeRepository.findByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
-        if (postLikes == null) {
+        if (!postLikeRepository.existsByPostLikeId_PostIdAndUsers_UserId(postId, user.getUserId())){
             logger.info("User hasn't liked post yet");
             throw new Exception("User hasn't liked post yet");
         }
-        postLikeRepository.delete(postLikes);
+        postLikeRepository.deleteByPostLikeId_PostId(postId);
         return true;
     }
 
+    @Transactional
     @Override
     public PostDTO updatePost(String postId, EditPostRequest editPostRequest) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();
@@ -300,39 +196,10 @@ public class PostService implements PostServiceImpl {
             post.setPostImg("post/"+fileName);
         }
         postRepository.save(post);
-        PostDTO postDTO = new PostDTO();
-        postDTO.setPostId(post.getPostId());
-        postDTO.setUserCreatedPost(userPost.getUsers().getUserId());
-        postDTO.setTitle(post.getTitle());
-        postDTO.setPostImg(post.getPostImg());
-        postDTO.setBody(post.getBody());
-        postDTO.setPostedAt(post.getPostedAt().toString());
-        List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
-        List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
-        postDTO.setUserLikedPost(userLikedPosts);
-        postDTO.setLikesQuantity(postLikes.size());
-        List<UserComment> userComments = userCommentRepository.findByPosts_PostId(post.getPostId());
-        postDTO.setCommentsQuantity(userComments.size());
-        List<CommentDTO> commentDTOs = new ArrayList<>();
-        for (UserComment userComment : userComments){
-            Comments comment = commentRepository.findByCommentId(userComment.getComments().getCommentId());
-            CommentDTO commentDTO = new CommentDTO();
-            commentDTO.setCommentId(comment.getCommentId());
-            commentDTO.setUserComments(userComment.getUsers().getUserId());
-            commentDTO.setContent(comment.getContent());
-            commentDTO.setCommentImg(comment.getCommentImg());
-            commentDTO.setCommentAt(comment.getCommentAt().toString());
-            List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
-            commentDTO.setCommentLikes(commentLikes.size());
-            List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
-            commentDTO.setUserLikes(userLikes);
-            commentDTOs.add(commentDTO);
-        }
-        commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
-        postDTO.setComments(commentDTOs);
-        return postDTO;
+        return convertToPostDTO(post);
     }
 
+    @Transactional
     @Override
     public boolean deletePost(String postId) throws Exception {
         try{
@@ -360,5 +227,47 @@ public class PostService implements PostServiceImpl {
             logger.error(e.getMessage());
             throw new Exception(e.getMessage());
         }
+    }
+
+    private PostDTO convertToPostDTO(Posts post){
+        PostDTO postDTO = new PostDTO();
+        UserPosts userPost = post.getUserPost();
+        System.out.println(111);
+        postDTO.setPostId(post.getPostId());
+        System.out.println(222);
+        postDTO.setUserCreatedPost(userPost.getUserPostId().getUserId());
+        System.out.println(333);
+        postDTO.setTitle(post.getTitle());
+        System.out.println(444);
+        postDTO.setPostImg(post.getPostImg());
+        System.out.println(555);
+        postDTO.setBody(post.getBody());
+        System.out.println(666);
+        postDTO.setPostedAt(post.getPostedAt().toString());
+        System.out.println(777);
+        Set<PostLikes> postLikes = post.getPostLikes();
+        List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
+        postDTO.setUserLikedPost(userLikedPosts);
+        postDTO.setLikesQuantity(postLikes.size());
+        Set<UserComment> userComments = post.getUserComments();
+        postDTO.setCommentsQuantity(userComments.size());
+        List<CommentDTO> commentDTOs = new ArrayList<>();
+        for (UserComment userComment : userComments){
+            Comments comment = userComment.getComments();
+            CommentDTO commentDTO = new CommentDTO();
+            commentDTO.setCommentId(comment.getCommentId());
+            commentDTO.setUserComments(userComment.getUsers().getUserId());
+            commentDTO.setContent(comment.getContent());
+            commentDTO.setCommentImg(comment.getCommentImg());
+            commentDTO.setCommentAt(comment.getCommentAt().toString());
+            Set<CommentLikes> commentLikes = comment.getCommentLikes();
+            commentDTO.setCommentLikes(commentLikes.size());
+            List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
+            commentDTO.setUserLikes(userLikes);
+            commentDTOs.add(commentDTO);
+        }
+        commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
+        postDTO.setComments(commentDTOs);
+        return postDTO;
     }
 }
