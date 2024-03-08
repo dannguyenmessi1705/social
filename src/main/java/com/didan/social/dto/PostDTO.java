@@ -1,10 +1,5 @@
 package com.didan.social.dto;
 
-import com.didan.social.entity.PostLikes;
-import com.didan.social.entity.UserComment;
-import com.didan.social.entity.UserPosts;
-
-import java.util.Date;
 import java.util.List;
 
 public class PostDTO {

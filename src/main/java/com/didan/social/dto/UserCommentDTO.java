@@ -1,12 +1,5 @@
 package com.didan.social.dto;
 
-import com.didan.social.entity.Comments;
-import com.didan.social.entity.Posts;
-import com.didan.social.entity.Users;
-import com.didan.social.entity.keys.UserCommentId;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 public class UserCommentDTO {
     private String userId;

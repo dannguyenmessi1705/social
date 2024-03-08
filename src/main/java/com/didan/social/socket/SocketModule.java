@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 
 @Component
 public class SocketModule {
-    private Logger logger = LoggerFactory.getLogger(SocketModule.class);
+    private final Logger logger = LoggerFactory.getLogger(SocketModule.class);
     private final SocketIOServer server; // Khai báo một server socket
     private final SocketService socketService; // Khai báo một service để xử lý logic
     private final JwtUtils jwtUtils;
@@ -35,10 +35,10 @@ public class SocketModule {
             String accessToken = senderClient.getHandshakeData().getSingleUrlParam("token");
             try {
                 jwtUtils.validateAccessToken(accessToken);
-                String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
+                String userId = jwtUtils.getUserIdFromAccessToken(accessToken);
                 String conversationId = senderClient.getHandshakeData().getSingleUrlParam("conversationID"); // Lấy ra các tham số và giá trị của URL mà client gửi lên
-                logger.info(String.format("%s[%s] -> %s",email, senderClient.getSessionId().toString(), data.toString())); // In ra màn hình console thông tin của session và tin nhắn được gửi đến
-                socketService.saveMessage(email, conversationId, "get_message", senderClient, data); // Lưu tin nhắn vào database và gửi lại tin nhắn đó cho tất cả client khác trong phòng qua hàm saveMessage của service
+                logger.info(String.format("%s[%s] -> %s",userId, senderClient.getSessionId().toString(), data.toString())); // In ra màn hình console thông tin của session và tin nhắn được gửi đến
+                socketService.saveMessage(userId, conversationId, "get_message", senderClient, data); // Lưu tin nhắn vào database và gửi lại tin nhắn đó cho tất cả client khác trong phòng qua hàm saveMessage của service
             } catch (Exception e){
                 logger.error(e.getMessage());
             }
@@ -50,11 +50,11 @@ public class SocketModule {
             String accessToken = client.getHandshakeData().getSingleUrlParam("token");
             try {
                 jwtUtils.validateAccessToken(accessToken);
-                String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
+                String userId = jwtUtils.getUserIdFromAccessToken(accessToken);
                 String conversationId = client.getHandshakeData().getSingleUrlParam("conversationID"); // Lấy ra các tham số và giá trị của URL mà client gửi lên
                 client.joinRoom(conversationId); // Thêm client vào phòng chat với id là roomId
-                socketService.saveInfoMessage(conversationId, "get_message", client, String.format("%s joined to chat", email)); // Lưu tin nhắn thông báo đã kết nối và gửi đó cho tất cả client khác trong phòng qua hàm saveInfoMessage của service
-                logger.info(String.format("Socket ID[%s] - conversation ID[%s] - email[%s]  Connected to chat module through", client.getSessionId().toString(), conversationId, email)); // In ra màn hình console thông tin của session, phòng và tên của client vừa kết nối
+                socketService.saveInfoMessage(conversationId, "get_message", client, String.format("%s joined to chat", userId)); // Lưu tin nhắn thông báo đã kết nối và gửi đó cho tất cả client khác trong phòng qua hàm saveInfoMessage của service
+                logger.info(String.format("Socket ID[%s] - conversation ID[%s] - userId[%s]  Connected to chat module through", client.getSessionId().toString(), conversationId, userId)); // In ra màn hình console thông tin của session, phòng và tên của client vừa kết nối
             }catch (Exception e){
                 logger.error(e.getMessage());
             }
@@ -66,11 +66,11 @@ public class SocketModule {
             String accessToken = client.getHandshakeData().getSingleUrlParam("token");
             try {
                 jwtUtils.validateAccessToken(accessToken);
-                String email = jwtUtils.getEmailUserFromAccessToken(accessToken);
+                String userId = jwtUtils.getUserIdFromAccessToken(accessToken);
                 String conversationId = client.getHandshakeData().getSingleUrlParam("conversationID"); // Lấy ra các tham số và giá trị của URL mà client gửi lên
                 client.leaveRoom(conversationId);
-                socketService.saveInfoMessage(conversationId, "get_message", client, String.format("%s disconnected", email)); // Lưu tin nhắn thông báo đã kết nối và gửi đó cho tất cả client khác trong phòng qua hàm saveInfoMessage của service
-                logger.info(String.format("Socket ID[%s] - conversation ID[%s] - email[%s]  Disconnected to chat module through", client.getSessionId().toString(), conversationId, email)); // In ra màn hình console thông tin của session, phòng và tên của client vừa kết nối
+                socketService.saveInfoMessage(conversationId, "get_message", client, String.format("%s disconnected", userId)); // Lưu tin nhắn thông báo đã kết nối và gửi đó cho tất cả client khác trong phòng qua hàm saveInfoMessage của service
+                logger.info(String.format("Socket ID[%s] - conversation ID[%s] - userId[%s]  Disconnected to chat module through", client.getSessionId().toString(), conversationId, userId)); // In ra màn hình console thông tin của session, phòng và tên của client vừa kết nối
             }catch (Exception e){
                 logger.error(e.getMessage());
             }

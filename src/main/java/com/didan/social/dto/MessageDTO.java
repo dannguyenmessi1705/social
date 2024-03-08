@@ -1,11 +1,5 @@
 package com.didan.social.dto;
 
-import com.didan.social.entity.Conversations;
-import com.didan.social.entity.Users;
-import jakarta.persistence.*;
-
-import java.util.Date;
-
 public class MessageDTO {
     private String messageId;
     private String content;

@@ -8,13 +8,10 @@ import com.didan.social.repository.FollowRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.FollowServiceImpl;
-import com.didan.social.utils.JwtUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -22,18 +19,15 @@ import java.util.*;
 public class FollowService implements FollowServiceImpl {
     private final Logger logger = LoggerFactory.getLogger(FollowService.class);
     private final FollowRepository followRepository;
-    private final JwtUtils jwtUtils;
     private final AuthorizePathServiceImpl authorizePathService;
     private final UserRepository userRepository;
 
     @Autowired
-    public FollowService(JwtUtils jwtUtils,
-                         FollowRepository followRepository,
+    public FollowService(FollowRepository followRepository,
                          AuthorizePathServiceImpl authorizePathService,
                          UserRepository userRepository)
     {
         this.followRepository = followRepository;
-        this.jwtUtils = jwtUtils;
         this.authorizePathService = authorizePathService;
         this.userRepository = userRepository;
     }
@@ -83,10 +77,6 @@ public class FollowService implements FollowServiceImpl {
         if (userRepository.findFirstByUserId(userIdFollow) == null) {
             logger.error("The user isnt existed");
             throw new Exception("The user isnt existed");
-        }
-        if (user == null) {
-            logger.error("User is not found");
-            throw new Exception("User is not found");
         }
         Followers follower = new Followers();
         if(followRepository.findFirstByUsers1_UserIdAndUsers2_UserId(user.getUserId(), userIdFollow) != null) {

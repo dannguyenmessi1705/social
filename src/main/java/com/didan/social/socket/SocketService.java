@@ -13,6 +13,8 @@ import com.didan.social.repository.ParticipantRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.ChatService;
 import com.didan.social.service.FileUploadsService;
+import com.didan.social.service.impl.ChatServiceImpl;
+import com.didan.social.service.impl.FileUploadsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +29,19 @@ import java.util.UUID;
 
 @Service // Đánh dấu đây là một service
 public class SocketService { // Khai báo một service để xử lý logic
-    private Logger logger = LoggerFactory.getLogger(SocketService.class);
-    private final ChatService chatService; // Khai báo một service để xử lý logic
+    private final Logger logger = LoggerFactory.getLogger(SocketService.class);
+    private final ChatServiceImpl chatService; // Khai báo một service để xử lý logic
     private final UserRepository userRepository;
     private final ConversationRepository conversationRepository;
     private final ParticipantRepository participantRepository;
     private final MessageRepository messageRepository;
-    private final FileUploadsService fileUploadsService;
+    private final FileUploadsServiceImpl fileUploadsService;
     @Autowired // Đánh dấu đây là một dependency và Spring sẽ tự động inject vào
-    public SocketService(ChatService chatService,
+    public SocketService(ChatServiceImpl chatService,
                          UserRepository userRepository,
                          ConversationRepository conversationRepository,
                          ParticipantRepository participantRepository,
-                         FileUploadsService fileUploadsService,
+                         FileUploadsServiceImpl fileUploadsService,
                          MessageRepository messageRepository){ // Inject service vào
         this.chatService = chatService; // Gán service
         this.userRepository = userRepository;
@@ -59,8 +61,8 @@ public class SocketService { // Khai báo một service để xử lý logic
         }
     }
 
-    public void saveMessage(String email, String conversationId, String eventName, SocketIOClient senderClient, SendMessageRequest sendMessageRequest) throws Exception{ // Hàm lưu tin nhắn vào database và gửi lại tin nhắn đó cho tất cả client khác trong phòng
-        Users user = userRepository.findFirstByEmail(email);
+    public void saveMessage(String userId, String conversationId, String eventName, SocketIOClient senderClient, SendMessageRequest sendMessageRequest) throws Exception{ // Hàm lưu tin nhắn vào database và gửi lại tin nhắn đó cho tất cả client khác trong phòng
+        Users user = userRepository.findFirstByUserId(userId);
         if (user == null) {
             logger.error("User is not found");
             throw new Exception("User is not found");

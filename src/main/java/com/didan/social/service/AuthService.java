@@ -1,6 +1,6 @@
 package com.didan.social.service;
 
-import com.didan.social.dto.UserDTO;
+
 import com.didan.social.entity.BlacklistToken;
 import com.didan.social.entity.Users;
 import com.didan.social.payload.request.SignupRequest;
@@ -11,24 +11,17 @@ import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.FileUploadsServiceImpl;
 import com.didan.social.service.impl.MailServiceImpl;
 import com.didan.social.utils.JwtUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-import com.sendgrid.*;
 
-import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -147,7 +140,7 @@ public class AuthService implements AuthServiceImpl {
 
         // Thiết lập hạn token
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
-        LocalDateTime expTime = now.plus(10, ChronoUnit.MINUTES);
+        LocalDateTime expTime = now.plusMinutes(10);
         Date resetExp = Timestamp.valueOf(expTime);
         user.setResetExp(resetExp);
 

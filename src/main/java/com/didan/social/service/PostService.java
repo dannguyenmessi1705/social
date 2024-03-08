@@ -9,31 +9,18 @@ import com.didan.social.payload.request.EditPostRequest;
 import com.didan.social.repository.*;
 import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.PostServiceImpl;
-import com.didan.social.utils.JwtUtils;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -187,7 +174,7 @@ public class PostService implements PostServiceImpl {
             commentDTO.setUserLikes(userLikes);
             commentDTOs.add(commentDTO);
         }
-        Collections.sort(commentDTOs, Comparator.comparing(CommentDTO::getCommentAt).reversed());
+        commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
         postDTO.setComments(commentDTOs);
         return postDTO;
     }
@@ -230,7 +217,7 @@ public class PostService implements PostServiceImpl {
                 commentDTO.setUserLikes(userLikes);
                 commentDTOs.add(commentDTO);
             }
-            Collections.sort(commentDTOs, Comparator.comparing(CommentDTO::getCommentAt).reversed());
+            commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
             postDTO.setComments(commentDTOs);
             postDTOs.add(postDTO);
         }
@@ -341,7 +328,7 @@ public class PostService implements PostServiceImpl {
             commentDTO.setUserLikes(userLikes);
             commentDTOs.add(commentDTO);
         }
-        Collections.sort(commentDTOs, Comparator.comparing(CommentDTO::getCommentAt).reversed());
+        commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
         postDTO.setComments(commentDTOs);
         return postDTO;
     }

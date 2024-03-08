@@ -50,7 +50,7 @@ public class JwtUtils {
     }
 
     // Giải mã accessToken để lấy userId
-    public String getEmailUserFromAccessToken(String accessToken){
+    public String getUserIdFromAccessToken(String accessToken){
         SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secretKey)); // Giải mã secretKey
         Claims claims = Jwts.parser().verifyWith(key).build().parseSignedClaims(accessToken).getPayload(); // Giải mã accessToken để lấy payload (data) trong accessToken 
         return claims.getSubject().toString(); // Lấy key subject trong payload để trả về email

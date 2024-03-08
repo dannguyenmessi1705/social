@@ -1,8 +1,6 @@
 package com.didan.social.dto;
 
 
-import java.util.Date;
-
 public class ConversationDTO {
     private String conversationId;
     private String conversationName;

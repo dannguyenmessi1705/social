@@ -5,7 +5,6 @@ import com.didan.social.dto.PostDTO;
 import com.didan.social.entity.*;
 import com.didan.social.entity.keys.CommentLikeId;
 import com.didan.social.entity.keys.UserCommentId;
-import com.didan.social.entity.keys.UserPostId;
 import com.didan.social.payload.request.CreateCommentRequest;
 import com.didan.social.payload.request.EditCommentRequest;
 import com.didan.social.repository.CommentLikeRepository;
@@ -14,8 +13,7 @@ import com.didan.social.repository.UserCommentRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.CommentServiceImpl;
-import com.didan.social.utils.JwtUtils;
-import jakarta.servlet.http.HttpServletRequest;
+import com.didan.social.service.impl.FileUploadsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,22 +32,19 @@ public class CommentService implements CommentServiceImpl {
     private final UserCommentRepository userCommentRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
-    private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
-    private final FileUploadsService fileUploadsService;
+    private final FileUploadsServiceImpl fileUploadsService;
     private final AuthorizePathServiceImpl authorizePathService;
     @Autowired
     public CommentService(UserCommentRepository userCommentRepository,
                           CommentRepository commentRepository,
                           CommentLikeRepository commentLikeRepository,
-                          JwtUtils jwtUtils,
                           UserRepository userRepository,
-                          FileUploadsService fileUploadsService,
+                          FileUploadsServiceImpl fileUploadsService,
                           AuthorizePathServiceImpl authorizePathService){
         this.userCommentRepository = userCommentRepository;
         this.commentRepository = commentRepository;
         this.commentLikeRepository = commentLikeRepository;
-        this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.fileUploadsService = fileUploadsService;
         this.authorizePathService = authorizePathService;
@@ -74,7 +69,7 @@ public class CommentService implements CommentServiceImpl {
             commentDTO.setUserLikes(userLikes);
             commentDTOs.add(commentDTO);
         }
-        Collections.sort(commentDTOs, Comparator.comparing(CommentDTO::getCommentAt).reversed());
+        commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
         return commentDTOs;
     }
 

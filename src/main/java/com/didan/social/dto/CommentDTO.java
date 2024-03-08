@@ -1,12 +1,6 @@
 package com.didan.social.dto;
 
-import com.didan.social.entity.CommentLikes;
-import com.didan.social.entity.UserComment;
-import jakarta.persistence.*;
-
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 public class CommentDTO {
     private String userComments;

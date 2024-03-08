@@ -12,6 +12,7 @@ import com.didan.social.repository.ParticipantRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.AuthorizePathServiceImpl;
 import com.didan.social.service.impl.ChatServiceImpl;
+import com.didan.social.service.impl.FileUploadsServiceImpl;
 import com.didan.social.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -29,22 +30,19 @@ import java.util.*;
 public class ChatService implements ChatServiceImpl {
     private final Logger logger = LoggerFactory.getLogger(ChatService.class);
     private final ConversationRepository conversationRepository;
-    private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     private final ParticipantRepository participantRepository;
-    private final FileUploadsService fileUploadsService;
+    private final FileUploadsServiceImpl fileUploadsService;
     private final MessageRepository messageRepository;
     private final AuthorizePathServiceImpl authorizePathService;
     @Autowired
     public ChatService(ConversationRepository conversationRepository,
-                       JwtUtils jwtUtils,
                        UserRepository userRepository,
                        ParticipantRepository participantRepository,
-                       FileUploadsService fileUploadsService,
+                       FileUploadsServiceImpl fileUploadsService,
                        MessageRepository messageRepository,
                        AuthorizePathServiceImpl authorizePathService){
         this.conversationRepository = conversationRepository;
-        this.jwtUtils = jwtUtils;
         this.userRepository = userRepository;
         this.participantRepository = participantRepository;
         this.fileUploadsService = fileUploadsService;
