@@ -21,10 +21,10 @@ public class Comments {
     @Temporal(TemporalType.TIMESTAMP)
     private Date commentAt;
 
-    @OneToMany(mappedBy = "comments", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comments", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserComment> userComments;
 
-    @OneToMany(mappedBy = "comments", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comments", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CommentLikes> commentLikes;
 
 

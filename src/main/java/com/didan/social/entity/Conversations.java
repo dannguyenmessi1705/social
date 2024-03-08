@@ -18,10 +18,10 @@ public class Conversations {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @OneToMany(mappedBy = "conversations", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "conversations", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Messages> messages;
 
-    @OneToMany(mappedBy = "conversations", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "conversations", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Participants> participants;
 
     public Conversations() {}

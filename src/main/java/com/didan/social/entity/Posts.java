@@ -24,24 +24,24 @@ public class Posts {
     @Temporal(TemporalType.TIMESTAMP)
     private Date postedAt;
 
-    @OneToMany(mappedBy = "posts")
-    private Set<UserPosts> userPosts;
+    @OneToOne(mappedBy = "posts", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserPosts userPost;
 
-    @OneToMany(mappedBy = "posts")
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PostLikes> postLikes;
 
-    @OneToMany(mappedBy = "posts")
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserComment> userComments;
 
     public Posts() {}
 
-    public Posts(String postId, String title, String postImg, String body, Date postedAt, Set<UserPosts> userPosts, Set<PostLikes> postLikes, Set<UserComment> userComments) {
+    public Posts(String postId, String title, String postImg, String body, Date postedAt, UserPosts userPost, Set<PostLikes> postLikes, Set<UserComment> userComments) {
         this.postId = postId;
         this.title = title;
         this.postImg = postImg;
         this.body = body;
         this.postedAt = postedAt;
-        this.userPosts = userPosts;
+        this.userPost = userPost;
         this.postLikes = postLikes;
         this.userComments = userComments;
     }
@@ -86,12 +86,12 @@ public class Posts {
         this.postedAt = postedAt;
     }
 
-    public Set<UserPosts> getUserPosts() {
-        return userPosts;
+    public UserPosts getUserPost() {
+        return userPost;
     }
 
-    public void setUserPosts(Set<UserPosts> userPosts) {
-        this.userPosts = userPosts;
+    public void setUserPos(UserPosts userPost) {
+        this.userPost = userPost;
     }
 
     public Set<PostLikes> getPostLikes() {

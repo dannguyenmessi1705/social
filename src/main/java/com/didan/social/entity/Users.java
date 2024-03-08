@@ -40,28 +40,28 @@ public class Users {
     @Column(name = "access_token", nullable = true, length = 255)
     private String accessToken;
 
-    @OneToMany(mappedBy = "users1", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users1", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Followers> followers;
 
-    @OneToMany(mappedBy = "users2", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users2", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Followers> followeds;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PostLikes> postLikes;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserPosts> userPosts;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Participants> participants;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Messages> messages;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserComment> userComments;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CommentLikes> commentLikes;
 
     public Users() {}

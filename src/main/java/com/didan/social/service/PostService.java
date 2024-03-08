@@ -109,6 +109,8 @@ public class PostService implements PostServiceImpl {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         Date nowSql = Timestamp.valueOf(now);
         post.setPostedAt(nowSql);
+        userPost.setPosts(post);
+        userPost.setUsers(user);
         userPost.setUserPostId(new UserPostId(postId.toString(), user.getUserId()));
         postRepository.save(post);
         userPostRepository.save(userPost);
@@ -118,20 +120,14 @@ public class PostService implements PostServiceImpl {
     @Override
     public List<PostDTO> getAllPosts(int index) throws Exception {
         List<PostDTO> postDTOs = new ArrayList<>();
-//        redisTemplate.delete("posts");
-//        String postDataJson = (String) redisTemplate.opsForValue().get("posts");
-//        System.out.println(postDataJson);
-//        if (!StringUtils.hasText(postDataJson)) {
-        Sort sortByPostedAt = Sort.by(Sort.Direction.DESC, "postedAt");
-        PageRequest pageRequest = PageRequest.of(index-1, 6, sortByPostedAt);
-        Page<Posts> posts = postRepository.findAll(pageRequest);
-//        List<Posts> posts = postRepository.findAll(sortByPostedAt);
+        PageRequest pageRequest = PageRequest.of(index-1, 10);
+        Page<Posts> posts = postRepository.findAllPostByCommentAtOrPostAt(pageRequest);
         if (posts == null) {
             logger.info("No posts are here");
             throw new Exception("No posts are here");
         }
         for (Posts post : posts){
-            UserPosts userPost = userPostRepository.findFirstByPosts(post);
+            UserPosts userPost = post.getUserPost();
             PostDTO postDTO = new PostDTO();
             postDTO.setPostId(post.getPostId());
             postDTO.setUserCreatedPost(userPost.getUserPostId().getUserId());
@@ -139,39 +135,31 @@ public class PostService implements PostServiceImpl {
             postDTO.setPostImg(post.getPostImg());
             postDTO.setBody(post.getBody());
             postDTO.setPostedAt(post.getPostedAt().toString());
-            List<PostLikes> postLikes = postLikeRepository.findByPosts_PostId(post.getPostId());
-            // == Set<PostLikes> postLikes = post.getPostLike()
+            Set<PostLikes> postLikes = post.getPostLikes();
             List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
             postDTO.setUserLikedPost(userLikedPosts);
             postDTO.setLikesQuantity(postLikes.size());
-            List<UserComment> userComments = userCommentRepository.findByPosts_PostId(post.getPostId());
+            Set<UserComment> userComments = post.getUserComments();
             postDTO.setCommentsQuantity(userComments.size());
             List<CommentDTO> commentDTOs = new ArrayList<>();
             for (UserComment userComment : userComments){
-                Comments comment = commentRepository.findByCommentId(userComment.getComments().getCommentId());
+                Comments comment = userComment.getComments();
                 CommentDTO commentDTO = new CommentDTO();
                 commentDTO.setCommentId(comment.getCommentId());
                 commentDTO.setUserComments(userComment.getUsers().getUserId());
                 commentDTO.setContent(comment.getContent());
                 commentDTO.setCommentImg(comment.getCommentImg());
                 commentDTO.setCommentAt(comment.getCommentAt().toString());
-                List<CommentLikes> commentLikes = commentLikeRepository.findAllByComments_CommentId(comment.getCommentId());
+                Set<CommentLikes> commentLikes = comment.getCommentLikes();
                 commentDTO.setCommentLikes(commentLikes.size());
                 List<String> userLikes = commentLikes.stream().map(commentLike -> commentLike.getUsers().getUserId()).collect(Collectors.toList());
                 commentDTO.setUserLikes(userLikes);
                 commentDTOs.add(commentDTO);
             }
-            Collections.sort(commentDTOs, Comparator.comparing(CommentDTO::getCommentAt).reversed());
+            commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
             postDTO.setComments(commentDTOs);
             postDTOs.add(postDTO);
-//                String data = gson.toJson(postDTOs);
-//                redisTemplate.opsForValue().set("posts", data);
-//                redisTemplate.expire("posts", 30, TimeUnit.SECONDS);
         }
-//        } else {
-//            Type listType = new TypeToken<List<PostDTO>>(){}.getType();
-//            postDTOs = gson.fromJson(postDataJson, listType);
-//        }
         return postDTOs;
     }
 
@@ -420,24 +408,13 @@ public class PostService implements PostServiceImpl {
                 logger.info("There is not post to delete");
                 throw new Exception("There is not post to delete");
             }
-            UserPosts userPost = new UserPosts();
-            if (user.getIsAdmin() == 0){
-                userPost = userPostRepository.findFirstByPosts_PostIdAndUsers_UserId(postId, user.getUserId());
-            } else {
-                userPost = userPostRepository.findFirstByPosts_PostId(postId);
-            }
-            if (userPost == null) {
-                logger.error("The user hasn't this post or not authorized to edit this post");
-                throw new Exception("The user hasn't this post or not authorized to edit this post");
-            }
-            if (userPost == null) {
-                logger.error("The user hasn't this post or not authorized to edit this post");
-                throw new Exception("The user hasn't this post or not authorized to edit this post");
-            }
-            userPostRepository.delete(userPost);
             postRepository.delete(post);
             if(StringUtils.hasText(post.getPostImg())){
                 fileUploadsService.deleteFile(post.getPostImg());
+            }
+            List<String> commentIds = commentRepository.findCommentIdNotInUserComment();
+            for (String commentId : commentIds){
+                commentRepository.deleteById(commentId);
             }
             return true;
         } catch (Exception e){

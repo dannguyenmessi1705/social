@@ -1,10 +1,7 @@
 package com.didan.social.entity;
 
 import com.didan.social.entity.keys.UserPostId;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity(name = "user_posts")
 public class UserPosts {
@@ -15,7 +12,7 @@ public class UserPosts {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private Users users;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "post_id", insertable = false, updatable = false)
     private Posts posts;
 
