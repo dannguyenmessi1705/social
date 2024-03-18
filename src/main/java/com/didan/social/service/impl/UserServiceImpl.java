@@ -16,6 +16,7 @@ public interface UserServiceImpl {
     // Sửa thông tin user
     boolean updateUser(EditUserRequest editUserRequest) throws Exception;
 
-    // Phân quyền cho user làm admin
-    boolean grantAdmin(String userId) throws Exception;
+    // Report user
+    boolean reportUser(String userId) throws Exception;
+
 }

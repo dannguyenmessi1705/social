@@ -64,9 +64,13 @@ public class Users {
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CommentLikes> commentLikes;
 
+    @OneToOne(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
+    @PrimaryKeyJoinColumn
+    private BlacklistUser blacklistUser;
+
     public Users() {}
 
-    public Users(String userId, int isAdmin, String fullName, String email, String password, String avtUrl, Date dob, Date resetExp, String resetToken, String accessToken, Set<Followers> followers, Set<Followers> followeds, Set<PostLikes> postLikes, Set<UserPosts> userPosts, Set<Participants> participants, Set<Messages> messages, Set<UserComment> userComments, Set<CommentLikes> commentLikes) {
+    public Users(String userId, int isAdmin, String fullName, String email, String password, String avtUrl, Date dob, Date resetExp, String resetToken, String accessToken, Set<Followers> followers, Set<Followers> followeds, Set<PostLikes> postLikes, Set<UserPosts> userPosts, Set<Participants> participants, Set<Messages> messages, Set<UserComment> userComments, Set<CommentLikes> commentLikes, BlacklistUser blacklistUser){
         this.userId = userId;
         this.isAdmin = isAdmin;
         this.fullName = fullName;
@@ -85,6 +89,7 @@ public class Users {
         this.messages = messages;
         this.userComments = userComments;
         this.commentLikes = commentLikes;
+        this.blacklistUser = blacklistUser;
     }
 
     public String getUserId() {
@@ -229,5 +234,13 @@ public class Users {
 
     public void setCommentLikes(Set<CommentLikes> commentLikes) {
         this.commentLikes = commentLikes;
+    }
+
+    public BlacklistUser getBlacklistUser() {
+        return blacklistUser;
+    }
+
+    public void setBlacklistUser(BlacklistUser blacklistUser) {
+        this.blacklistUser = blacklistUser;
     }
 }

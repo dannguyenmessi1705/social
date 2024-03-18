@@ -1,26 +1,19 @@
 package com.didan.social.controller;
 
 import com.didan.social.dto.UserDTO;
-import com.didan.social.entity.Users;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.EditUserRequest;
-import com.didan.social.payload.request.SignupRequest;
-import com.didan.social.service.AuthService;
 import com.didan.social.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Tag(name = "User")
@@ -114,15 +107,14 @@ public class UserController {
         }
     }
 
-    // Grant admin
-    @Operation(summary = "Grant user for admin role", description = "Require admin to do this",
+    @Operation(summary = "Report user", description = "Require userId to report user",
             security = @SecurityRequirement(name = "bearerAuth"))
-    @PatchMapping(value = "/grant")
-    public ResponseEntity<?> grantUser(@RequestParam String userId){
+    @PostMapping("/{userId}")
+    public ResponseEntity<?> reportUser(@PathVariable String userId){
         ResponseData payload = new ResponseData();
         try {
-            if (userService.grantAdmin(userId)){
-                payload.setDescription("Grant user for admin role successful");
+            if (userService.reportUser(userId)){
+                payload.setDescription(String.format("Report user %s successful", userId));
             }
             return new ResponseEntity<>(payload, HttpStatus.OK);
         } catch (Exception e){

@@ -1,15 +1,14 @@
 package com.didan.social.service;
 
 import com.didan.social.dto.UserDTO;
+import com.didan.social.entity.BlacklistUser;
 import com.didan.social.entity.UserPosts;
 import com.didan.social.entity.Users;
 import com.didan.social.payload.request.EditUserRequest;
+import com.didan.social.repository.BlacklistUserRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.AuthorizePathServiceImpl;
-import com.didan.social.service.impl.FileUploadsServiceImpl;
 import com.didan.social.service.impl.UserServiceImpl;
-import com.didan.social.utils.JwtUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 public class UserService implements UserServiceImpl {
@@ -29,16 +28,19 @@ public class UserService implements UserServiceImpl {
     private final AuthorizePathServiceImpl authorizePathService;
     private final PasswordEncoder passwordEncoder;
     private final FileUploadsService fileUploadsService;
+    private final BlacklistUserRepository blacklistUserRepository;
     @Autowired
     public UserService(UserRepository userRepository,
                        AuthorizePathServiceImpl authorizePathService,
                        PasswordEncoder passwordEncoder,
-                       FileUploadsService fileUploadsService
+                       FileUploadsService fileUploadsService,
+                       BlacklistUserRepository blacklistUserRepository
     ){
         this.userRepository = userRepository;
         this.authorizePathService = authorizePathService;
         this.passwordEncoder = passwordEncoder;
         this.fileUploadsService = fileUploadsService;
+        this.blacklistUserRepository = blacklistUserRepository;
     }
     @Override
     public List<UserDTO> getAllUser(){
@@ -122,28 +124,34 @@ public class UserService implements UserServiceImpl {
     }
 
     @Override
-    public boolean grantAdmin(String userIdGranted) throws Exception {
-        String userId = authorizePathService.getUserIdAuthoried();
+    public boolean reportUser(String userId) throws Exception {
+        String myId = authorizePathService.getUserIdAuthoried();
+        if (myId.equals(userId)){
+            logger.error("Can't report yourself");
+            throw new Exception("Can't report yourself");
+        }
         Users user = userRepository.findFirstByUserId(userId);
-        if (user == null) {
-            logger.error("User is not found");
-            throw new Exception("User is not found");
+        if (user.getIsAdmin() == 1){
+            logger.error("Can't report admin");
+            throw new Exception("Can't report admin");
         }
-        if (user.getIsAdmin() == 0){
-            logger.error("You are not admin");
-            throw new Exception("You are not admin");
+        BlacklistUser blacklistUser = blacklistUserRepository.findByUserId(userId);
+        if (blacklistUser == null){
+            blacklistUser = new BlacklistUser();
+            blacklistUser.setUserId(userId);
+            blacklistUser.setReportedQuantity(1);
+            blacklistUser.setBlockedAt(null);
+            blacklistUserRepository.save(blacklistUser);
+        } else {
+            blacklistUser.setReportedQuantity(blacklistUser.getReportedQuantity() + 1);
+            if (blacklistUser.getReportedQuantity() >= 1000){
+                blacklistUser.setStatus("blocked");
+                LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+                Date nowSql = Timestamp.valueOf(now);
+                blacklistUser.setBlockedAt(nowSql);
+            }
+            blacklistUserRepository.save(blacklistUser);
         }
-        Users user_grant = userRepository.findFirstByUserId(userIdGranted);
-        if (user_grant == null) {
-            logger.error("User is not found");
-            throw new Exception("User is not found");
-        }
-        if (user_grant.getIsAdmin() == 1){
-            logger.error("User is already admin");
-            throw new Exception("User is already admin");
-        }
-        user_grant.setIsAdmin(1);
-        userRepository.save(user_grant);
         return true;
     }
 

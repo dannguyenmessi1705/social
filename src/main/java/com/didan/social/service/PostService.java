@@ -33,9 +33,7 @@ public class PostService implements PostServiceImpl {
     private final FileUploadsService fileUploadsService;
     private final UserRepository userRepository;
     private final PostLikeRepository postLikeRepository;
-    private final UserCommentRepository userCommentRepository;
     private final CommentRepository commentRepository;
-    private final CommentLikeRepository commentLikeRepository;
     private final AuthorizePathServiceImpl authorizePathService;
     @Autowired
     public PostService(PostRepository postRepository,
@@ -43,9 +41,7 @@ public class PostService implements PostServiceImpl {
                        FileUploadsService fileUploadsService,
                        UserRepository userRepository,
                        PostLikeRepository postLikeRepository,
-                       UserCommentRepository userCommentRepository,
                        CommentRepository commentRepository,
-                       CommentLikeRepository commentLikeRepository,
                        AuthorizePathServiceImpl authorizePathService
     ){
         this.postRepository = postRepository;
@@ -53,9 +49,7 @@ public class PostService implements PostServiceImpl {
         this.fileUploadsService = fileUploadsService;
         this.userRepository = userRepository;
         this.postLikeRepository = postLikeRepository;
-        this.userCommentRepository = userCommentRepository;
         this.commentRepository =commentRepository;
-        this.commentLikeRepository = commentLikeRepository;
         this.authorizePathService = authorizePathService;
     }
     @Transactional
@@ -192,7 +186,7 @@ public class PostService implements PostServiceImpl {
             if(StringUtils.hasText(post.getPostImg())){
                 fileUploadsService.deleteFile(post.getPostImg());
             }
-            String fileName = fileUploadsService.storeFile(editPostRequest.getPostImg(), "post", postId.toString());
+            String fileName = fileUploadsService.storeFile(editPostRequest.getPostImg(), "post", postId);
             post.setPostImg("post/"+fileName);
         }
         postRepository.save(post);
@@ -232,19 +226,12 @@ public class PostService implements PostServiceImpl {
     private PostDTO convertToPostDTO(Posts post){
         PostDTO postDTO = new PostDTO();
         UserPosts userPost = post.getUserPost();
-        System.out.println(111);
         postDTO.setPostId(post.getPostId());
-        System.out.println(222);
         postDTO.setUserCreatedPost(userPost.getUserPostId().getUserId());
-        System.out.println(333);
         postDTO.setTitle(post.getTitle());
-        System.out.println(444);
         postDTO.setPostImg(post.getPostImg());
-        System.out.println(555);
         postDTO.setBody(post.getBody());
-        System.out.println(666);
         postDTO.setPostedAt(post.getPostedAt().toString());
-        System.out.println(777);
         Set<PostLikes> postLikes = post.getPostLikes();
         List<String> userLikedPosts = postLikes.stream().map(postLike -> postLike.getUsers().getUserId()).collect(Collectors.toList());
         postDTO.setUserLikedPost(userLikedPosts);

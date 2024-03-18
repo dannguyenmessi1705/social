@@ -2,9 +2,11 @@ package com.didan.social.service;
 
 
 import com.didan.social.entity.BlacklistToken;
+import com.didan.social.entity.BlacklistUser;
 import com.didan.social.entity.Users;
 import com.didan.social.payload.request.SignupRequest;
 import com.didan.social.repository.BlacklistRepository;
+import com.didan.social.repository.BlacklistUserRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.impl.AuthServiceImpl;
 import com.didan.social.service.impl.AuthorizePathServiceImpl;
@@ -30,6 +32,7 @@ public class AuthService implements AuthServiceImpl {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final BlacklistRepository blacklistRepository;
+    private final BlacklistUserRepository blacklistUserRepository;
     private final FileUploadsServiceImpl fileUploadsService;
     private final MailServiceImpl mailService;
     private final AuthorizePathServiceImpl authorizePathService;
@@ -41,12 +44,14 @@ public class AuthService implements AuthServiceImpl {
                         FileUploadsServiceImpl fileUploadsService,
                         JwtUtils jwtUtils,
                         MailServiceImpl mailService,
-                        AuthorizePathServiceImpl authorizePathService
+                        AuthorizePathServiceImpl authorizePathService,
+                        BlacklistUserRepository blacklistUserRepository
     ){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorizePathService = authorizePathService;
         this.blacklistRepository = blacklistRepository;
+        this.blacklistUserRepository = blacklistUserRepository;
         this.fileUploadsService = fileUploadsService;
         this.mailService = mailService;
         this.jwtUtils = jwtUtils;
@@ -57,6 +62,11 @@ public class AuthService implements AuthServiceImpl {
         if(user == null) {
             logger.error("Email is not existed");
             throw new Exception("Email is not existed");
+        }
+        BlacklistUser blacklistUser = blacklistUserRepository.findByUserId(user.getUserId());
+        if (blacklistUser != null && blacklistUser.getStatus().equals("blocked")){
+            logger.error("User is blocked");
+            throw new Exception("User is blocked");
         }
         if (passwordEncoder.matches(password, user.getPassword())){
             if (StringUtils.hasText(user.getAccessToken())){
