@@ -1,16 +1,7 @@
-FROM eclipse-temurin:17-jdk-focal as build
-
-WORKDIR /build
-
-COPY .mvn/ ./.mvn
-COPY mvnw pom.xml  ./
-RUN chmod +x mvnw
-RUN ./mvnw dependency:go-offline
-
+FROM maven:3.8.5-openjdk-17 as build
 COPY . .
-RUN ./mvnw package -DskipTests
+RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17-jdk-alpine
-WORKDIR /app
+FROM openjdk:17.0.1-jdk-slim
 COPY --from=build /build/target/*.jar run.jar
-ENTRYPOINT ["java", "-jar", "/app/run.jar"]
+ENTRYPOINT ["java", "-jar", "run.jar"]
