@@ -14,3 +14,4 @@ FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 COPY --from=build /build/target/*.jar run.jar
 ENTRYPOINT ["java", "-jar", "/app/run.jar"]
+
