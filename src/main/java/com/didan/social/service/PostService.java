@@ -157,7 +157,7 @@ public class PostService implements PostServiceImpl {
             logger.info("User hasn't liked post yet");
             throw new Exception("User hasn't liked post yet");
         }
-        postLikeRepository.deleteByPostLikeId_PostId(postId);
+        postLikeRepository.deleteByPostLikeId_UserIdAndPostLikeId_PostId(userId, postId);
         return true;
     }
 

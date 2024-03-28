@@ -1,7 +1,6 @@
 package com.didan.social.repository;
 
 import com.didan.social.entity.PostLikes;
-import com.didan.social.entity.Posts;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +12,5 @@ public interface PostLikeRepository extends JpaRepository<PostLikes, String> {
     List<PostLikes> findByPosts_PostId(String postId);
     PostLikes findByPosts_PostIdAndUsers_UserId(String postId, String userId);
     boolean existsByPostLikeId_PostIdAndUsers_UserId(String postId, String userId);
-    void deleteByPostLikeId_PostId(String postId);
+    void deleteByPostLikeId_UserIdAndPostLikeId_PostId(String postId, String userId);
 }

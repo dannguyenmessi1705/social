@@ -149,7 +149,7 @@ public class CommentService implements CommentServiceImpl {
             logger.error("No comment is here");
             throw new Exception("No comment is here");
         }
-        CommentLikes commentLike = comment.getCommentLikes().stream().filter(cmtLike -> cmtLike.getUsers().getUserId().equals(user.getUserId())).findFirst().orElse(null);
+        CommentLikes commentLike = commentLikeRepository.findFirstByUsers_UserIdAndComments_CommentId(userId, commentId);
         if (commentLike == null) {
             logger.error("User hasn't liked post yet");
             throw new Exception("User hasn't liked post yet");
