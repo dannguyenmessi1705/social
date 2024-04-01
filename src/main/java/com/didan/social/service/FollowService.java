@@ -61,7 +61,9 @@ public class FollowService implements FollowServiceImpl {
         }
         return new FollowDTO(userFollowings.size(), userFollowings);
     }
-
+    /*
+     *Follow User
+     */
     @Override
     public boolean followUser(String userIdFollow) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();
