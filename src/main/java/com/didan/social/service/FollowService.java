@@ -91,7 +91,9 @@ public class FollowService implements FollowServiceImpl {
         followRepository.save(follower);
         return true;
     }
-
+    /*
+     * Unfollow User
+     */
     @Override
     public boolean unfollowUser(String userIdUnfollow) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();
