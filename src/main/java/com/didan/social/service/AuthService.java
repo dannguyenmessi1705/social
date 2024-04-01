@@ -83,7 +83,7 @@ public class AuthService implements AuthServiceImpl {
         }
     }
     /*
-     * Sign Up
+     * Sign Up, required avatar file
      */
     @Override
     public Users signup(SignupRequest signupRequest) throws Exception{
