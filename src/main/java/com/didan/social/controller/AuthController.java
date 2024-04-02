@@ -47,6 +47,9 @@ public class AuthController {
             if (user != null) {
                 payload.setDescription("Login Successful");
                 response.put("userId", user.getUserId());
+                response.put("fullName", user.getFullName());
+                response.put("email", user.getEmail());
+                response.put("avatar", user.getAvtUrl());
                 response.put("accessToken", user.getAccessToken());
                 payload.setData(response);
             }
