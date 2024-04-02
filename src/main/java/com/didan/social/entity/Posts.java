@@ -109,4 +109,9 @@ public class Posts {
     public void setUserComments(Set<UserComment> userComments) {
         this.userComments = userComments;
     }
+
+    /* @Overide
+    public String toString(){
+        return post_id + " " + title + " " + body;
+    } */
 }
