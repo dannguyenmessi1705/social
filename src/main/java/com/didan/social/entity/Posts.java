@@ -110,8 +110,8 @@ public class Posts {
         this.userComments = userComments;
     }
 
-    @Overide
+    /* @Overide
     public String toString(){
         return post_id + " " + title + " " + body;
-    }
+    } */
 }
