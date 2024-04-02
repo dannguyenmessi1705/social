@@ -17,6 +17,7 @@ public class DatabaseConfig implements CommandLineRunner {
         this.dataSource = dataSource;
     }
 
+    @SuppressWarnings("null")
     @Override
     public void run(String... args) throws Exception {
         Connection connection = dataSource.getConnection();
