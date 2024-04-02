@@ -61,7 +61,9 @@ public class FollowService implements FollowServiceImpl {
         }
         return new FollowDTO(userFollowings.size(), userFollowings);
     }
-
+    /*
+     *Follow User
+     */
     @Override
     public boolean followUser(String userIdFollow) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();
@@ -89,7 +91,9 @@ public class FollowService implements FollowServiceImpl {
         followRepository.save(follower);
         return true;
     }
-
+    /*
+     * Unfollow User
+     */
     @Override
     public boolean unfollowUser(String userIdUnfollow) throws Exception {
         String userId = authorizePathService.getUserIdAuthoried();

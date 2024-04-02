@@ -82,6 +82,9 @@ public class AuthService implements AuthServiceImpl {
             throw new Exception("Email and Password does not match");
         }
     }
+    /*
+     * Sign Up, required avatar file
+     */
     @Override
     public Users signup(SignupRequest signupRequest) throws Exception{
         Users user = userRepository.findFirstByEmail(signupRequest.getEmail());

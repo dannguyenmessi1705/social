@@ -192,7 +192,10 @@ public class PostService implements PostServiceImpl {
         postRepository.save(post);
         return convertToPostDTO(post);
     }
-
+    
+    /*
+     * Delete Post
+     */
     @Transactional
     @Override
     public boolean deletePost(String postId) throws Exception {
@@ -222,7 +225,6 @@ public class PostService implements PostServiceImpl {
             throw new Exception(e.getMessage());
         }
     }
-
     private PostDTO convertToPostDTO(Posts post){
         PostDTO postDTO = new PostDTO();
         UserPosts userPost = post.getUserPost();
@@ -255,6 +257,7 @@ public class PostService implements PostServiceImpl {
         }
         commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
         postDTO.setComments(commentDTOs);
+        
         return postDTO;
     }
 }
