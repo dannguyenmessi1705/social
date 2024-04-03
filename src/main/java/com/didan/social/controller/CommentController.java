@@ -29,7 +29,10 @@ public class CommentController {
     public CommentController(CommentServiceImpl commentService){
         this.commentService = commentService;
     }
-    // Get Comments in Post
+    /* 
+    Get Comments in Post
+    */  
+    
     @GetMapping("/post/{post_id}")
     @Operation(summary = "Get all comments in a post",
             description = "Enter the id post to get all comments",
