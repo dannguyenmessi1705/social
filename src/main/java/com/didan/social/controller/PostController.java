@@ -30,17 +30,41 @@ public class PostController {
         this.postService = postService;
     }
     // Get Post
+    @Operation(summary = "Get all posts",
+            description = "Get all posts",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @GetMapping("/get/all")
+    public ResponseEntity<?> getPosts(){
+        ResponseData payload = new ResponseData();
+        try {
+            List<PostDTO> postDTOs = postService.getAllPosts();
+            if (postDTOs.isEmpty()){
+                payload.setDescription("No posts in here");
+                payload.setData(postDTOs);
+            } else {
+                payload.setDescription("Load all posts successful");
+                payload.setData(postDTOs);
+            }
+            return new ResponseEntity<>(payload, HttpStatus.OK);
+        } catch (Exception e){
+            payload.setSuccess(false);
+            payload.setStatusCode(500);
+            payload.setDescription(e.getMessage());
+            return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    }
+
     @Operation(summary = "Get posts by page",
             description = "Enter the page number you want to get posts",
             security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping("/get")
-    public ResponseEntity<?> getPosts(@RequestParam(value = "page", required = false) Integer page){
+    public ResponseEntity<?> getPostsByPage(@RequestParam(value = "page", required = false) Integer page){
         if (page == null){
             page = 1;
         }
         ResponseData payload = new ResponseData();
         try {
-            List<PostDTO> postDTOs = postService.getAllPosts(page);
+            List<PostDTO> postDTOs = postService.getAllPostsByPage(page);
             if (postDTOs.isEmpty()){
                 payload.setDescription("No posts in here");
                 payload.setData(postDTOs);
@@ -197,7 +221,7 @@ public class PostController {
         }
     }
     // Delete Post
-    @Operation(summary = "Delte post",
+    @Operation(summary = "Delete post",
             description = "Enter the id post you want to delete",
             security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping("/delete/{post_id}")

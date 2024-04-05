@@ -16,6 +16,11 @@ public interface PostRepository extends JpaRepository<Posts, String> {
             "LEFT JOIN uc.comments c " +
             "GROUP BY p " +
             "ORDER BY MAX(COALESCE(c.commentAt, p.postedAt)) DESC")
+    List<Posts> findAllPost();
+    @Query("SELECT p FROM posts p LEFT JOIN p.userComments uc " +
+            "LEFT JOIN uc.comments c " +
+            "GROUP BY p " +
+            "ORDER BY MAX(COALESCE(c.commentAt, p.postedAt)) DESC")
     Page<Posts> findAllPostByCommentAtOrPostAt(Pageable pageable);
 
     // Join all the tables to get the post, user, likes, comments and sub-comments

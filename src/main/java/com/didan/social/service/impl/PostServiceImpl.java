@@ -11,7 +11,10 @@ public interface PostServiceImpl {
     String createPost(CreatePostRequest createPostRequest) throws Exception;
 
     // Lấy tất cả các bài viết
-    List<PostDTO> getAllPosts(int index) throws Exception;
+    List<PostDTO> getAllPosts() throws Exception;
+
+    // Lấy tất cả các bài viết theo trang
+    List<PostDTO> getAllPostsByPage(int index) throws Exception;
 
     // Lấy bài viết theo id
     PostDTO getPostById(String postId) throws Exception;

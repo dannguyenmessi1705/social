@@ -87,7 +87,17 @@ public class PostService implements PostServiceImpl {
     }
 
     @Override
-    public List<PostDTO> getAllPosts(int index) throws Exception {
+    public List<PostDTO> getAllPosts() throws Exception {
+        List<Posts> posts = postRepository.findAllPost();
+        if (posts == null) {
+            logger.info("No posts are here");
+            return Collections.emptyList();
+        }
+        return posts.stream().map(this::convertToPostDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PostDTO> getAllPostsByPage(int index) throws Exception {
         PageRequest pageRequest = PageRequest.of(index-1, 10);
         Page<Posts> posts = postRepository.findAllPostByCommentAtOrPostAt(pageRequest);
         if (posts == null) {
