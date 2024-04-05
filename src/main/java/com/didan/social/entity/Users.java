@@ -243,4 +243,10 @@ public class Users {
     public void setBlacklistUser(BlacklistUser blacklistUser) {
         this.blacklistUser = blacklistUser;
     }
+
+    /* @Overide
+    public String toString(){
+        return "complete";
+    } */
+    
 }
