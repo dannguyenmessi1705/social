@@ -38,6 +38,7 @@ public class AdminController{
         }
     }
 
+    //Get  all users in blacklist
     @Operation(summary = "Get all users in blacklist", description = "Require admin to do this",
             security = @SecurityRequirement(name = "bearerAuth"))
     @GetMapping(value = "/blacklist")
@@ -54,6 +55,8 @@ public class AdminController{
             return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    //Ban user
     @Operation(summary = "Ban user", description = "Require admin to do this",
             security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping(value = "/ban/{userId}")
@@ -71,6 +74,8 @@ public class AdminController{
             return new ResponseEntity<>(payload, HttpStatus.SERVICE_UNAVAILABLE);
         }
     }
+
+    //Unban user
     @Operation(summary = "Unban user", description = "Require admin to do this",
             security = @SecurityRequirement(name = "bearerAuth"))
     @DeleteMapping(value = "/unban/{userId}")

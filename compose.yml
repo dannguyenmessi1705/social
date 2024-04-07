@@ -6,7 +6,7 @@ services:
     environment:
       MYSQL_HOST: mysqldb
       MYSQL_USER: root
-      MYSQL_PASSWORD: 17052002
+      MYSQL_PASSWORD: tranhiep12345
       MYSQL_PORT: 3306
       MYSQL_DATABASE: socialapp
     depends_on:
@@ -17,7 +17,7 @@ services:
     ports:
       - 3307:3306
     environment:
-      MYSQL_ROOT_PASSWORD: 17052002
+      MYSQL_ROOT_PASSWORD: tranhiep12345
       MYSQL_DATABASE: socialapp
 #     volumes:
 #       - ./DataSqlExport.sql:/docker-entrypoint-initdb.d/init.sql
