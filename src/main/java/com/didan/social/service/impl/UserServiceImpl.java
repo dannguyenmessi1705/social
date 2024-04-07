@@ -8,6 +8,8 @@ import com.didan.social.payload.request.EditUserRequest;
 import com.didan.social.repository.BlacklistUserRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.AuthorizePathService;
+import com.didan.social.service.UserService;
+import com.didan.social.service.convertdto.ConvertDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Service
-public class UserServiceImpl implements com.didan.social.service.UserService {
+public class UserServiceImpl extends ConvertDTO implements UserService {
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final AuthorizePathService authorizePathService;
@@ -50,7 +52,7 @@ public class UserServiceImpl implements com.didan.social.service.UserService {
         }
         List<UserDTO> userDTOS = new ArrayList<>();
         for (Users user : users){
-            UserDTO userDTO = convertToUserDTO(user);
+            UserDTO userDTO = (UserDTO) convertToDTO(user);
             userDTOS.add(userDTO);
         }
         userDTOS.sort(Comparator.comparingInt(UserDTO::getFollowers).reversed());
@@ -65,7 +67,7 @@ public class UserServiceImpl implements com.didan.social.service.UserService {
             return null;
         }
         else {
-            return convertToUserDTO(user);
+            return (UserDTO) convertToDTO(user);
         }
     }
 
@@ -78,7 +80,7 @@ public class UserServiceImpl implements com.didan.social.service.UserService {
         }
         List<UserDTO> userDTOS = new ArrayList<>();
         for (Users user : users){
-            UserDTO userDTO = convertToUserDTO(user);
+            UserDTO userDTO = (UserDTO) convertToDTO(user);
             userDTOS.add(userDTO);
         }
         userDTOS.sort(Comparator.comparingInt(UserDTO::getFollowers).reversed());
@@ -154,7 +156,12 @@ public class UserServiceImpl implements com.didan.social.service.UserService {
         return true;
     }
 
-    private UserDTO convertToUserDTO(Users user){
+    @Override
+    protected Object convertToDTO(Object object) {
+        if (!(object instanceof Users)){
+            return null;
+        }
+        Users user = (Users) object;
         UserDTO userDTO = new UserDTO();
         List<String> postId = new ArrayList<>();
         userDTO.setUserId(user.getUserId());

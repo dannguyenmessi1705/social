@@ -7,6 +7,7 @@ import com.didan.social.entity.keys.FollowerId;
 import com.didan.social.repository.FollowRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.AuthorizePathService;
+import com.didan.social.service.FollowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class FollowServiceImpl implements com.didan.social.service.FollowService {
+public class FollowServiceImpl implements FollowService {
     private final Logger logger = LoggerFactory.getLogger(FollowServiceImpl.class);
     private final FollowRepository followRepository;
     private final AuthorizePathService authorizePathService;

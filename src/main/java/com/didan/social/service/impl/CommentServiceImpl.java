@@ -9,7 +9,9 @@ import com.didan.social.payload.request.CreateCommentRequest;
 import com.didan.social.payload.request.EditCommentRequest;
 import com.didan.social.repository.*;
 import com.didan.social.service.AuthorizePathService;
+import com.didan.social.service.CommentService;
 import com.didan.social.service.FileUploadsService;
+import com.didan.social.service.convertdto.ConvertDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CommentServiceImpl implements com.didan.social.service.CommentService {
+public class CommentServiceImpl extends ConvertDTO implements CommentService {
     private final Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
     private final UserCommentRepository userCommentRepository;
     private final CommentRepository commentRepository;
@@ -56,7 +58,7 @@ public class CommentServiceImpl implements com.didan.social.service.CommentServi
         if(userComments == null) return Collections.emptyList();
         List<CommentDTO> commentDTOs = new ArrayList<>();
         for (UserComment userComment : userComments){
-            CommentDTO commentDTO = convertToCommentDTO(userComment);
+            CommentDTO commentDTO = (CommentDTO) convertToDTO(userComment);
             commentDTOs.add(commentDTO);
         }
         commentDTOs.sort(Comparator.comparing(CommentDTO::getCommentAt).reversed());
@@ -103,7 +105,7 @@ public class CommentServiceImpl implements com.didan.social.service.CommentServi
     public CommentDTO getCommentById(String commentId) throws Exception {
         UserComment userComment = userCommentRepository.findFirstByComments_CommentId(commentId);
         if (userComment == null) return null;
-        return convertToCommentDTO(userComment);
+        return (CommentDTO) convertToDTO(userComment);
     }
 
     @Transactional
@@ -182,7 +184,6 @@ public class CommentServiceImpl implements com.didan.social.service.CommentServi
             comment.setCommentImg("comment/"+fileName);
         }
         commentRepository.save(comment);
-        PostDTO postDTO = new PostDTO();
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setCommentId(comment.getCommentId());
         commentDTO.setUserComments(userComment.getUsers().getUserId());
@@ -227,7 +228,13 @@ public class CommentServiceImpl implements com.didan.social.service.CommentServi
         return true;
     }
 
-    private CommentDTO convertToCommentDTO(UserComment userComment){
+
+    @Override
+    protected Object convertToDTO(Object object) {
+        if (!(object instanceof UserComment)){
+            return null;
+        }
+        UserComment userComment = (UserComment) object;
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setCommentId(userComment.getComments().getCommentId());
         commentDTO.setUserComments(userComment.getUsers().getUserId());

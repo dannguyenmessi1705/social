@@ -1,5 +1,6 @@
 package com.didan.social.service.impl;
 
+import com.didan.social.service.FileUploadsService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 @Service
-public class FileUploadsServiceImpl implements com.didan.social.service.FileUploadsService {
+public class FileUploadsServiceImpl implements FileUploadsService {
     private final Logger logger = LoggerFactory.getLogger(FileUploadsServiceImpl.class);
     private final Environment env;
     @Autowired

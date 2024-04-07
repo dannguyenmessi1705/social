@@ -9,6 +9,7 @@ import com.didan.social.payload.request.EditPostRequest;
 import com.didan.social.repository.*;
 import com.didan.social.service.AuthorizePathService;
 import com.didan.social.service.PostService;
+import com.didan.social.service.convertdto.ConvertDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class PostServiceImpl implements PostService {
+public class PostServiceImpl extends ConvertDTO implements PostService {
     //    private Gson gson = new GsonBuilder().setPrettyPrinting().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
     private final Logger logger = LoggerFactory.getLogger(com.didan.social.service.PostService.class);
     private final PostRepository postRepository;
@@ -93,7 +94,7 @@ public class PostServiceImpl implements PostService {
             logger.info("No posts are here");
             return Collections.emptyList();
         }
-        return posts.stream().map(this::convertToPostDTO).collect(Collectors.toList());
+        return posts.stream().map(post -> (PostDTO) convertToDTO(post)).collect(Collectors.toList());
     }
 
     @Override
@@ -104,7 +105,7 @@ public class PostServiceImpl implements PostService {
             logger.info("No posts are here");
             return Collections.emptyList();
         }
-        return posts.getContent().stream().map(this::convertToPostDTO).collect(Collectors.toList());
+        return posts.getContent().stream().map(post -> (PostDTO) convertToDTO(post)).collect(Collectors.toList());
     }
 
     @Override
@@ -114,7 +115,7 @@ public class PostServiceImpl implements PostService {
             logger.info("No post is here");
             return null;
         }
-        return convertToPostDTO(post);
+        return (PostDTO) convertToDTO(post);
     }
 
     @Override
@@ -124,7 +125,7 @@ public class PostServiceImpl implements PostService {
             logger.info("No posts are here");
             return Collections.emptyList();
         }
-        return posts.stream().map(this::convertToPostDTO).collect(Collectors.toList());
+        return posts.stream().map(post -> (PostDTO) convertToDTO(post)).collect(Collectors.toList());
     }
 
     @Transactional
@@ -200,7 +201,7 @@ public class PostServiceImpl implements PostService {
             post.setPostImg("post/"+fileName);
         }
         postRepository.save(post);
-        return convertToPostDTO(post);
+        return (PostDTO) convertToDTO(post);
     }
 
     /*
@@ -235,7 +236,12 @@ public class PostServiceImpl implements PostService {
             throw new Exception(e.getMessage());
         }
     }
-    private PostDTO convertToPostDTO(Posts post){
+    @Override
+    protected Object convertToDTO(Object object) {
+        if (!(object instanceof Posts)){
+            return null;
+        }
+        Posts post = (Posts) object;
         PostDTO postDTO = new PostDTO();
         UserPosts userPost = post.getUserPost();
         postDTO.setPostId(post.getPostId());

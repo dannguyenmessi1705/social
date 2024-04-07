@@ -1,5 +1,6 @@
 package com.didan.social.service.impl;
 
+import com.didan.social.service.MailService;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class MailServiceImpl implements com.didan.social.service.MailService {
+public class MailServiceImpl implements MailService {
     private final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
     private final Environment env;
     @Autowired
