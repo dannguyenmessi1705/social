@@ -1,7 +1,7 @@
 package com.didan.social.controller;
 
 import com.didan.social.payload.ResponseData;
-import com.didan.social.service.impl.AdminServiceImpl;
+import com.didan.social.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Admin")
 @RequestMapping("/admin")
 public class AdminController{
-    private final AdminServiceImpl adminService;
+    private final AdminService adminService;
     @Autowired
-    public AdminController(AdminServiceImpl adminService) {
+    public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
     // Grant admin

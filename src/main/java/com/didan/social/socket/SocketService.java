@@ -13,13 +13,10 @@ import com.didan.social.repository.ParticipantRepository;
 import com.didan.social.repository.UserRepository;
 import com.didan.social.service.ChatService;
 import com.didan.social.service.FileUploadsService;
-import com.didan.social.service.impl.ChatServiceImpl;
-import com.didan.social.service.impl.FileUploadsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -30,18 +27,18 @@ import java.util.UUID;
 @Service // Đánh dấu đây là một service
 public class SocketService { // Khai báo một service để xử lý logic
     private final Logger logger = LoggerFactory.getLogger(SocketService.class);
-    private final ChatServiceImpl chatService; // Khai báo một service để xử lý logic
+    private final ChatService chatService; // Khai báo một service để xử lý logic
     private final UserRepository userRepository;
     private final ConversationRepository conversationRepository;
     private final ParticipantRepository participantRepository;
     private final MessageRepository messageRepository;
-    private final FileUploadsServiceImpl fileUploadsService;
+    private final FileUploadsService fileUploadsService;
     @Autowired // Đánh dấu đây là một dependency và Spring sẽ tự động inject vào
-    public SocketService(ChatServiceImpl chatService,
+    public SocketService(ChatService chatService,
                          UserRepository userRepository,
                          ConversationRepository conversationRepository,
                          ParticipantRepository participantRepository,
-                         FileUploadsServiceImpl fileUploadsService,
+                         FileUploadsService fileUploadsService,
                          MessageRepository messageRepository){ // Inject service vào
         this.chatService = chatService; // Gán service
         this.userRepository = userRepository;

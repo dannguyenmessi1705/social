@@ -5,7 +5,6 @@ import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.CreatePostRequest;
 import com.didan.social.payload.request.EditPostRequest;
 import com.didan.social.service.PostService;
-import com.didan.social.service.impl.PostServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,9 +23,9 @@ import java.util.Map;
 @Tag(name = "Post")
 @RequestMapping("/post")
 public class PostController {
-    private final PostServiceImpl postService;
+    private final PostService postService;
     @Autowired
-    public PostController(PostServiceImpl postService){
+    public PostController(PostService postService){
         this.postService = postService;
     }
     // Get Post

@@ -3,7 +3,7 @@ package com.didan.social.controller;
 import com.didan.social.dto.UserDTO;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.EditUserRequest;
-import com.didan.social.service.UserService;
+import com.didan.social.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    UserService userService;
+    UserServiceImpl userService;
     @Operation(summary = "Get all users",
             description = "Get all users",
             security = @SecurityRequirement(name = "bearerAuth"))

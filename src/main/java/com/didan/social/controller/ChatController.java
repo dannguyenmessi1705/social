@@ -1,11 +1,10 @@
 package com.didan.social.controller;
 
-import com.didan.social.dto.CommentDTO;
 import com.didan.social.dto.ConversationDTO;
 import com.didan.social.dto.MessageDTO;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.SendMessageRequest;
-import com.didan.social.service.impl.ChatServiceImpl;
+import com.didan.social.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,9 +22,9 @@ import java.util.Map;
 @Tag(name = "Chat")
 @RequestMapping("/chat")
 public class ChatController {
-    private final ChatServiceImpl chatService;
+    private final ChatService chatService;
     @Autowired
-    public ChatController(ChatServiceImpl chatService){
+    public ChatController(ChatService chatService){
         this.chatService = chatService;
     }
     // Create Conversation

@@ -2,7 +2,7 @@ package com.didan.social.controller;
 
 import com.didan.social.dto.FollowDTO;
 import com.didan.social.payload.ResponseData;
-import com.didan.social.service.impl.FollowServiceImpl;
+import com.didan.social.service.FollowService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,10 +18,10 @@ import java.util.Map;
 @Tag(name = "Follow")
 @RequestMapping("/follow")
 public class FollowController {
-    private final FollowServiceImpl followService;
+    private final FollowService followService;
 
     @Autowired
-    public FollowController(FollowServiceImpl followService){
+    public FollowController(FollowService followService){
         this.followService = followService;
     }
     // Get Follower

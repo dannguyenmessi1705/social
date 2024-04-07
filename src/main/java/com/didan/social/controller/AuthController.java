@@ -1,12 +1,11 @@
 package com.didan.social.controller;
 
-import com.didan.social.dto.UserDTO;
 import com.didan.social.entity.Users;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.SignupRequest;
-import com.didan.social.service.impl.AuthServiceImpl;
-import com.didan.social.service.impl.FileUploadsServiceImpl;
-import com.didan.social.service.impl.MailServiceImpl;
+import com.didan.social.service.AuthService;
+import com.didan.social.service.FileUploadsService;
+import com.didan.social.service.MailService;
 import com.didan.social.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,16 +24,10 @@ import java.util.Map;
 @Tag(name = "Auth")
 @RequestMapping("/auth")
 public class AuthController {
-    private final AuthServiceImpl authService;
-    private final JwtUtils jwtUtils;
-    private final FileUploadsServiceImpl fileUploadsService;
-    private final MailServiceImpl mailService;
+    private final AuthService authService;
     @Autowired
-    public AuthController(AuthServiceImpl authService, JwtUtils jwtUtils, FileUploadsServiceImpl fileUploadsService, MailServiceImpl mailService){
+    public AuthController(AuthService authService){
         this.authService = authService;
-        this.jwtUtils = jwtUtils;
-        this.fileUploadsService = fileUploadsService;
-        this.mailService = mailService;
     }
 
     @Operation(summary = "Login to forum app", description = "Request email and password")

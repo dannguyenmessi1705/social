@@ -1,11 +1,10 @@
 package com.didan.social.controller;
 
 import com.didan.social.dto.CommentDTO;
-import com.didan.social.dto.PostDTO;
 import com.didan.social.payload.ResponseData;
 import com.didan.social.payload.request.CreateCommentRequest;
 import com.didan.social.payload.request.EditCommentRequest;
-import com.didan.social.service.impl.CommentServiceImpl;
+import com.didan.social.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,9 +23,9 @@ import java.util.Map;
 @Tag(name = "Comment")
 @RequestMapping("/comment")
 public class CommentController {
-    private final CommentServiceImpl commentService;
+    private final CommentService commentService;
     @Autowired
-    public CommentController(CommentServiceImpl commentService){
+    public CommentController(CommentService commentService){
         this.commentService = commentService;
     }
     // Get Comments in Post
