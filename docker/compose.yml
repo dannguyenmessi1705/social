@@ -1,16 +1,16 @@
 services:
-#  spring-boot:
-#    build: .
-#    ports:
-#      - 8081:8081
-#    environment:
-#      MYSQL_HOST: mysqldb
-#      MYSQL_USER: root
-#      MYSQL_PASSWORD: 17052002
-#      MYSQL_PORT: 3306
-#      MYSQL_DATABASE: socialapp
-#    depends_on:
-#      - mysql
+  spring-boot:
+    build: .
+    ports:
+      - 8081:8081
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 17052002
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: socialapp
+    depends_on:
+      - mysql
   mysql:
     container_name: mysqldb
     image: mysql:8.0
