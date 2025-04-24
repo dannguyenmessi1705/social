@@ -1,17 +1,9 @@
 FROM eclipse-temurin:17-jdk-focal as build
 
-WORKDIR /build
+ENV APP_HOME /usr/src/app
 
-COPY ../.mvn ./.mvn
-COPY ../mvnw pom.xml  ./
-RUN chmod +x mvnw
-RUN ./mvnw dependency:go-offline
+COPY target/social-0.0.1-SNAPSHOT.jar $APP_HOME/app.jar
 
-COPY .. .
-RUN ./mvnw package -DskipTests
+WORKDIR $APP_HOME
 
-FROM eclipse-temurin:17-jdk-alpine
-WORKDIR /app
-COPY --from=build /build/target/*.jar run.jar
-ENTRYPOINT ["java", "-jar", "/app/run.jar"]
-
+ENTRYPOINT exec java -jar app.jar
