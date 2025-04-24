@@ -1,23 +1,25 @@
 services:
-  spring-boot:
-    build: .
-    ports:
-      - 8081:8081
-    environment:
-      MYSQL_HOST: mysqldb
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 17052002
-      MYSQL_PORT: 3306
-      MYSQL_DATABASE: socialapp
-    depends_on:
-      - mysql
+#  spring-boot:
+#    build: .
+#    ports:
+#      - 8081:8081
+#    environment:
+#      MYSQL_HOST: mysqldb
+#      MYSQL_USER: root
+#      MYSQL_PASSWORD: 17052002
+#      MYSQL_PORT: 3306
+#      MYSQL_DATABASE: socialapp
+#    depends_on:
+#      - mysql
   mysql:
     container_name: mysqldb
     image: mysql:8.0
     ports:
-      - 3307:3306
+      - 3308:3306
     environment:
-      MYSQL_ROOT_PASSWORD: 17052002
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: socialapp
+      MYSQL_USER: didannguyen
+      MYSQL_PASSWORD: 17052002
 #     volumes:
 #       - ./DataSqlExport.sql:/docker-entrypoint-initdb.d/init.sql
