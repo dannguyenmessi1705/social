@@ -2,12 +2,12 @@ FROM eclipse-temurin:17-jdk-focal as build
 
 WORKDIR /build
 
-COPY .mvn/ ./.mvn
-COPY mvnw pom.xml  ./
+COPY ../.mvn ./.mvn
+COPY ../mvnw pom.xml  ./
 RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline
 
-COPY . .
+COPY .. .
 RUN ./mvnw package -DskipTests
 
 FROM eclipse-temurin:17-jdk-alpine
